@@ -789,7 +789,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 			EditMacro("Wz11PvP3",nil,nil,"#showtooltip\n/use [nocombat,noexists]Legion Invasion Simulator;[pvptalent:4/2]Reverse Magic;[pvptalent:4/3]Eye of Leotheras;")
 		end
 	
-		-- Class PvP Honor Talent 4, Completed. "Ctrl+Shift+G" bind.
+		-- Class PvP Honor Talent 4, Completed. "Ctrl+Shift+G" bind. testar lite hehe
 		if class == "SHAMAN" then
 			EditMacro("Wz12PvP4",nil,nil,"#showtooltip\n/use [spec:1,pvptalent:6/2]Thunderstorm;[spec:1,pvptalent:6/3]Lightning Lasso;[spec:3,pvptalent:6/2]Earth Shield;[spec:3,pvptalent:6/3]Spirit Link;[pvptalent:6/1]Bloodlust;[pvptalent:6/3]Thundercharge;")
 		elseif class == "MAGE" then
