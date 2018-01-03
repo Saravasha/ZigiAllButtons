@@ -1,0 +1,5 @@
+## Interface: 70200
+## Title: |cff1985d1Zigi|r |cff00b2ffAll|r |cff1994ffButtons|r
+## Notes: This addons purpose is to consolidate all character's macros and make them change relevancy upon the event PLAYER_ENTERING_WORLD.
+## Author: Raxana, Queen ov all Noons
+code.lua
