@@ -1399,7 +1399,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "WARLOCK" then
 			EditMacro("WSxSGen+6",nil,nil,"#showtooltip\n/use [spec:3,talent:7/2]Channel Demonfire;[spec:2,nopet]Summon Felguard;[spec:2,pet]!Command Demon;\n/stopmacro [pet,alive]\n/run PetDismiss();")
 		elseif class == "MONK" then
-			EditMacro("WSxSGen+6",nil,nil,"/targetenemy [spec:3]\n/use [noexists,nocombat,nospec:2]\"Purple Phantom\" Contender's Costume;[@mouseover,spec:3,harm,nodead][spec:3]Fists of Fury;[spec:2]Vivify;\n/stopmacro [combat][spec:2]\n/click ExtraActionButton1",1,1)
+			EditMacro("WSxSGen+6",nil,nil,"/targetenemy [spec:3]\n/use [noexists,nocombat,nospec:2]\"Purple Phantom\" Contender's Costume;[@mouseover,spec:3,harm,nodead][spec:3]Fists of Fury;[@mouseover,spec:2,harm,nodead][spec:2]Vivify;\n/stopmacro [combat][spec:2]\n/click ExtraActionButton1",1,1)
 		elseif class == "PALADIN" then
 			EditMacro("WSxSGen+6",nil,nil,"#showtooltip Divine Shield\n/use [spec:1,notalent:5/3,talent:1/2,@player]Light's Hammer;[spec:1,talent:5/3,@player]Holy Prism;")
 		elseif class == "HUNTER" then
