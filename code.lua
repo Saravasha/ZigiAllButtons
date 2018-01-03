@@ -1515,7 +1515,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "MONK" then
 			EditMacro("WSxRTS",nil,nil,"#show\n/use [mod:shift,spec:2]Transcendence;[mod:alt,spec:3,@focus,harm,nodead][spec:3,nomod]Disable;[mod:alt]MOLL-E;[mod:ctrl,@player][@mouseover,help,nodead][help,nodead]Tiger's Lust;[mod:shift][nospec:3]Crackling Jade Lightning;\n/targetenemy [noexists]")
 		elseif class == "PALADIN" then
-			EditMacro("WSxRTS",nil,nil,"#showtooltip [spec:3] Hand of Hindrance; Blessing of Freedom;\n/use [mod:alt]MOLL-E;[mod:ctrl]Divine Steed;[spec:3,@mouseover,harm,nodead][spec:3,harm,nodead]Hand of Hindrance;[@mouseover,help,nodead][help,nodead]Blessing of Freedom;")
+			EditMacro("WSxRTS",nil,nil,"#showtooltip [spec:3] Hand of Hindrance; Blessing of Freedom;\n/use [mod:alt]MOLL-E;[mod:ctrl]Divine Steed;[@mouseover,help,nodead][help,nodead]Blessing of Freedom;[spec:3,@mouseover,harm,nodead][spec:3,harm,nodead]Hand of Hindrance;")
 		elseif class == "HUNTER" then
 			EditMacro("WSxRTS",nil,nil,"/targetenemy [noharm]\n/use [mod:alt,@focus,harm,nodead][nospec:3,nomod]Concussive Shot;[mod:alt]MOLL-E;[mod:ctrl,nopet]Call Pet 3;[mod:shift,@cursor]Tar Trap;Wing Clip\n/stopmacro [nomod:ctrl]\n/target pet\n/use [mod:ctrl]Crab Shank\n/targetlasttarget")
 		elseif class == "ROGUE" then
