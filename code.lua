@@ -405,7 +405,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		if class == "MAGE" then
 			EditMacro("WSkillbomb",nil,nil,"#showtooltip\n/use [spec:3]Icy Veins;[spec:1]Arcane Power;[spec:2]Combustion;\n/use Berserking\n/use Rukhmar's Sacred Memory\n/use 13\n/use Mirror Image\n/use Hearthstone Board\n/use Big Red Raygun")
 		elseif class == "WARLOCK" then
-			EditMacro("WSkillbomb",nil,nil,"#showtooltip\n/use [talent:4/3]Soul Harvest\n/use 13\n/use Jewel of Hellfire\n/use Combat Ally\n/use Adopted Puppy Crate\n/use Big Red Raygun")
+			EditMacro("WSkillbomb",nil,nil,"#showtooltip\n/use [talent:4/3]Soul Harvest\n/use 13\n/use Jewel of Hellfire\n/use Combat Ally\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/cancelaura Ring of Broken Promises")
 		elseif class == "MONK" then
 			EditMacro("WSkillbomb",nil,nil,"#showtooltip [spec:3]Storm, Earth, and Fire;[spec:2]Revival;[spec:1]Fortifying Brew;\n/use Invoke Xuen, the White Tiger\n/use Storm, Earth, and Fire\n/use Rukhmar's Sacred Memory\n/use 13\n/use Celestial Defender's Medallion")
 		elseif class == "PALADIN" then
@@ -2015,7 +2015,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 				EditMacro("WSxGen+B",nil,nil,"#showtooltip Invisibility\n/use [pvptalent:4/1]Temporal Shield")
 				EditMacro("WSxCAGen+B",nil,nil,"")
 			elseif class == "WARLOCK" then
-				EditMacro("WSxGen+B",nil,nil,"#showtooltip\n/use [spec:1,pvptalent:5/3]Soulburn;[spec:3,pvptalent:5/3,mod:shift]Firestone;[spec:3,talent:6/2]Grimoire: Felhunter;[pvptalent:5/3]Singe Magic;[pvptalent:5/2]Call Felhunter;[nocombat,noexists][]Tickle Totem;")
+				EditMacro("WSxGen+B",nil,nil,"#showtooltip\n/use [nocombat,noexists]Tickle Totem;[spec:1,pvptalent:5/3]Soulburn;[spec:3,pvptalent:5/3,mod:shift]Firestone;[spec:3,talent:6/2]Grimoire: Felhunter;[pvptalent:5/3]Singe Magic;[pvptalent:5/2]Call Felhunter;Tickle Totem;")
 				EditMacro("WSxCAGen+B",nil,nil,"")
 			elseif class == "MONK" then
 				EditMacro("WSxCAGen+B",nil,nil,"/run if not InCombatLockdown()then local B=UnitName(\"target\") EditMacro(\"WSxGen+B\",nil,nil,\"/use [mod:shift,@\"..B..\"]Effuse;[@\"..B..\"]Enveloping Mist\", nil)print(\"Tank set to : \"..B)else print(\"Cannot change assist now!\")end")
