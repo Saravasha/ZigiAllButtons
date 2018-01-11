@@ -1385,7 +1385,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "MONK" then
 			EditMacro("WSxGen6",nil,nil,"#showtooltip [spec:3]Fists of Fury;[spec:1]Breath of Fire;[spec:2]Vivify;\n/use [spec:3,mod:ctrl] Storm, Earth, and Fire;[spec:1]Breath of Fire;!Spinning Crane Kick;")
 		elseif class == "PALADIN" then
-			EditMacro("WSxGen6",nil,nil,"#showtooltip\n/use [spec:2,mod:ctrl,talent:6/1]Aegis of Light;[spec:3]Divine Storm;[spec:1]Light of Dawn;[spec:2,talent:7/2]Seraphim;[spec:2]Consecration;\n/use [mod:ctrl] 19\n/targetenemy [noexists]")
+			EditMacro("WSxGen6",nil,nil,"#showtooltip\n/use [spec:2,mod:ctrl,talent:6/1]Aegis of Light;[spec:3]Divine Storm;[spec:1]Light of Dawn;[spec:2]Consecration;\n/use [mod:ctrl] 19\n/targetenemy [noexists]")
 		elseif class == "HUNTER" then
 			EditMacro("WSxGen6",nil,nil,"#showtooltip\n/use [spec:1,mod:ctrl]Bestial Wrath;[spec:3,mod:ctrl]Aspect of the Eagle;[spec:2,mod:ctrl]Trueshot;[spec:3]Carve;[@mouseover,harm,nodead][]Multi-Shot;\n/startattack [nomod]")
 		elseif class == "ROGUE" then
@@ -2011,9 +2011,21 @@ SetCVar("Sound_EnableMusic", 0)
 			EditMacro("WSxCGen+V",nil,nil,"/use [mod:alt]Orgrimmar Interceptor;[swimming,noexists,nocombat] Barnacle-Encrusted Gem;[exists][]Path of Frost\n/use [nostealth,nomod]Panflute of Pandaria\n/use [nomod] Whispers of Rai'Vosh")
 		elseif class == "WARRIOR" then
 			EditMacro("WSxCGen+V",nil,nil,"/use [mod:alt]Orgrimmar Interceptor;[swimming] Barnacle-Encrusted Gem;Thistleleaf Branch\n/use [nostealth,nomod]Panflute of Pandaria\n/use Heroic Leap\n/use [nomod] Whispers of Rai'Vosh\n/cancelaura Thistleleaf Disguise")
-		elseif class == "DRUID" then
-			EditMacro("WSxCGen+V",nil,nil,"#showtooltip\n/use [mod:alt]Orgrimmar Interceptor;[noform:4,nomod]Moonkin Form;[nomod]!Flap\n/cancelform [form:1/2]\n/cancelaura [mod:shift][]Prowl\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
-		elseif class == "DEMONHUNTER" then
+		end
+		
+		if class == "DRUID" then 
+			if playerspec == 1 then 
+				EditMacro("WSxCGen+V",nil,nil,"#showtooltip\n/use [mod:alt]Orgrimmar Interceptor;[noform:4,nomod]Moonkin Form;[nomod]!Flap\n/cancelform [form:1/2]\n/cancelaura Prowl\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
+			elseif playerspec == 2 then
+				EditMacro("WSxCGen+V",nil,nil,"#showtooltip\n/use [mod:alt]Orgrimmar Interceptor;[talent:3/1,noform:4]Moonkin Form;[talent:3/1]!Flap;[noform]Stag Form;\n/cancelform [form:1/2]\n/cancelaura Prowl\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
+			elseif playerspec == 3 then
+				EditMacro("WSxCGen+V",nil,nil,"#showtooltip\n/use [mod:alt]Orgrimmar Interceptor;[talent:3/1,noform:4]Moonkin Form;[talent:3/1]!Flap;[noform]Stag Form;\n/cancelform [form:1/2]\n/cancelaura Prowl\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
+			else
+				EditMacro("WSxCGen+V",nil,nil,"#showtooltip\n/use [mod:alt]Orgrimmar Interceptor;[talent:3/1,noform:4]Moonkin Form;[talent:3/1]!Flap;[noform]Stag Form;\n/cancelform [form:1/2]\n/cancelaura Prowl\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
+			end
+		end
+
+		if class == "DEMONHUNTER" then
 			EditMacro("WSxCGen+V",nil,nil,"/use [mod:alt]Orgrimmar Interceptor;[swimming] Barnacle-Encrusted Gem;!Glide;\n/use [nostealth,nomod]Panflute of Pandaria\n/dismount [mounted]")
 		end
 		
