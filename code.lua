@@ -1243,7 +1243,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "WARRIOR" then
 			EditMacro("WSxCGen+4",nil,nil,"#showtooltip\n/use Battle Cry\n/use [nocombat]Tournament Favor\n/startattack\n/cleartarget [dead]\n/cancelaura Tournament Favor")
 		elseif class == "DRUID" then
-			EditMacro("WSxCGen+4",nil,nil,"#showtooltip\n/use [spec:1,talent:6/3]Blessing of the Ancients;[spec:1,talent:6/2]Astral Communion;[spec:2,talent:5/3]Savage Roar;[spec:4,@cursor]Efflorescencwe;[spec:3]Incapacitating Roar;Gastropod Shell;")
+			EditMacro("WSxCGen+4",nil,nil,"#showtooltip\n/use [spec:1,talent:6/3]Blessing of the Ancients;[spec:1,talent:6/2]Astral Communion;[spec:2,talent:5/3]Savage Roar;[spec:4,@cursor]Efflorescence;[spec:3]Incapacitating Roar;Gastropod Shell;")
 		elseif class == "DEMONHUNTER" then
 			EditMacro("WSxCGen+4",nil,nil,"#showtooltip\n/use [spec:1,talent:7/1]Chaos Blades;[spec:1,talent:7/2]Fel Barrage;[spec:2,talent:7/2]Demonic Infusion;[spec:2,talent:7/3]Soul Barrier;[spec:1]Darkness;\n/targetenemy [noexists]\n/use [nocombat,noexists] Gastropod Shell\n/startattack")
 		end
