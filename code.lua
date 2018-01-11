@@ -34,7 +34,7 @@ SetCVar("nameplateShowEnemies", 1)
 SetCVar("nameplateShowFriends", 0)
 SetCVar("Sound_EnableMusic", 0)
 --This stops the annoying buy when in Order Hall and can't press escape to log out...
-SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
+--SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 
 
 -- Basic Scope, copy paste for each new ability you want to add and change editmacro and macroname.
@@ -112,8 +112,16 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		end
 		
 		if class == "MAGE" then
-			EditMacro("WSxSwapper",nil,nil,"#showtooltip Frost Nova\n/run local a={\"Lil' Tarecgosa\",\"Trashy\",\"Nethaera's Light\",\"Tiny Snowman\",\"Stardust\",\"Noblegarden Bunny\",\"Feline Familiar\"}b=math.random(1,#a)_,c=C_PetJournal.FindPetIDByName(a[b])do C_PetJournal.SummonPetByGUID(c)end")
-		elseif class == "WARLOCK" then
+			if playerspec == 1 then
+				EditMacro("WSxSwapper",nil,nil,"#showtooltip Frost Nova\n/run local a={\"Lil' Tarecgosa\",\"Trashy\",\"Wondrous Wisdomball\",\"Stardust\",\"Noblegarden Bunny\",\"Feline Familiar\",\"Magical Crawdad\"}b=math.random(1,#a)_,c=C_PetJournal.FindPetIDByName(a[b])do C_PetJournal.SummonPetByGUID(c)end")
+			elseif playerspec == 2 then
+				EditMacro("WSxSwapper",nil,nil,"#showtooltip Frost Nova\n/run local a={\"Lil' Tarecgosa\",\"Trashy\",\"Nethaera's Light\",\"Phoenix Hatchling\",\"Stardust\",\"Noblegarden Bunny\",\"Feline Familiar\"}b=math.random(1,#a)_,c=C_PetJournal.FindPetIDByName(a[b])do C_PetJournal.SummonPetByGUID(c)end")
+			else
+				EditMacro("WSxSwapper",nil,nil,"#showtooltip Frost Nova\n/run local a={\"Lil' Tarecgosa\",\"Mr. Chilly\",\"Tiny Snowman\",\"Stardust\",\"Noblegarden Bunny\",\"Feline Familiar\",\"Frigid Frostling\"}b=math.random(1,#a)_,c=C_PetJournal.FindPetIDByName(a[b])do C_PetJournal.SummonPetByGUID(c)end")
+			end
+		end
+			
+		if class == "WARLOCK" then
 			EditMacro("WSxSwapper",nil,nil,"#show Soul Leech\n/run local a={\"Rebellious Imp\",\"Lesser Voidcaller\",\"Netherspace Abyssal\",\"Horde Fanatic\",\"Cross Gazer\",\"Sister of Temptation\",\"Nibbles\"}b=math.random(1,#a)_,c=C_PetJournal.FindPetIDByName(a[b])do C_PetJournal.SummonPetByGUID(c)end")
 		elseif class == "MONK" then
 			EditMacro("WSxSwapper",nil,nil,"#show Zen Flight\n/run local a={\"Chi-Chi, Hatchling of Chi-Ji\",\"Yu'la, Broodling of Yu'lon\",\"Xu-Fu, Cub of Xuen\",\"Zao, Calfling of Niuzao\",\"Ban-Fu, Cub of Ban-Lu\"}b=math.random(1,#a)_,c=C_PetJournal.FindPetIDByName(a[b])do C_PetJournal.SummonPetByGUID(c)end")
@@ -318,9 +326,9 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		-- DEMON HUNTER "specs" "y"		
 		if class == "DEMONHUNTER" then
 			if playerspec == 1 then
-				EditMacro("WSpecs!",nil,nil,"/settitle [spec:1]Slayer\n/equipset [spec:1]Noon!\n/run x=1 if(IsShiftKeyDown())then x=2 end if(x~=GetSpecialization())then SetSpecialization(x) end")
+				EditMacro("WSpecs!",nil,nil,"/settitle [spec:1]Demonslayer\n/equipset [spec:1]Noon!\n/run x=1 if(IsShiftKeyDown())then x=2 end if(x~=GetSpecialization())then SetSpecialization(x) end")
 			else
-				EditMacro("WSpecs!",nil,nil,"/settitle [spec:2]Talon Queen\n/equipset [spec:2]DoubleGate\n/run x=1 if(IsShiftKeyDown())then x=2 end if(x~=GetSpecialization())then SetSpecialization(x) end")
+				EditMacro("WSpecs!",nil,nil,"/settitle [spec:2]Vengeance Incarnate\n/equipset [spec:2]DoubleGate\n/run x=1 if(IsShiftKeyDown())then x=2 end if(x~=GetSpecialization())then SetSpecialization(x) end")
 			end
 		end
 	
@@ -702,7 +710,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		if class == "SHAMAN" then
 			EditMacro("Wx9PvP1",nil,nil,"#showtooltip [pvptalent:3/1]Skyfury Totem;[pvptalent:3/2]Counterstrike Totem;[pvptalent:3/3]Windfury Totem;\n/use [nocombat,noexists]Whole-Body Shrinka';[@focus,harm,nodead]Purge;[spec:3,@focus,help,nodead]Purify Spirit; [@focus,help,nodead]Cleanse Spirit;")
 		elseif class == "MAGE" then
-			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [@focus,harm,nodead][]Spellsteal;")
+			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [@focus,harm,nodead][]Spellsteal;\n/use Poison Extraction Totem")
 		elseif class == "WARLOCK" then
 			EditMacro("Wx9PvP1",nil,nil,"#showtooltip [pvptalent:3/3]Curse of Fragility;[pvptalent:3/2]Curse of Weakness;[pvptalent:3/1]Curse of Tongues;[talent:6/2]Grimoire: Imp;\n/use [nopet]Summon Felhunter;\n/use [talent:6/2]Grimoire: Imp\n/use Poison Extraction Totem")
 		elseif class == "MONK" then
@@ -863,7 +871,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("WSxSGen+1",nil,nil,"#showtooltip [spec:1,talent:6/2]Rune Tap;[spec:3]Army of the Dead;Corpse Explosion;\n/use [spec:1,talent:6/2]Rune Tap;Corpse Explosion;\n/use Stolen Breath\n/target Reaves")
 		elseif class == "WARRIOR" then
-			EditMacro("WSxSGen+1",nil,nil,"/use [mod:ctrl,@focustarget,exists,nodead][mod:ctrl,@party2target,exists,nodead]Charge;[spec:3]Ignore Pain;[@party1target,exists,nodead]Charge\n/use Chalice of Secrets\n/target Reaves")
+			EditMacro("WSxSGen+1",nil,nil,"/use [mod:ctrl,@focustarget,exists,nodead][mod:ctrl,@party2target,exists,nodead]Charge;[spec:3]Ignore Pain;[@party1target,exists,nodead]Charge\n/use Chalice of Secrets\n/targetexact Aerylia\n/target Reaves")
 		elseif class == "DRUID" then
 			EditMacro("WSxSGen+1",nil,nil,"#showtooltip [spec:4] Tranquility; Regrowth;\n/use [mod:ctrl,@party2,exists,nodead][@focus,help,nodead][@party1,exists,nodead]Regrowth\n/target Reaves")
 		elseif class == "DEMONHUNTER" then
@@ -1033,7 +1041,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "ROGUE" then
 			EditMacro("WSxGen3",nil,nil,"/use [stance:0,nocombat]Stealth;[stance:0,combat,spec:3]Shadow Dance;[nostance:0,spec:3]Shadowstrike;[spec:2,talent:6/1]Cannonball Barrage;[spec:2,talent:6/3]Killing Spree;[spec:2]Between The Eyes;[talent:6/3]Exsanguinate;[talent:6/1]Toxic Blade;Mutilate;")
 		elseif class == "PRIEST" then
-			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [exists,nocombat]Scarlet Confessional Book;[spec:3,@mouseover,harm,nodead][spec:3]Shadow Word: Death;[spec:2]Holy Word: Chastise;[spec:1]Rapture;\n/petattack")
+			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [exists,nocombat]Scarlet Confessional Book;[spec:3,@mouseover,harm,nodead][spec:3]Shadow Word: Death;[spec:2]Holy Word: Chastise;[spec:1]Rapture;\n/petattack\n/use Ivory Feather") 
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/use [nocombat,noexists]Sack of Spectral Spiders;[spec:3,talent:7/3]Soul Reaper;[spec:3]Scourge Strike;[spec:2,talent:7/3]Glacial Advance;[spec:2,talent:7/2]Breath of Sindragosa;[spec:2,talent:7/1]Obliteration;[spec:1]Marrowrend;\n/startattack")
 		elseif class == "WARRIOR" then
@@ -1223,7 +1231,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "MONK" then
 			EditMacro("WSxCGen+4",nil,nil,"#showtooltip\n/target [spec:1]Black Ox\n/use [spec:1,help,nodead]Provoke;[spec:1,@cursor]Summon Black Ox Statue;[spec:2,talent:6/3,@cursor]Summon Jade Serpent Statue;[spec:3]Storm, Earth, and Fire;\n/targetlasttarget [spec:1]\n/startattack")
 		elseif class == "PALADIN" then
-			EditMacro("WSxCGen+4",nil,nil,"#showtooltip\n/use [spec:3,talent:7/3]Holy Wrath;[spec:1,talent:7/1]Beacon of Faith;[spec:1,talent:7/3]Beacon of Virtue;[spec:2,talent:7/2]Seraphim;\n/targetenemy [noexists]\n/use Soul Evacuation Crystal\n/use [nocombat,noexists] Gastropod Shell")
+			EditMacro("WSxCGen+4",nil,nil,"/use [spec:1,@mouseover,help,nodead,talent:7/1][spec:1,talent:7/1]Beacon of Faith;[spec:1,@mouseover,help,nodead][spec:1]Beacon of Light;[spec:2,talent:7/2]Seraphim;[spec:3,talent:7/3]Holy Wrath;\n/targetenemy [noexists]\n/use Soul Evacuation Crystal")
 		elseif class == "HUNTER" then
 			EditMacro("WSxCGen+4",nil,nil,"#showtooltip\n/use [@pet,pet:Spirit Beast]Spirit Mend;[spec:3,talent:7/1]Spitting Cobra;\n/use [nocombat,noexists] Gastropod Shell")
 		elseif class == "ROGUE" then
@@ -1293,12 +1301,15 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		end
 
 		if class == "DRUID" then
+-- [talent:3/3,@mouseover,help,nodead][talent:3/3,help,nodead]Healing Touch;
 			if playerspec == 1 then
-				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[talent:3/3,@mouseover,help,nodead][talent:3/3,help,nodead]Healing Touch;[talent:3/1,form:2]Ferocious Bite;Solar Wrath;\n/targetenemy [noexists]\n/cleartarget [dead]")
+				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[talent:3/1,form:2]Ferocious Bite;Solar Wrath;\n/targetenemy [noexists]\n/cleartarget [dead]")
+-- [noform,talent:3/3]Healing Touch;			
 			elseif playerspec == 2 then
-				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[noform,talent:3/3]Healing Touch;[noform]!Cat Form;[form:2]Ferocious Bite;[form:1]Thrash;\n/targetenemy [noexists]\n/cleartarget [dead]")
+				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[noform]!Cat Form;[form:2]Ferocious Bite;[form:1]Thrash;\n/targetenemy [noexists]\n/cleartarget [dead]")
+-- [talent:3/3,help,nodead]Healing Touch;
 			elseif playerspec == 3 then
-				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[talent:3/3,help,nodead]Healing Touch;[noform]Bear Form;[talent:3/2,form:2]Ferocious Bite;[form:1]Maul;\n/targetenemy [noexists]\n/cleartarget [dead]")
+				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[noform]Bear Form;[talent:3/2,form:2]Ferocious Bite;[form:1]Maul;\n/targetenemy [noexists]\n/cleartarget [dead]")
 			elseif playerspec == 4 then
 				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [spec:4,mod:ctrl]!Incarnation: Tree of Life;[mod:ctrl]Treant Form;[talent:3/2,form:2]Ferocious Bite;Solar Wrath;\n/targetenemy [noexists]\n/cleartarget [dead]")
 			end
@@ -1318,7 +1329,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "MONK" then 
 			EditMacro("WSxSGen+5",nil,nil,"#showtooltip [noexists,nocombat]Displacer Meditation Stone;[spec:2] Thunder Focus Tea\n/clearfocus [@focus,dead]\n/focus [@focus,noexists,nodead,noharm,nomod] target\n/targetenemy [nomod]\n/use [noexists,nocombat]Displacer Meditation Stone")
 		elseif class == "PALADIN" then
-			EditMacro("WSxSGen+5",nil,nil,"#showtooltip [nocombat,noexists]Light in the Darkness;[nospec:3] Blessing of Sacrifice; Blessing of Freedom;\n/use [spec:1,@player]Holy Shock\n/use [nocombat,noexists]Light in the Darkness")
+			EditMacro("WSxSGen+5",nil,nil,"#showtooltip [nospec:3] Blessing of Sacrifice; Blessing of Freedom;\n/use [spec:1,@player]Holy Shock\n/use [nocombat,noexists]Light in the Darkness")
 		elseif class == "HUNTER" then
 			EditMacro("WSxSGen+5",nil,nil,"#showtooltip [nocombat]The SHadow Hunter's Voodoo Mask;Play Dead\n/run local zigi = IsEquippedItem(\"The Shadow Hunter's Voodoo Mask\"); if not zigi then UseEquipmentSet(\"SHHeal\") end\n/use Feign Death\n/equipset [spec:1]Noon!;[spec:2]DoubleGate;Menkify!;")
 		elseif class == "ROGUE" then
@@ -1393,7 +1404,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		
 		-- Shift+6
 		if class == "SHAMAN" then
-			EditMacro("WSxSGen+6",nil,nil,"/use [nocombat,noexists] Lava Fountain;[spec:2,talent:6/2]Fury of Air;[spec:3]Healing Tide Totem;[spec:1,talent:6/1,@cursor]Liquid Magma Totem;[spec:1,talent:6/2,nopet]Fire Elemental;[spec:1,talent:6/2,pet]Gale Force;[spec:1,@player]Earthquake;")
+			EditMacro("WSxSGen+6",nil,nil,"/use [spec:2,talent:6/2]Fury of Air;[spec:3]Healing Tide Totem;[spec:1,talent:6/1,@cursor]Liquid Magma Totem;[spec:1,talent:6/2,nopet]Fire Elemental;[spec:1,talent:6/2,pet]Gale Force;[spec:1,@player]Earthquake;\n/use [nocombat,noexists] Lava Fountain;")
 		elseif class == "MAGE" then
 			EditMacro("WSxSGen+6",nil,nil,"/use [nocombat,noexists] Mystical Frosh Hat;[spec:2,talent:7/3]Meteor;[spec:3,@player]Blizzard;")
 		elseif class == "WARLOCK" then
@@ -1588,7 +1599,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "PRIEST" then
 			EditMacro("WSxGenF",nil,nil,"/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt,@focus,harm,nodead]Shackle Undead;[mod:alt,exists,nodead]Mind Vision;[mod:alt]Farwater Conch;[spec:3,@focus,harm,nodead]Silence;[help,nodead]True Love Prism;")
 		elseif class == "DEATHKNIGHT" then
-			EditMacro("WSxGenF",nil,nil,"#showtooltip\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt,@focus,harm,nodead]Leap;[mod:alt]Legion Communication Orb;[@focus,harm,nodead]Mind Freeze;Fishing;\n/petattack [mod:alt,@focus,harm,nodead]") 
+			EditMacro("WSxGenF",nil,nil,"#showtooltip\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt,@focus,harm,nodead]Death Grip;[mod:alt]Legion Communication Orb;[@focus,harm,nodead]Mind Freeze;Fishing;\n/petattack [mod:alt,@focus,harm,nodead]") 
 		elseif class == "WARRIOR" then
 			EditMacro("WSxGenF",nil,nil,"#showtooltip Berserker Rage\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt]Farwater Conch;[@focus,harm,nodead]Pummel;Survey;")
 		elseif class == "DRUID" then
@@ -1607,7 +1618,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "MONK" then
 			EditMacro("WSxSGen+F",nil,nil,"#showtooltip\n/cleartarget [spec:1]\n/target [nospec:2,talent:4/2]Black Ox;\n/use [nocombat]Mulled Alterac Brandy\n/use [nospec:2,talent:4/2,help]Provoke;[nospec:2,talent:4/2,nohelp,@cursor]Summon Black Ox Statue;\n/cancelaura [mod:alt]Purple Phantom")
 		elseif class == "PALADIN" then
-			EditMacro("WSxSGen+F",nil,nil,"/use [spec:1]Gnawed Thumb Ring;[spec:2,@focus,harm,nodead]Avenger's Shield")
+			EditMacro("WSxSGen+F",nil,nil,"/use \n/use [mod:alt,nocombat,noexists] Gastropod Shell;[spec:1]Gnawed Thumb Ring;[spec:2,@focus,harm,nodead]Avenger's Shield;")
 		elseif class == "HUNTER" then
 			EditMacro("WSxSGen+F",nil,nil,"#showtooltip Mend Pet\n/petautocasttoggle Growl\n/petautocasttoggle [mod:alt]Spirit Walk\n/use Robo-Gnomebulator")
 		elseif class == "ROGUE" then
@@ -1634,7 +1645,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "MONK" then
 			EditMacro("WSxCGen+F",nil,nil,"#showtooltip\n/use [spec:3]Touch of Karma;[spec:2]Revival;[spec:1]Zen Meditation;")
 		elseif class == "PALADIN" then
-			EditMacro("WSxCGen+F",nil,nil,"#showtooltip [talent:3/3]Blinding Light;[talent:3/2]Repentance;Hammer of Justice;")
+			EditMacro("WSxCGen+F",nil,nil,"#showtooltip Lay on Hands")
 		elseif class == "HUNTER" then
 			EditMacro("WSxCGen+F",nil,nil,"#showtooltip Flare\n/use Pendant of the Scarab Storm\n/run SetTracking(2,false);SetTracking(3,false);SetTracking(4,false);SetTracking(5,false);SetTracking(6,false);SetTracking(8,false);SetTracking(9,false);SetTracking(10,false);")
 		elseif class == "ROGUE" then
@@ -1648,7 +1659,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "DRUID" then
 			EditMacro("WSxCGen+F",nil,nil,"#showtooltip [spec:2/3]Stampeding Roar;[spec:1/4]Innervate;\n/use [spec:3,pvptalent:4/3]Demoralizing Roar;[spec:1,@focus]Innervate;Mushroom Chair;\n/run SetTracking(2,false);SetTracking(3,false);SetTracking(4,false);")
 		elseif class == "DEMONHUNTER" then
-			EditMacro("WSxCGen+F",nil,nil,"")
+			EditMacro("WSxCGen+F",nil,nil,"#showtooltip Glide")
 		end
 		
 		-- Ctrl+Alt+F
@@ -1769,7 +1780,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "MONK" then
 			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle")
 		elseif class == "PALADIN" then
-			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Greater Blessing of Kings\n/use 16\n/equip [spec:1]The Silver Hand;[spec:2]Truthguard;Ashbringer\n/equip [nocombat]Necromedes, the Death Resonator")
+			EditMacro("WSxCGen+Z",nil,nil,"/use Lightforged Augment Rune\n/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Greater Blessing of Kings\n/use 16\n/equip [spec:1]The Silver Hand;[spec:2]Truthguard;Ashbringer\n/equip [nocombat]Necromedes, the Death Resonator")
 		elseif class == "HUNTER" then
 			EditMacro("WSxCGen+Z",nil,nil,"/use [nocombat]Sightless Eye\n/use Aspect of the Chameleon\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle\n/use [nocombat]!Camouflage")
 		elseif class == "ROGUE" then
@@ -1796,7 +1807,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		elseif class == "MONK" then
 			EditMacro("WSxGND",nil,nil,"#showtooltip\n/use [mod:ctrl]Zen Pilgrimage;[mod:shift]Transcendence: Transfer;[spec:1]Fortifying Brew;[spec:3]Touch of Karma;[spec:2,@mouseover,help,nodead][spec:2,nodead]Life Cocoon;")
 		elseif class == "PALADIN" then
-			EditMacro("WSxGND",nil,nil,"#showtooltip\n/use [mod:alt]Greater Blessing of Wisdom;[mod:shift]Blessing of Freedom;[spec:3]Shield of Vengeance;[nospec:3,@mouseover,help,nodead][nospec:3,help,nodead]Blessing of Sacrifice;[spec:2]Ardent Defender;Lay on Hands;")
+			EditMacro("WSxGND",nil,nil,"/use [mod:alt]Greater Blessing of Wisdom;[mod:shift]Blessing of Freedom;[nospec:3,@mouseover,help,nodead][nospec:3,help,nodead]Blessing of Sacrifice;[@mouseover,help,nodead]Lay on Hands;[spec:2]Ardent Defender;[spec:3]Shield of Vengeance;Lay on Hands;")
 		elseif class == "HUNTER" then
 			EditMacro("WSxGND",nil,nil,"#showtooltip\n/use [mod:alt,exists]Beast Lore;[mod:alt]Xan'tish's Flute;[mod:ctrl,exists,nodead]Tame Beast;[mod]Aspect of the Cheetah;Aspect of the Turtle;\n/use Super Simian Sphere\n/use Angry Beehive")
 		elseif class == "ROGUE" then
@@ -1887,11 +1898,11 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		if class == "WARLOCK" then
 			if race == "BloodElf" then	
 				if playerspec == 1 then
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker") 
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal") 
 				elseif playerspec == 2 then
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Chaotic Wrathsteed,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker") 
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Chaotic Wrathsteed,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal")  
 				else
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Brimstone Wrathsteed,Antoran Gloomhound,Netherlord's Chaotic Wrathsteed\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker") 
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Brimstone Wrathsteed,Antoran Gloomhound,Netherlord's Chaotic Wrathsteed\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal") 
 				end	
 			
 
@@ -1907,7 +1918,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 		end
 			
 		if class == "MONK" then
-			EditMacro("WSxSGen+V",nil,nil,"#showtooltip\n/use [flyable] Ban-Lu, Grandmaster's Companion\n/castrandom [spec:1]Riding Turtle,Onyx Cloud Serpent\n/use [spec:2]Yu'lei, Daughter of Jade\n/castrandom [spec:3]Wild Dreamrunner,Heavenly Azure Cloud Serpent,Astral Cloud Serpent,Swift Zulian Tiger")
+			EditMacro("WSxSGen+V",nil,nil,"#showtooltip\n/use [flyable] Ban-Lu, Grandmaster's Companion\n/castrandom [nospec:2]Wild Dreamrunner,Heavenly Azure Cloud Serpent,Astral Cloud Serpent,Swift Zulian Tiger,Clutch of Ji-Kun,Riding Turtle,Onyx Cloud Serpent\n/use [spec:2]Yu'lei, Daughter of Jade")
 		end
 		
 		-- Paladin mounts, shift+v
@@ -2045,7 +2056,7 @@ SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 			end
 
 			if class == "DEATHKNIGHT" then
-				EditMacro("WSxGen+B",nil,nil,"#showtooltip\n/use [spec:1]Vampiric Blood;[spec:3,nopet]Raise Dead;[spec:3,talent:4/1,pet:Abomination]Hook;[spec:3,pet:Ghoul]Leap;[nocombat,noexists]Death Gate;")
+				EditMacro("WSxGen+B",nil,nil,"#showtooltip\n/use [spec:1]Vampiric Blood;[spec:3,nopet]Raise Dead;[spec:3,talent:4/1,pet:Abomination,@focus,harm,nodead][spec:3,talent:4/1,pet:Abomination]Hook;[spec:3,pet:Ghoul,@focus,harm,nodead][spec:3,pet:Ghoul]Leap;[nocombat,noexists]Death Gate;")
 				EditMacro("WSxCAGen+B",nil,nil,"")
 			elseif class == "WARRIOR" then
 				EditMacro("WSxGen+B",nil,nil,"#showtooltip [nospec:3]Commanding Shout;Last Stand;")
