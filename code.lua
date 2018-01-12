@@ -1119,7 +1119,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "PRIEST" then
 			EditMacro("WSxCSGen+3",nil,nil,"/use [spec:1/3,@focus,harm,nodead]Shadow Word: Pain;[@party2,exists,nodead]Power Word: Shield;[nocombat,noharm]Spirit Wand;\n/stopspelltarget")
 		elseif class == "DEATHKNIGHT" then
-			EditMacro("WSxCSGen+3",nil,nil,"/use [nocombat,noharm]Spirit Wand\n/stopspelltarget")
+			EditMacro("WSxCSGen+3",nil,nil,"/use [nocombat,noharm]Spirit Wand;[@focus,exists,harm,nodead,spec:3]Outbreak;[@focus,exists,harm,nodead,spec:2]Howling Blast;\n/stopspelltarget")
 		elseif class == "WARRIOR" then
 			EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,harm,nodead]Rend;Vrykul Toy Boat;")
 		elseif class == "DRUID" then
