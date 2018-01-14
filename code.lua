@@ -334,11 +334,11 @@ SetCVar("Sound_EnableMusic", 0)
 	
 		-- Racist Stuns Button, Alt+V "Alt+v" - shows tooltip of racial and does mount favorite mount on use.
   		if race == "BloodElf" then
-  			EditMacro("Wx6RacistAlt+V",nil,nil,"#showtooltip Arcane Torrent\n/run C_MountJournal.SummonByID(0)\n/use [noexists,nocombat] Prismatic Bauble\n/use [nocombat,noexists] Sparklepony XL")
+  			EditMacro("Wx6RacistAlt+V",nil,nil,"#showtooltip Arcane Torrent\n/run C_MountJournal.SummonByID(0)\n/use [noexists,nocombat] Prismatic Bauble\n/use [combat] Arcane Torrent\n/use [nocombat,noexists] Sparklepony XL")
   		elseif race == "Troll" then
-  			EditMacro("Wx6RacistAlt+V",nil,nil,"#showtooltip Berserking\n/run C_MountJournal.SummonByID(0)\n/use [noexists,nocombat] Prismatic Bauble\n/use [nocombat,noexists] Sparklepony XL")
+  			EditMacro("Wx6RacistAlt+V",nil,nil,"#showtooltip Berserking\n/run C_MountJournal.SummonByID(0)\n/use [noexists,nocombat] Prismatic Bauble\n/use [combat] Berserking\n/use [nocombat,noexists] Sparklepony XL")
   		elseif race == "Orc" then
-  			EditMacro("Wx6RacistAlt+V",nil,nil,"#showtooltip Blood Fury\n/run C_MountJournal.SummonByID(0)\n/use [noexists,nocombat] Prismatic Bauble\n/use [nocombat,noexists] Sparklepony XL")
+  			EditMacro("Wx6RacistAlt+V",nil,nil,"#showtooltip Blood Fury\n/run C_MountJournal.SummonByID(0)\n/use [noexists,nocombat] Prismatic Bauble\n/use [combat] Blood Fury\n/use [nocombat,noexists] Sparklepony XL")
 		elseif race == "Scourge" then
   			EditMacro("Wx6RacistAlt+V",nil,nil,"#showtooltip Will of the Forsaken\n/run C_MountJournal.SummonByID(0)\n/use [noexists,nocombat] Prismatic Bauble; [combat] Will of the Forsaken;\n/use [nocombat,noexists] Sparklepony XL;")
   		elseif race == "Tauren" then
@@ -706,7 +706,7 @@ SetCVar("Sound_EnableMusic", 0)
 			EditMacro("Wx1Trinkit",nil,nil,"#showtooltip\n/use Honorable Medallion\n/use [nocombat] Wand of Simulated Life\n/use Attraction Sign\n/use Honorable Pennant")
 		end
 		
-		-- Class PvP Honor Talent 1, Completed, "Ctrl+G" bind.
+		-- Class PvP Honor Talent 1, Completed, "Ctrl+G" bind. Vi kan lägga till en [mod:alt] för focus dispells.
 		if class == "SHAMAN" then
 			EditMacro("Wx9PvP1",nil,nil,"#showtooltip [pvptalent:3/1]Skyfury Totem;[pvptalent:3/2]Counterstrike Totem;[pvptalent:3/3]Windfury Totem;\n/use [nocombat,noexists]Whole-Body Shrinka';[@focus,harm,nodead]Purge;[spec:3,@focus,help,nodead]Purify Spirit; [@focus,help,nodead]Cleanse Spirit;")
 		elseif class == "MAGE" then
@@ -723,7 +723,7 @@ SetCVar("Sound_EnableMusic", 0)
 			if petspec == 1 then 
 				EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Heart of the Phoenix\n/use [nopet]Call Pet 4\n/use [nocombat,noexists]Whole-Body Shrinka'")
 			elseif petspec == 2 then
-				EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Last Stand\n/use [nopet]Call Pet 4\n/use [nocombat,noexists]Whole-Body Shrinka'\n/stopmacro [nopet:Crab][combat]\n/target pet\n/use [pet:Crab,nocombat,help,nodead]Crab Shank\n/targetlasttarget")
+				EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Last Stand\n/use [nopet]Call Pet 4\n/use [nocombat,noexists]Whole-Body Shrinka'")
 			else
 				EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [pet,help,nodead][pet,@player]Roar of Sacrifice\n/use [nopet]Call Pet 4;\n/use [nocombat,noexists]Whole-Body Shrinka'") 
 			end
@@ -934,7 +934,7 @@ SetCVar("Sound_EnableMusic", 0)
 			elseif playerspec == 2 then
 				EditMacro("WSxGen2",nil,nil,"/use [form:2]Shred;[talent:3/2,form:1]Mangle;[talent:3/1,noform:4]Moonkin Form;[talent:3/1,form:4][@mouseover,harm,nodead,form:4][form:4,harm,nodead]Sunfire(Solar);[talent:3/3,noform]Healing Touch;[noform:2]!Cat Form;\n/targetenemy [noexists]")
 			elseif playerspec == 3 then
-				EditMacro("WSxGen2",nil,nil,"/use [form:1]Mangle;[talent:3/1,noform:4]Moonkin Form;[talent:3/1,form:4]Sunfire;[talent:3/2,noform:2]!Cat Form;[talent:3/2,form:2]Shred;[@mouseover,help,nodead,talent:3/3][talent:3/3]Healing Touch;\n/targetenemy [noexists]\n/cleartarget [dead]")
+				EditMacro("WSxGen2",nil,nil,"/use [form:1]Mangle;[talent:3/1,noform:4]Moonkin Form;[talent:3/1,form:4]Sunfire(Solar);[talent:3/2,noform:2]!Cat Form;[talent:3/2,form:2]Shred;[@mouseover,help,nodead,talent:3/3][talent:3/3]Healing Touch;\n/targetenemy [noexists]\n/cleartarget [dead]")
 			elseif playerspec == 4 then
 				EditMacro("WSxGen2",nil,nil,"/use [talent:3/3,form:1]Mangle;[talent:3/2,form:2]Shred;[@mouseover,harm,nodead][harm,nodead][]Sunfire(Solar);\n/targetenemy [noexists]\n/cleartarget [dead]")
 			end
@@ -2017,11 +2017,11 @@ SetCVar("Sound_EnableMusic", 0)
 			if playerspec == 1 then 
 				EditMacro("WSxCGen+V",nil,nil,"#showtooltip\n/use [mod:alt]Orgrimmar Interceptor;[noform:4,nomod]Moonkin Form;[nomod]!Flap\n/cancelform [form:1/2]\n/cancelaura Prowl\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
 			elseif playerspec == 2 then
-				EditMacro("WSxCGen+V",nil,nil,"#showtooltip\n/use [mod:alt]Orgrimmar Interceptor;[talent:3/1,noform:4]Moonkin Form;[talent:3/1]!Flap;[noform]Stag Form;\n/cancelform [form:1/2]\n/cancelaura Prowl\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
+				EditMacro("WSxCGen+V",nil,nil,"/use [mod:alt]Orgrimmar Interceptor;[talent:3/1,noform:4]Moonkin Form;[talent:3/1]!Flap;[noform]Stag Form;[talent:2/3,form]Wild Charge;\n/cancelform [form:1/2]\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
 			elseif playerspec == 3 then
-				EditMacro("WSxCGen+V",nil,nil,"#showtooltip\n/use [mod:alt]Orgrimmar Interceptor;[talent:3/1,noform:4]Moonkin Form;[talent:3/1]!Flap;[noform]Stag Form;\n/cancelform [form:1/2]\n/cancelaura Prowl\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
+				EditMacro("WSxCGen+V",nil,nil,"/use [mod:alt]Orgrimmar Interceptor;[talent:3/1,noform:4]Moonkin Form;[talent:3/1]!Flap;[noform]Stag Form;[talent:2/3,form]Wild Charge;\n/cancelform [form:1/2]\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
 			else
-				EditMacro("WSxCGen+V",nil,nil,"#showtooltip\n/use [mod:alt]Orgrimmar Interceptor;[talent:3/1,noform:4]Moonkin Form;[talent:3/1]!Flap;[noform]Stag Form;\n/cancelform [form:1/2]\n/cancelaura Prowl\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
+				EditMacro("WSxCGen+V",nil,nil,"/use [mod:alt]Orgrimmar Interceptor;[talent:3/1,noform:4]Moonkin Form;[talent:3/1]!Flap;[noform]Stag Form;[talent:2/3,form]Wild Charge;\n/cancelform [form:1/2]\n/use [nomod,nostealth]Seafarer's Slidewhistle\n/use [nomod] Whispers of Rai'Vosh")
 			end
 		end
 
