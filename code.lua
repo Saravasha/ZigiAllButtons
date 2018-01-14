@@ -718,14 +718,15 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "PALADIN" then
 			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [@focus,help,nodead]Cleanse;Hand of Reckoning")
 		end
+
 		-- Hunter Pvp1 pet spec show
 		if class == "HUNTER" then
 			if petspec == 1 then 
-				EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Heart of the Phoenix\n/use [nopet]Call Pet 4\n/use [nocombat,noexists]Whole-Body Shrinka'")
+				EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Heart of the Phoenix\n/use [nocombat,noexists]Whole-Body Shrinka'")
 			elseif petspec == 2 then
-				EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Last Stand\n/use [nopet]Call Pet 4\n/use [nocombat,noexists]Whole-Body Shrinka'")
+				EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Last Stand\n/use [nocombat,noexists]Whole-Body Shrinka'")
 			else
-				EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [pet,help,nodead][pet,@player]Roar of Sacrifice\n/use [nopet]Call Pet 4;\n/use [nocombat,noexists]Whole-Body Shrinka'") 
+				EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [pet,@mouseover,help,nodead][pet,help,nodead][pet,@player]Roar of Sacrifice\n/use [nocombat,noexists]Whole-Body Shrinka'") 
 			end
 		end
 
@@ -1701,7 +1702,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "PALADIN" then
 			EditMacro("WSxGG",nil,nil,"#showtooltip\n/use [mod:alt]Darkmoon Gazer;[spec:1,@mouseover,help,nodead][spec:1]Cleanse;[@mouseover,help,nodead][]Cleanse Toxins;\n/cancelaura [mod:alt]Divine Shield\n/cancelaura [mod:alt]Hand of Protection")
 		elseif class == "HUNTER" then
-			EditMacro("WSxGG",nil,nil,"/use [mod:alt,nocombat]S.F.E. Interceptor;[mod:alt]Bullheaded;[harm,nocombat]Hozen Idol;[nocombat]Critter Hand Cannon;[pvptalent:4/1]Viper Sting;[pvptalent:4/2]Scorpid Sting;[pvptalent:4/3]Spider Sting;\n/target [nocombat,noexists]Squirrel")
+			EditMacro("WSxGG",nil,nil,"/use [mod:alt,nocombat,noexists]S.F.E. Interceptor;[mod:alt]Bullheaded;[harm,nocombat]Hozen Idol;[nocombat]Critter Hand Cannon;[pvptalent:4/1]Viper Sting;[pvptalent:4/2]Scorpid Sting;[pvptalent:4/3]Spider Sting;\n/target [nocombat,noexists]Squirrel")
 		elseif class == "ROGUE" then 
 			EditMacro("WSxGG",nil,nil,"#showtooltip\n/use [mod:alt]Darkmoon Gazer;[spec:1,pvptalent:5/3]Shiv;[spec:3,pvptalent:5/3]Cold Blood;[spec:2,harm,nodead]Gouge;[noexists]Pick Lock;")
 		elseif class == "PRIEST" then
