@@ -32,7 +32,7 @@ local function eventHandler(self, event)
 SetCVar("nameplateShowAll", 0)
 SetCVar("nameplateShowEnemies", 1)
 SetCVar("nameplateShowFriends", 0)
-SetCVar("Sound_EnableMusic", 0)
+--SetCVar("Sound_EnableMusic", 0)
 --This stops the annoying buy when in Order Hall and can't press escape to log out...
 --SetBinding("ESCAPE","TOGGLEGAMEMENU") SaveBindings(GetCurrentBindingSet())
 
@@ -422,16 +422,16 @@ SetCVar("Sound_EnableMusic", 0)
 
 		if class == "HUNTER" then
 			if race == "Orc" then
-				EditMacro("WSkillbomb",nil,nil,"showtooltip\n/use [spec:1]Bestial Wrath;[spec:2]Trueshot;[spec:3]Aspect of the Eagle;\n/use Bloodmane Charm\n/use Blood Fury\n/use 13\n/use Adopted Puppy Crate\n/use Xan'tish's Flute\n/use Ruthers' Harness\n/use Big Red Raygun\n/use Aspect of the Wild")
+				EditMacro("WSkillbomb",nil,nil,"showtooltip\n/use [spec:1]Bestial Wrath;[spec:2]Trueshot;[spec:3]Aspect of the Eagle;\n/use Bloodmane Charm\n/use Blood Fury\n/use 13\n/use Adopted Puppy Crate\n/use Xan'tish's Flute\n/use Ruthers' Harness\n/use Big Red Raygun")
 			elseif race == "Troll" then
-				EditMacro("WSkillbomb",nil,nil,"#showtooltip\n/use [spec:1]Bestial Wrath;[spec:2]Trueshot;[spec:3]Aspect of the Eagle;\n/use Bloodmane Charm\n/use Berserking\n/use 13\n/use Adopted Puppy Crate\n/use Xan'tish's Flute\n/use Ruthers' Harness\n/use Big Red Raygun\n/use Aspect of the Wild") 
+				EditMacro("WSkillbomb",nil,nil,"#showtooltip\n/use [spec:1]Bestial Wrath;[spec:2]Trueshot;[spec:3]Aspect of the Eagle;\n/use Bloodmane Charm\n/use Berserking\n/use 13\n/use Adopted Puppy Crate\n/use Xan'tish's Flute\n/use Ruthers' Harness\n/use Big Red Raygun") 
 			end
 		end
 
 		if class == "ROGUE" then
 			EditMacro("WSkillbomb",nil,nil,"/use [spec:1]Vendetta;[spec:2]Adrenaline Rush;Shadow Blades;\n/stopmacro [stealth]\n/use Will of Northrend\n/use Berserking\n/use Rukhmar's Sacred Memory\n/use 13\n/use Adopted Puppy Crate\n/use Xan'tish's Flute\n/use Big Red Raygun")  
 		elseif class == "PRIEST" then
-			EditMacro("WSkillbomb",nil,nil,"#showtooltip\n/use [nospec:2]Shadowfiend\n/use Power Infusion\n/use Berserking\n/use Rukhmar's Sacred Memory\n/use 13\n/use Adopted Puppy Crate\n/use Xan'tish's Flute\n/use Big Red Raygun")
+			EditMacro("WSkillbomb",nil,nil,"#showtooltip\n/use [spec:2,talent:7/1]Apotheosis;[nospec:2]Shadowfiend\n/use Power Infusion\n/use Berserking\n/use Rukhmar's Sacred Memory\n/use 13\n/use Adopted Puppy Crate\n/use Xan'tish's Flute\n/use Big Red Raygun")
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("WSkillbomb",nil,nil,"#showtooltip\n/use [spec:1]Dancing Rune Weapon;[spec:2]Pillar of Frost;[spec:3] Summon Gargoyle\n/use 13\n/use Combat Ally\n/use Angry Beehive\n/use Pendant of the Scarab Storm\n/use Adopted Puppy Crate\n/use Big Red Raygun")
 		elseif class == "WARRIOR" then
@@ -708,15 +708,15 @@ SetCVar("Sound_EnableMusic", 0)
 		
 		-- Class PvP Honor Talent 1, Completed, "Ctrl+G" bind. Vi kan lägga till en [mod:alt] för focus dispells.
 		if class == "SHAMAN" then
-			EditMacro("Wx9PvP1",nil,nil,"#showtooltip [pvptalent:3/1]Skyfury Totem;[pvptalent:3/2]Counterstrike Totem;[pvptalent:3/3]Windfury Totem;\n/use [nocombat,noexists]Whole-Body Shrinka';[@focus,harm,nodead]Purge;[spec:3,@focus,help,nodead]Purify Spirit; [@focus,help,nodead]Cleanse Spirit;")
+			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [pvptalent:3/1]Skyfury Totem;[pvptalent:3/2]Counterstrike Totem;[pvptalent:3/3]Windfury Totem;\n/use [nocombat,noexists]Whole-Body Shrinka';")
 		elseif class == "MAGE" then
-			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [@focus,harm,nodead][]Spellsteal;\n/use Poison Extraction Totem")
+			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Poison Extraction Totem")
 		elseif class == "WARLOCK" then
-			EditMacro("Wx9PvP1",nil,nil,"#showtooltip [pvptalent:3/3]Curse of Fragility;[pvptalent:3/2]Curse of Weakness;[pvptalent:3/1]Curse of Tongues;[talent:6/2]Grimoire: Imp;\n/use [nopet]Summon Felhunter;\n/use [talent:6/2]Grimoire: Imp\n/use Poison Extraction Totem")
+			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [pvptalent:3/3]Curse of Fragility;[pvptalent:3/2]Curse of Weakness;[pvptalent:3/1]Curse of Tongues;")
 		elseif class == "MONK" then
-			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [@focus,help,nodead]Detox;[nocombat,noexists] Mystery Keg;\n/use [nocombat,noexists]Jin Warmkeg's Breww")
+			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [nocombat,noexists] Mystery Keg;\n/use [nocombat,noexists]Jin Warmkeg's Brew")
 		elseif class == "PALADIN" then
-			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [@focus,help,nodead]Cleanse;Hand of Reckoning")
+			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Hand of Reckoning")
 		end
 
 		-- Hunter Pvp1 pet spec show
@@ -737,11 +737,50 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Dark Command\n/use Blight Boar Microphone")
 		elseif class == "WARRIOR" then
-			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Taunt\n/use Burning Blade")
+			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use [spec:3,pvptalent:3/3]Bodyguard;[spec:3,pvptalent:3/1]Mass Spell Reflection;[spec:1/2,pvptalent:3/2]Disarm;\n/use Burning Blade\n/use Blight Boar Microphone")
 		elseif class == "DRUID" then
-			EditMacro("Wx9PvP1",nil,nil,"#showtooltip [spec:4,pvptalent:3/2]Thorns;Growl;\n/use [spec:4,@focus,help,nodead]Nature's Cure;[@focus,help,nodead]Remove Corruption;\n/use [harm,nocombat]Hozen Idol;[nocombat,noexists] Critter Hand Cannon;\n/target [nocombat,noexists]Squirrel")
+			EditMacro("Wx9PvP1",nil,nil,"#showtooltip [spec:4,pvptalent:3/2]Thorns;Growl;\n/use [harm,nocombat]Hozen Idol;[nocombat,noexists] Critter Hand Cannon;\n/target [nocombat,noexists]Squirrel")
 		elseif class == "DEMONHUNTER" then
 			EditMacro("Wx9PvP1",nil,nil,"#showtooltip\n/use Torment\n/use Wisp Amulet")
+		end
+
+		-- Class Focus Purge/Dispel + Extra functions. "Ctrl+Alt+G", Ctrl+Alt+G
+
+		if class == "SHAMAN" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use [@focus,harm,nodead]Purge;[spec:3,@focus,help,nodead]Purify Spirit; [@focus,help,nodead]Cleanse Spirit;")
+		elseif class == "MAGE" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use [@focus,harm,nodead][]Spellsteal;\n/use Poison Extraction Totem")
+		elseif class == "WARLOCK" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use [nopet]Summon Felhunter;\n/use [talent:6/2]Grimoire: Imp\n/use Poison Extraction Totem")
+		elseif class == "MONK" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use [@focus,help,nodead]Detox;[nocombat,noexists] Mystery Keg;\n/use [nocombat,noexists]Jin Warmkeg's Brew")
+		elseif class == "PALADIN" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use [@focus,help,nodead]Cleanse;Hand of Reckoning")
+		end
+
+		-- Hunter Pvp1 pet spec show
+		if class == "HUNTER" then
+			if petspec == 1 then 
+				EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use Heart of the Phoenix\n/use [nocombat,noexists]Whole-Body Shrinka'")
+			elseif petspec == 2 then
+				EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use Last Stand\n/use [nocombat,noexists]Whole-Body Shrinka'")
+			else
+				EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use [pet,@mouseover,help,nodead][pet,help,nodead][pet,@player]Roar of Sacrifice\n/use [nocombat,noexists]Whole-Body Shrinka'") 
+			end
+		end
+
+		if class == "ROGUE" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use Totem of Spirits")
+		elseif class == "PRIEST" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use [@focus,harm,nodead]Dispel Magic;[nospec:3,@focus,help,nodead][nospec:3]Purify;[@focus,help,nodead][]Purify Disease;")
+		elseif class == "DEATHKNIGHT" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use Dark Command\n/use Blight Boar Microphone")
+		elseif class == "WARRIOR" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use Taunt\n/use Burning Blade\n/use Blight Boar Microphone")
+		elseif class == "DRUID" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use [spec:4,@focus,help,nodead]Nature's Cure;[@focus,help,nodead]Remove Corruption; Growl;")
+		elseif class == "DEMONHUNTER" then
+			EditMacro("WSxCAGen+G",nil,nil,"#showtooltip\n/use Torment\n/use Wisp Amulet")
 		end
 		
 		-- Class PvP Honor Talent 2, Completed, "Ctrl+T" bind.
@@ -752,7 +791,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "WARLOCK" then
 			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [pvptalent:4/3]Nether Ward;[pvptalent:4/2]Casting Circle;\n/use [harm,nocombat]Fractured Necrolyte Skull;[nocombat,noexists] Critter Hand Cannon;\n/target [nocombat,noexists]Squirrel\n/stopmacro [combat]\n/kneel")
 		elseif class == "MONK" then
-			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [spec:2,pvptalent:4/3]Ancient Mistweaver Arts;[spec:2,pvptalent:4/2]Way of the Crane;[pvptalent:4/3]Zen Moment;[pvptalent:4/2]Fortifying Elixir;\n/use Bottled Tornado\n/stopmacro [combat]\n/kneel")
+			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [spec:2,pvptalent:4/3]Ancient Mistweaver Arts;[spec:2,pvptalent:4/2]Way of the Crane;[spec:3,pvptalent:4/3]Zen Moment;[spec:3,pvptalent:4/2]Fortifying Brew;\n/use Bottled Tornado\n/stopmacro [combat]\n/kneel")
 		elseif class == "PALADIN" then
 			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [spec:1,pvptalent:2/3] Divine Favor;[spec:2,pvptalent:3/1]Shield of Virtue;\n/stopmacro [combat]\n/kneel\n/use Sylvanas' Music Box")
 		elseif class == "HUNTER" then
@@ -764,7 +803,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [pvptalent:3/2]Dark Simulacrum;[pvptalent:3/3]Anti-Magic Zone;\n/stopmacro [combat]\n/kneel\n/use Sylvanas' Music Box")
 		elseif class == "WARRIOR" then
-			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [spec:3,pvptalent:3/3]Bodyguard;Tournament Favor;\n/stopmacro [combat]\n/kneel\n/use Sylvanas' Music Box\n/cancelaura Tournament Favor")
+			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [spec:1/2,pvptalent:4/2]Spell Reflection;[spec:3,talent:4/2]Disarm;\n/use Tournament Favor;\n/stopmacro [combat]\n/kneel\n/use Sylvanas' Music Box\n/cancelaura Tournament Favor") 
 		elseif class == "DRUID" then
 			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [spec:3,pvptalent:4/3]Demoralizing Roar;[spec:4,pvptalent:4/1]Cylcone;\n/stopmacro [combat]\n/kneel\n/use Wisp Amulet")
 		elseif class == "DEMONHUNTER" then
@@ -791,7 +830,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("Wz11PvP3",nil,nil,"#showtooltip\n/use [spec:1,pvptalent:5/3]Strangulate;")
 		elseif class == "WARRIOR" then
-			EditMacro("Wz11PvP3",nil,nil,"#showtooltip\n/use [spec:1/2,pvptalent:4/2][spec:3]Spell Reflection;")
+			EditMacro("Wz11PvP3",nil,nil,"#showtooltip\n/use [spec:3,pvptalent:5/3]Shield Bash;[spec:1,pvptalent:5/3]War Banner;[spec:1,pvptalent:5/2]Duel;")
 		elseif class == "DRUID" then
 			EditMacro("Wz11PvP3",nil,nil,"#showtooltip\n/use [spec:3,pvptalent:5/2]Enraged Mangle;Nature's Beacon")
 		elseif class == "DEMONHUNTER" then
@@ -1189,7 +1228,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "MAGE" then
 			EditMacro("WSxSGen+4",nil,nil,"/use [spec:3,talent:7/2]Glacial Spike;[spec:3,talent:7/3]Comet Storm;[spec:2,talent:7/2]Cinderstorm;[spec:2,talent:7/3,@cursor]Meteor;[spec:1,talent:7/3]Arcane Orb;[spec:2,talent:4/2]Flame On;Polymorph\n/targetenemy [noharm]")
 		elseif class == "WARLOCK" then
-			EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use [spec:1,nomod]Siphon Life;[spec:2,talent:7/1]Summon Darkglare;[spec:2,talent:2/3]Implosion;Phantom Singularity;\n/stopmacro [spec:2,nomod:alt]\n/targetlasttarget\n/use [spec:1]Siphon Life;[spec:3]Havoc;\n/targetlasttarget")
+			EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use [spec:1,nomod]Siphon Life;[spec:2,talent:7/1]Summon Darkglare;[spec:2]Doom;Phantom Singularity;\n/stopmacro [spec:2,nomod:alt]\n/targetlasttarget\n/use [spec:1]Siphon Life;[spec:3]Havoc;\n/targetlasttarget")
 		elseif class == "MONK" then 
 			EditMacro("WSxSGen+4",nil,nil,"#showtooltip\n/use [spec:2,talent:1/2]Zen Pulse;[talent:1/3]Chi Wave;[talent:1/1]Chi Burst;\n/stopspelltarget\n/targetenemy [noexists]")
 		elseif class == "PALADIN" then
@@ -1197,7 +1236,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "HUNTER" then
 			EditMacro("WSxSGen+4",nil,nil,"#showtooltip\n/use [spec:2,talent:4/1]Explosive Shot;[spec:2,talent:4/2,@cursor]Sentinel;[spec:3,talent:6/2]Dragonsfire Grenade;[nocombat,noexists]Adopted Puppy Crate;[spec:3,@player]Tar Trap;Misdirection;\n/use [noexists,nocombat]Leather Pet Bed\n/stopspelltarget")
 		elseif class == "ROGUE" then
-			EditMacro("WSxSGen+4",nil,nil,"#showtooltip\n/use [nocombat,noexists,nostealth]Hozen Beach Ball;[talent:7/2]Marked for Death;[talent:7/3]Death from Above;\n/targetenemy [noexists]\n/startattack [combat]\n/cleartarget [dead]")
+			EditMacro("WSxSGen+4",nil,nil,"#showtooltip\n/use [nocombat,noexists,nostealth]Hozen Beach Ball;[talent:7/2]Marked for Death;[talent:7/3]Death from Above;Feint;\n/targetenemy [noexists]\n/startattack [combat]\n/cleartarget [dead]")
 		elseif class == "PRIEST" then
 			EditMacro("WSxSGen+4",nil,nil,"#showtooltip\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [spec:3,noform]Shadowform;[spec:1,nomod]Schism;[@mouseover,harm,nodead][nomod]Vampiric Touch;\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Vampiric Touch\n/targetlasttarget")
 		elseif class == "DEATHKNIGHT" then
@@ -1261,7 +1300,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "PALADIN" then
 			EditMacro("WSxCSGen+4",nil,nil,"")
 		elseif class == "HUNTER" then
-			EditMacro("WSxCSGen+4",nil,nil,"#showtooltip Play Dead\n/run SetTracking(8,true);")
+			EditMacro("WSxCSGen+4",nil,nil,"#showtooltip Play Dead\n/run SetTracking(9,true);")
 		elseif class == "ROGUE" then
 			EditMacro("WSxCSGen+4",nil,nil,"")
 		elseif class == "PRIEST" then
@@ -1359,7 +1398,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "PALADIN" then
 			EditMacro("WSxCSGen+5",nil,nil,"/clearfocus")
 		elseif class == "HUNTER" then
-			EditMacro("WSxCSGen+5",nil,nil,"/run SetTracking(2,true);SetTracking(3,true);SetTracking(4,true);SetTracking(5,true);SetTracking(6,true);SetTracking(9,true);SetTracking(10,true);")
+			EditMacro("WSxCSGen+5",nil,nil,"/run SetTracking(3,true);SetTracking(4,true);SetTracking(5,true);SetTracking(6,true);SetTracking(7,true);SetTracking(8,true);SetTracking(10,true);")
 		elseif class == "ROGUE" then
 			EditMacro("WSxCSGen+5",nil,nil,"/clearfocus")
 		elseif class == "PRIEST" then
@@ -1369,7 +1408,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "WARRIOR" then
 			EditMacro("WSxCSGen+5",nil,nil,"/clearfocus")
 		elseif class == "DRUID" then
-			EditMacro("WSxCSGen+5",nil,nil,"#showtooltip [spec:4]Tranquility;[spec:1]Celestial Alignment;[spec:2]Berserk;[spec:3,talent:5/2]Incarnation:Guardian of Ursoc;\n/clearfocus\n/run SetTracking(2,true);SetTracking(4,true);")
+			EditMacro("WSxCSGen+5",nil,nil,"#showtooltip [spec:4]Tranquility;[spec:1]Celestial Alignment;[spec:2]Berserk;[spec:3,talent:5/2]Incarnation:Guardian of Ursoc;\n/clearfocus\n/run SetTracking(3,true);SetTracking(4,true);")
 		elseif class == "DEMONHUNTER" then
 			EditMacro("WSxCSGen+5",nil,nil,"/clearfocus")
 		end
@@ -1648,7 +1687,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "PALADIN" then
 			EditMacro("WSxCGen+F",nil,nil,"#showtooltip Lay on Hands")
 		elseif class == "HUNTER" then
-			EditMacro("WSxCGen+F",nil,nil,"#showtooltip Flare\n/use Pendant of the Scarab Storm\n/run SetTracking(2,false);SetTracking(3,false);SetTracking(4,false);SetTracking(5,false);SetTracking(6,false);SetTracking(8,false);SetTracking(9,false);SetTracking(10,false);")
+			EditMacro("WSxCGen+F",nil,nil,"#showtooltip Flare\n/use Pendant of the Scarab Storm\n/run SetTracking(3,false);SetTracking(4,false);SetTracking(5,false);SetTracking(6,false);SetTracking(7,false);SetTracking(8,false);SetTracking(9,false);SetTracking(10,false);")
 		elseif class == "ROGUE" then
 			EditMacro("WSxCGen+F",nil,nil,"#showtooltip [talent:7/2]Marked for Death;[talent:7/3] Death From Above;[spec:2]Bribe;Cloak of Shadows;\n/use [help,exists]Ai-Li's Skymirror\n/summonpet Crackers\n/use Suspicious Crate\n/stopmacro [noexists]\n/whistle")
 		elseif class == "PRIEST" then
@@ -1787,7 +1826,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "ROGUE" then
 			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use [combat]Vanish;[stance:0] Repurposed Fel Focuser\n/use [stance:0,nocombat]Stealth; [nostance:0,spec:1]Deadly Poison;\n/use [nocombat,noexists]Slightly-Chewed Insult Book")
 		elseif class == "PRIEST" then
-			EditMacro("WSxCGen+Z",nil,nil,"/use Lightforged Augment Rune\n/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Panflute of Pandaria\n/use Power Word: Fortitude\n/use Haunting Memento")
+			EditMacro("WSxCGen+Z",nil,nil,"/use Lightforged Augment Rune\n/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Panflute of Pandaria\n/use Power Word: Fortitude\n/use Haunting Memento\n/cancelaura Spirit of Redemption")
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle\n/use Haunting Memento")
 		elseif class == "WARRIOR" then 						 
@@ -1837,7 +1876,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "PALADIN" then
 			EditMacro("WSxCC",nil,nil,"/use [mod,talent:3/2]Repentance;[spec:3,talent:5/3]Word of Glory;[spec:1,@mouseover,help,nodead,talent:1/1][spec:1,talent:1/1]Bestow Faith;[spec:1,talent:1/2]Light's Hammer;[@mouseover,spec:2,talent:5/1,help,nodead][spec:2]Light of the Protector;Judgment;")
 		elseif class == "HUNTER" then
-			EditMacro("WSxCC",nil,nil,"#showtooltip Exhilaration\n/use [mod:ctrl,@cursor]Freezing Trap;Revive Pet;\n/stopmacro [mod]\n/cancelaura X-Ray Specs\n/cancelaura Safari Hat\n/use [spec:1,nostealth]Safari Hat\n/use [nostealth]Poison Extraction Totem")
+			EditMacro("WSxCC",nil,nil,"#showtooltip Exhilaration\n/use [mod:ctrl,@cursor]Freezing Trap;Revive Pet;\n/stopmacro [mod]\n/cancelaura X-Ray Specs\n/cancelaura Safari Hat\n/use [spec:1,nostealth]Safari Hat\n/use [nostealth]Poison Extraction Totem\n/use Totem of Spirits")
 		elseif class == "ROGUE" then
 			EditMacro("WSxCC",nil,nil,"#showtooltip\n/targetenemy [noexists]\n/use [mod:ctrl]Blind;[mod:shift]Smoke Powder;[stance:0,nocombat]Stealth;[@focus,harm,nodead,stance:1/2/3][stance:1/2/3]Sap;Blind;\n/cancelaura Don Carlos' Famous Hat")
 		elseif class == "PRIEST" then
@@ -1868,7 +1907,7 @@ SetCVar("Sound_EnableMusic", 0)
 		elseif class == "ROGUE" then
 			EditMacro("WSxMove",nil,nil,"/use [spec:1/3]Shadowstep;[spec:2,talent:2/1,@cursor]Grappling Hook;Sprint;\n/targetenemy [noexists]")
 		elseif class == "PRIEST" then
-			EditMacro("WSxMove",nil,nil,"#showtooltip\n/use [nocombat,noexists]Puzzle Box of Yogg-Saron;[spec:2]Desperate Prayer;[pvptalent:6/3]Void Shift(Honor Talent);[pvptalent:6/1]Psyfiend(Honor Talent);\n/use Fade\n/use Thistleleaf Branch\n/cancelaura Thistleleaf Disguise")
+			EditMacro("WSxMove",nil,nil,"#showtooltip\n/use [spec:2]Desperate Prayer;[spec:3,pvptalent:6/3]Void Shift(Honor Talent);[spec:3,pvptalent:6/1]Psyfiend(Honor Talent);\n/use Fade\n/use Thistleleaf Branch\n/use Puzzle Box of Yogg-Saron;\n/cancelaura Thistleleaf Disguise")
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("WSxMove",nil,nil,"#showtooltip [mod] Syxsehnz Rod; Wraith Walk;\n/use Syxsehnz Rod\n/use !Wraith Walk")
 		elseif class == "WARRIOR" then
@@ -1899,7 +1938,7 @@ SetCVar("Sound_EnableMusic", 0)
 		if class == "WARLOCK" then
 			if race == "BloodElf" then	
 				if playerspec == 1 then
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal") 
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal,Midnight") 
 				elseif playerspec == 2 then
 					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Chaotic Wrathsteed,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal")  
 				else
@@ -1968,7 +2007,7 @@ SetCVar("Sound_EnableMusic", 0)
 
 		-- Diky mounts, shift+v
 		if class == "DEATHKNIGHT" then
-			EditMacro("WSxSGen+V",nil,nil,"#showtooltip\n/dismount [mounted]\n/castrandom [flyable] Deathlord's Vilebrood Vanquisher, Invincible; Deathlord's Vilebrood Vanquisher, Wild Dreamrunner, Invincible, Lucid Nightmare")
+			EditMacro("WSxSGen+V",nil,nil,"#showtooltip\n/dismount [mounted]\n/castrandom [flyable] Deathlord's Vilebrood Vanquisher, Invincible; Midnight, Deathlord's Vilebrood Vanquisher, Wild Dreamrunner, Invincible, Lucid Nightmare")
 		end
 
 		-- Warrior mounts, shift+v 
