@@ -1578,6 +1578,7 @@ SetCVar("nameplateShowFriends", 0)
 				EditMacro("WSxRTS",nil,nil,"#showtooltip\n/use [mod:alt,@focus,spec:2,harm,nodead][@mouseover,nomod,spec:2,harm,nodead][nomod,spec:2]Pistol Shot;[mod:alt]MOLL-E;\n/targetenemy [noexists]")
 			else
 				EditMacro("WSxRTS",nil,nil,"/use [mod:alt]MOLL-E;[@mouseover,help,nodead,nospec:2][nospec:2,help,nodead]Shadowstep;[@mouseover,harm,nodead,spec:3][spec:3,harm,nodead]Shuriken Toss;\n/targetenemy [noexists]")
+			end
 		end
 	
 		if class == "PRIEST" then
