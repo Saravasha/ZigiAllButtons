@@ -801,7 +801,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "PRIEST" then
 			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use \n/use [nocombat,noexists]]Don Carlos' Famous Hat;[spec:2,pvptalent:3/3]Holy Ward\n/stopmacro [combat]\n/kneel")
 		elseif class == "DEATHKNIGHT" then
-			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [pvptalent:3/2]Dark Simulacrum;[pvptalent:3/3]Anti-Magic Zone;\n/stopmacro [combat]\n/kneel\n/use Sylvanas' Music Box")
+			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [@focus,mod:alt,exists,pvptalent:3/2][pvptalent:3/2]Dark Simulacrum;[pvptalent:3/3,@cursor]Anti-Magic Zone;\n/stopmacro [combat]\n/kneel\n/use Sylvanas' Music Box")
 		elseif class == "WARRIOR" then
 			EditMacro("Wz10PvP2",nil,nil,"#showtooltip\n/use [spec:1/2,pvptalent:4/2]Spell Reflection;[spec:3,talent:4/2]Disarm;\n/use Tournament Favor;\n/stopmacro [combat]\n/kneel\n/use Sylvanas' Music Box\n/cancelaura Tournament Favor") 
 		elseif class == "DRUID" then
@@ -1002,7 +1002,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "PRIEST" then
 			EditMacro("WSxSGen+2",nil,nil,"/use [spec:1/3,@mouseover,help,nodead][spec:1/3]Shadow Mend;[@mouseover,help,nodead][]Flash Heal;\n/use Gnomish X-Ray Specs")
 		elseif class == "DEATHKNIGHT" then
-			EditMacro("WSxSGen+2",nil,nil,"#showtooltip\n/use [spec:3,talent:5/2]Corpse Shield;[spec:1,talent:3/2]Blood Tap;[dead,help]Raise Ally;Death Strike;\n/startattack")
+			EditMacro("WSxSGen+2",nil,nil,"#showtooltip\n/use [@mouseover,exists,harm,nodead,spec:2,talent:3/2][spec:2,talent:3/2]Glacial Advance;[spec:1,talent:3/2]Blood Tap;[spec:3,talent:5/2]Corpse Shield;[dead,help]Raise Ally;Death Strike;\n/startattack")
 		elseif class == "WARRIOR" then
 			EditMacro("WSxSGen+2",nil,nil,"/use [dead,exists]Cannibalize;[nospec:2]Victory Rush;Cannibalize;")
 		elseif class == "DRUID" then
@@ -1083,7 +1083,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "PRIEST" then
 			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [exists,nocombat]Scarlet Confessional Book;[spec:3,@mouseover,harm,nodead][spec:3]Shadow Word: Death;[spec:2]Holy Word: Chastise;[spec:1]Rapture;\n/petattack\n/use Ivory Feather") 
 		elseif class == "DEATHKNIGHT" then
-			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/use [nocombat,noexists]Sack of Spectral Spiders;[spec:3,talent:7/3]Soul Reaper;[spec:3]Scourge Strike;[spec:2,talent:7/3]Glacial Advance;[spec:2,talent:7/2]Breath of Sindragosa;[spec:2,talent:7/1]Obliteration;[spec:1]Marrowrend;\n/startattack")
+			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/use [nocombat,noexists]Sack of Spectral Spiders;[spec:3,talent:7/3]Soul Reaper;[spec:3]Scourge Strike;[spec:2,talent:7/2]Breath of Sindragosa;[spec:2,talent:7/1]Obliteration;[spec:2]Obliterate;[spec:1]Marrowrend;\n/startattack")
 		elseif class == "WARRIOR" then
 			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/use [spec:3]Revenge;Execute;\n/startattack\n/cleartarget [dead]\n/targetenemy [noexists]")
 		elseif class == "DRUID" then
@@ -1569,9 +1569,18 @@ SetCVar("nameplateShowFriends", 0)
 			EditMacro("WSxRTS",nil,nil,"#showtooltip [spec:3] Hand of Hindrance; Blessing of Freedom;\n/use [mod:alt]MOLL-E;[mod:ctrl]Divine Steed;[@mouseover,help,nodead][help,nodead]Blessing of Freedom;[spec:3,@mouseover,harm,nodead][spec:3,harm,nodead]Hand of Hindrance;")
 		elseif class == "HUNTER" then
 			EditMacro("WSxRTS",nil,nil,"/targetenemy [noharm]\n/use [mod:alt,@focus,harm,nodead][nospec:3,nomod]Concussive Shot;[mod:alt]MOLL-E;[mod:ctrl,nopet]Call Pet 3;[mod:shift,@cursor]Tar Trap;Wing Clip\n/stopmacro [nomod:ctrl]\n/target pet\n/use [mod:ctrl]Crab Shank\n/targetlasttarget")
-		elseif class == "ROGUE" then
-			EditMacro("WSxRTS",nil,nil,"/use [mod:alt,@focus,spec:2,harm,nodead][nomod,spec:2]Pistol Shot;[mod:alt]MOLL-E;[@mouseover,help,nodead,nospec:2][nospec:2,help,nodead]Shadowstep;[spec:3]Shuriken Toss;[spec:1]Poisoned Knife;\n/targetenemy [noexists]")
-		elseif class == "PRIEST" then
+		end
+
+		if class == "ROGUE" then
+			if playerspec == 1 then
+				EditMacro("WSxRTS",nil,nil,"#showtooltip\n/use [mod:alt]MOLL-E;[@mouseover,help,nodead,nospec:2][nospec:2,help,nodead]Shadowstep;[@mouseover,harm,nodead,spec:1][spec:1]Poisoned Knife;\n/targetenemy [noexists]")
+			elseif playerspec == 2 then
+				EditMacro("WSxRTS",nil,nil,"#showtooltip\n/use [mod:alt,@focus,spec:2,harm,nodead][@mouseover,nomod,spec:2,harm,nodead][nomod,spec:2]Pistol Shot;[mod:alt]MOLL-E;\n/targetenemy [noexists]")
+			else
+				EditMacro("WSxRTS",nil,nil,"/use [mod:alt]MOLL-E;[@mouseover,help,nodead,nospec:2][nospec:2,help,nodead]Shadowstep;[@mouseover,harm,nodead,spec:3][spec:3,harm,nodead]Shuriken Toss;\n/targetenemy [noexists]")
+		end
+	
+		if class == "PRIEST" then
 			EditMacro("WSxRTS",nil,nil,"/use [mod:alt]MOLL-E;[mod:shift,spec:1]Psychic Scream;[mod:ctrl,nospec:3,talent:2/1,@player][nospec:3,talent:2/1,@cursor]Angelic Feather;[spec:2,talent:2/2]Body and Mind;[mod:ctrl,@player][@mouseover,help,nodead][]Power Word: Shield\n/stopspelltarget")
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("WSxRTS",nil,nil,"#showtooltip \n/use [mod:ctrl,spec:1,@player][spec:1,nomod:alt]Gorefiend's Grasp;[mod:alt,@focus,harm,nodead][nomod,@mouseover,harm,nodead][nomod]Chains of Ice;[mod:alt]MOLL-E;[mod:ctrl]Wraith Walk;\n/targetenemy [noexists]")
@@ -1816,7 +1825,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "MAGE" then
 			EditMacro("WSxCGen+Z",nil,nil,"/use Ogre Pinata\n/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle\n/use Dalaran Initiates' Pin;\n/use [spec:1,combat]Greater Invisibility;[combat]Invisibility;")
 		elseif class == "WARLOCK" then
-			EditMacro("WSxCGen+Z",nil,nil,"#show\n/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle\n/use Haunting Memento\n/stopspelltarget\n/use Lingering Wyrmtongue Essence\n/use The Perfect Blossom\n/cancelaura Lingering Wyrmtongue Essence")
+			EditMacro("WSxCGen+Z",nil,nil,"#show\n/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle\n/use Haunting Memento\n/stopspelltarget\n/use Lingering Wyrmtongue Essence\n/use The Perfect Blossom\n/cancelaura Wyrmtongue Disguise")
 		elseif class == "MONK" then
 			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle")
 		elseif class == "PALADIN" then
@@ -1834,7 +1843,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "DRUID" then
 			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use [nostealth] Repurposed Fel Focuser\n/use [nostealth] Panflute of Pandaria\n/use Fandral's Seed Pouch\n/use !Prowl")
 		elseif class == "DEMONHUNTER" then
-			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle\n/use Lingering Wyrmtongue Essence\n/use The Perfect Blossom")
+			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle\n/use Lingering Wyrmtongue Essence\n/use The Perfect Blossom\n/cancelaura Wyrmtongue Disguise")
 		end
 		
 		-- Macro "GND" for button X, Absorbing, Reflect or External Defensive Button.
