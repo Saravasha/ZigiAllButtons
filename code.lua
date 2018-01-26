@@ -876,7 +876,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "PALADIN" then
 			EditMacro("WSxGen1",nil,nil,"/use [spec:3,talent:5/1]Justicar's Vengeance;[spec:3,talent:5/2]Eye for an Eye;[spec:2,talent:2/2]Bastion of Light;[spec:1,@mouseover,help,nodead][spec:1]Holy Shock;Judgment;")
 		elseif class == "HUNTER" then
-			EditMacro("WSxGen1",nil,nil,"#showtooltip\n/use [harm,dead]Fetch;[spec:3,talent:2/1][nospec:3,talent:6/1]A Murder of Crows;[nospec:3,talent:6/2]Barrage;[nospec:3,talent:6/3]Volley;[spec:3,talent:2/3]Snake Hunter;Fetch;\n/targetenemy [noexists]")
+			EditMacro("WSxGen1",nil,nil,"/targetlasttarget [noharm,nocombat]\n/use [harm,dead]Fetch;[spec:3,talent:2/1][nospec:3,talent:6/1]A Murder of Crows;[nospec:3,talent:6/2]Barrage;[nospec:3,talent:6/3]Volley;[spec:3,talent:2/3]Snake Hunter;\n/targetenemy [noexists]")
 		elseif class == "ROGUE" then
 			EditMacro("WSxGen1",nil,nil,"#showtooltip\n/use [stance:0,nocombat]Stealth;[spec:2,talent:6/1,@player]Cannonball Barrage;[spec:3]Symbols of Death;[spec:2]Pistol Shot;[spec:1]Garrote;\n/targetenemy [noexists]\n/startattack [combat]")
 		elseif class == "PRIEST" then
@@ -888,7 +888,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "DRUID" then
 			EditMacro("WSxGen1",nil,nil,"/use [@mouseover,help,dead][help,dead]Rebirth;[form:2,spec:2,talent:1/1][form:2,spec:2,talent:1/2]Rake;[@mouseover,harm,nodead][harm,nodead]Moonfire(Lunar);Druid and Priest Statue Set;\n/startattack\n/use [nocombat,noform:1/4]!Prowl")
 		elseif class == "DEMONHUNTER" then
-			EditMacro("WSxGen1",nil,nil,"/use [spec:2]Demon Spikes;Fel Rush\n/targetenemy [noexists]\n/startattack")
+			EditMacro("WSxGen1",nil,nil,"#showtooltip\n/use [spec:2]Demon Spikes;[spec:1]Fel Rush;\n/targetenemy [noexists]\n/startattack")
 		end
 		
 		-- Shift+1 [mod:ctrl]Party2 and Focus/Party1 Do Spell, Completed, not tested
@@ -1367,7 +1367,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "WARLOCK" then
 			EditMacro("WSxSGen+5",nil,nil,"#showtooltip Summon Doomguard\n/clearfocus [@focus,dead]\n/focus [@focus,noexists,nodead,noharm,nomod]target\n/targetenemy")
 		elseif class == "MONK" then 
-			EditMacro("WSxSGen+5",nil,nil,"#showtooltip\n/targetenemy [noexists,nospec:3]\n/targetnearestenemy [spec:3]\n/use [noexists,nocombat]Displacer Meditation Stone;[spec:2]Thunder Focus Tea;[@mouseover,spec:3,harm,nodead][spec:3]Fists of Fury;")
+			EditMacro("WSxSGen+5",nil,nil,"#showtooltip\n/targetenemy [noexists,nospec:3]\n/targetenemy [spec:3]\n/use [noexists,nocombat]Displacer Meditation Stone;[spec:2]Thunder Focus Tea;[@mouseover,spec:3,harm,nodead][spec:3]Fists of Fury;")
 		elseif class == "PALADIN" then
 			EditMacro("WSxSGen+5",nil,nil,"#showtooltip [nospec:3] Blessing of Sacrifice; Blessing of Freedom;\n/use [spec:1,@player]Holy Shock\n/use [nocombat,noexists]Light in the Darkness")
 		elseif class == "HUNTER" then
@@ -1379,11 +1379,11 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("WSxSGen+5",nil,nil,"/use [nocombat,noexists][spec:2]Haunting Memento;[spec:1,talent:2/2]Soulgorge;[spec:3]Blighted Rune Weapon;\n/startattack")
 		elseif class == "WARRIOR" then
-			EditMacro("WSxSGen+5",nil,nil,"/use [spec:2,talent:6/1]Bloodbath;[nospec:2,talent:7/3]Ravager;[spec:1]Bladestorm;\n/startattack")
+			EditMacro("WSxSGen+5",nil,nil,"#showtooltip\n/use [spec:2,talent:6/1]Bloodbath;[nospec:2,talent:7/3]Ravager;[spec:1]Bladestorm;\n/startattack")
 		elseif class == "DRUID" then
-			EditMacro("WSxSGen+5",nil,nil,"/use [spec:1,talent:1/1]Force of Nature;[spec:1,talent:1/2]Warrior of Elune;[spec:2,talent:6/3]Elune's Guidance;[spec:4]Ironbark;Charm Woodland Creature;")
+			EditMacro("WSxSGen+5",nil,nil,"#showtooltip\n/use [spec:1,talent:1/1]Force of Nature;[spec:1,talent:1/2]Warrior of Elune;[spec:2,talent:6/3]Elune's Guidance;[spec:4]Ironbark;Charm Woodland Creature;")
 		elseif class == "DEMONHUNTER" then
-			EditMacro("WSxSGen+5",nil,nil,"/use [spec:2,@player] Infernal Strike")
+			EditMacro("WSxSGen+5",nil,nil,"#showtooltip\n/use [spec:2,@player]Infernal Strike;[spec:1]Fel Rush;\n/targetenemy [noexists,spec:2]\n/targetenemy [noexists,spec:1]\n/startattack")
 		end
 		
 		-- Ctrl+Shift+5, Also #showtooltip
@@ -1462,7 +1462,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("WSxSGen+6",nil,nil,"#showtooltip [spec:2,talent:4/2]Blinding Sleet;[spec:3,talent:4/1]Smash;[spec:1][talent:4/2]Asphyxiate;\n/use [spec:1/3,@player]Death and Decay;\n/stopspelltarget")
 		elseif class == "WARRIOR" then
-			EditMacro("WSxSGen+6",nil,nil,"#showtooltip\n/use [spec:3]Shield Block;[spec:1]Cleave;\n/targetenemy [noexists]\n/startattack")
+			EditMacro("WSxSGen+6",nil,nil,"#showtooltip\n/use [spec:1]Cleave;[spec:2]Rampage;[spec:3]Shield Block;\n/targetenemy [noexists,nospec:2]\n/targetenemy [spec:2]\n/startattack")
 		elseif class == "DRUID" then
 			EditMacro("WSxSGen+6",nil,nil,"#show [spec:1]Celestial Alignment;[spec:2]Berserk;[spec:3,talent:5/2]Incarnation: Guardian of Ursoc;[spec:4,talent:5/2]Incarnation: Tree of Life(Talent, Shapeshift);Kaldorei Wind Chimes;\n/use [@player,spec:1]Starfall;Wild Growth;\n/use Kaldorei Wind Chimes")
 		elseif class == "DEMONHUNTER" then
