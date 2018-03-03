@@ -1252,7 +1252,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "WARRIOR" then
 			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/use [spec:3]Revenge;Execute;\n/startattack\n/cleartarget [dead]\n/targetenemy [noexists]")
 		elseif class == "DRUID" then
-			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/use [noexists,nocombat]Moonfeather Statue;[spec:3,talent:7/3,form:1]Pulverize;[spec:3,talent:7/2,form:1]Lunar Beam;[spec:4,talent:3/1,noform:4]Moonkin Form;[form:2]Rip;[nospec:1,talent:3/1][spec:1]Starsurge;Regrowth\n/targetenemy [noexists]")
+			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/use [spec:3,talent:7/3,form:1]Pulverize;[spec:3,talent:7/2,form:1]Lunar Beam;[spec:4,talent:3/1,noform:4]Moonkin Form;[form:2]Rip;[nospec:1,talent:3/1][spec:1]Starsurge;[@mouseover,help,nodead][]Regrowth\n/targetenemy [noexists]")
 		elseif class == "DEMONHUNTER" then
 			EditMacro("WSxGen3",nil,nil,"#showtooltip\n/use [nocombat,noexists]Imp in a Ball;[spec:1,talent:1/2][spec:2,talent:3/1] Felblade;[spec:2,talent:3/3]Fel Eruption;[spec:2]Demon Spikes;Throw Glaive;\n/startattack\n/cleartarget [dead]\n/targetenemy [noexists]")
 		end
@@ -1527,15 +1527,15 @@ SetCVar("nameplateShowFriends", 0)
 		if class == "DRUID" then
 -- [talent:3/3,@mouseover,help,nodead][talent:3/3,help,nodead]Healing Touch;
 			if playerspec == 1 then
-				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[talent:3/1,form:2]Ferocious Bite;Solar Wrath;\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat,exists]Corbyn's Beacon")
+				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[nocombat,exists]Corbyn's Beacon;[talent:3/1,form:2]Ferocious Bite;Solar Wrath;\n/targetenemy [noexists]\n/cleartarget [dead]")
 -- [noform,talent:3/3]Healing Touch;			
 			elseif playerspec == 2 then
-				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[noform]!Cat Form;[form:2]Ferocious Bite;[form:1]Thrash;\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat,exists]Corbyn's Beacon")
+				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[noform]!Cat Form;[form:1]Thrash;[form:2]Ferocious Bite;\n/targetenemy [noexists]\n/cleartarget [dead]")
 -- [talent:3/3,help,nodead]Healing Touch;
 			elseif playerspec == 3 then
-				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[noform]Bear Form;[talent:3/1,form]Solar Wrath;4[talent:3/2,form:2]Ferocious Bite;[form:1]Maul;\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat,exists]Corbyn's Beacon")
+				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [mod:ctrl]Treant Form;[noform]Bear Form;[form:1]Maul;[talent:3/2,form:2]Ferocious Bite;[talent:3/1,form]Solar Wrath;\n/targetenemy [noexists]\n/cleartarget [dead]")
 			elseif playerspec == 4 then
-				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [spec:4,mod:ctrl]!Incarnation: Tree of Life;[mod:ctrl]Treant Form;[talent:3/2,form:2]Ferocious Bite;Solar Wrath;\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat,exists]Corbyn's Beacon")
+				EditMacro("WSxGen5",nil,nil,"#showtooltip\n/use [spec:4,mod:ctrl]!Incarnation: Tree of Life;[mod:ctrl]Treant Form;[nocombat,exists]Corbyn's Beacon;[talent:3/2,form:2]Ferocious Bite;Solar Wrath;\n/targetenemy [noexists]\n/cleartarget [dead]")
 			end
 		end
 
@@ -1565,7 +1565,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "WARRIOR" then
 			EditMacro("WSxSGen+5",nil,nil,"#showtooltip\n/use [spec:2,talent:6/1]Bloodbath;[nospec:2,talent:7/3]Ravager;[spec:1]Bladestorm;\n/startattack")
 		elseif class == "DRUID" then
-			EditMacro("WSxSGen+5",nil,nil,"#showtooltip\n/use [spec:1,talent:1/1]Force of Nature;[spec:1,talent:1/2]Warrior of Elune;[spec:2,talent:6/3]Elune's Guidance;[spec:4]Ironbark;Charm Woodland Creature;")
+			EditMacro("WSxSGen+5",nil,nil,"#showtooltip\n/use [noexists,nocombat]Moonfeather Statue;[spec:1,talent:1/1]Force of Nature;[spec:1,talent:1/2]Warrior of Elune;[spec:2,talent:6/3]Elune's Guidance;[spec:4]Ironbark;Charm Woodland Creature;")
 		elseif class == "DEMONHUNTER" then
 			EditMacro("WSxSGen+5",nil,nil,"#showtooltip\n/use [spec:2,@player]Infernal Strike;[spec:1]Fel Rush;\n/targetenemy [noexists,spec:2]\n/targetenemy [noexists,spec:1]\n/startattack")
 		end
@@ -1621,7 +1621,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "WARRIOR" then
 			EditMacro("WSxGen6",nil,nil,"#show [spec:3]Thunder clap;Whirlwind;\n/use [spec:2,talent:7/1,mod:ctrl][spec:1,mod:ctrl]Bladestorm;[spec:3,talent:7/3,mod:ctrl]Ravager;[nospec:3]Whirlwind;[spec:3]Thunder Clap;\n/startattack\n/use [mod:ctrl] Arena Master's War Horn")
 		elseif class == "DRUID" then
-			EditMacro("WSxGen6",nil,nil,"/use [spec:2,mod]Berserk;[spec:1,mod]Celestial Alignment;[spec:4,mod]Tranquility;[mod,talent:5/2]Incarnation: Guardian of Ursoc;[spec:2,noform:1/2]Cat form;[spec:3,noform:1/2]Bear form;[form:1/2]Swipe;[spec:4]Wild Growth;[spec:1,@cursor]Starfall;")
+			EditMacro("WSxGen6",nil,nil,"/use [spec:2,mod]Berserk;[spec:1,mod]Celestial Alignment;[spec:4,mod]Tranquility;[mod,talent:5/2]Incarnation: Guardian of Ursoc;[spec:2,noform:1/2]Cat form;[spec:3,noform:1/2]Bear form;[form:1/2]Swipe;[spec:4,@player]Wild Growth;[spec:1,@cursor]Starfall;")
 		elseif class == "DEMONHUNTER" then
 			EditMacro("WSxGen6",nil,nil,"#showtooltip\n/targetlasttarget [noexists,nocombat]\n/use [mod:ctrl,@cursor] Metamorphosis;[harm,dead,nocombat,nomod]Soul Inhaler;Blade Dance;\n/targetenemy [noexists]")
 		end
@@ -2046,9 +2046,21 @@ SetCVar("nameplateShowFriends", 0)
 			EditMacro("WSxGND",nil,nil,"#showtooltip\n/use [mod:alt]Runeforging;[mod:ctrl,exists,nodead]Control Undead;[mod:ctrl]Death Gate;Anti-Magic Shell;")
 		elseif class == "WARRIOR" then
 			EditMacro("WSxGND",nil,nil,"#showtooltip\n/use [spec:1/2,pvptalent:4/2,nomod][spec:3,nomod]Spell Reflection;\n/targetfriend [mod:shift,nohelp,noexists]\n/use [mod:shift,@target]Charge\n/targetlasttarget [mod:shift]")
-		elseif class == "DRUID" then
-			EditMacro("WSxGND",nil,nil,"/use [mod:alt]Stag Form;[mod:shift]Dash;[mod,harm,nodead]Cyclone;[mod]Dreamwalk;[form:1]Ironfur;[@mouseover,help,nodead,spec:4][@mouseover,help,talent:3/3][spec:4][talent:3/3]Swiftmend\n/stopmacro [stealth]\n/use Path of Elothir\n/use Prismatic Bauble")
-		elseif class == "DEMONHUNTER" then
+		end
+		
+		if class == "DRUID" then
+			if playerspec == 1 then
+				EditMacro("WSxGND",nil,nil,"/use [mod:alt]Stag Form;[noform:2,mod:shift]!Cat Form;[mod:shift]Dash;[mod,harm,nodead]Cyclone;[mod]Dreamwalk;[form:1,talent:3/2]Ironfur;[@mouseover,help,talent:3/3][talent:3/3]Swiftmend\n/stopmacro [stealth]\n/use Path of Elothir\n/use Prismatic Bauble")
+			elseif playerspec == 2 then
+				EditMacro("WSxGND",nil,nil,"/use [mod:alt]Stag Form;[noform:2,mod:shift]!Cat Form;[mod:shift]Dash;[mod]Dreamwalk;[form:1,talent:3/2]Ironfur;[@mouseover,help,talent:3/3][talent:3/3]Swiftmend\n/stopmacro [stealth]\n/use Path of Elothir\n/use Prismatic Bauble")
+			elseif playerspec == 3 then
+				EditMacro("WSxGND",nil,nil,"/use [mod:alt]Stag Form;[noform:2,mod:shift]!Cat Form;[mod:shift]Dash;[mod]Dreamwalk;[form:1]Ironfur;[@mouseover,help,talent:3/3][talent:3/3]Swiftmend\n/stopmacro [stealth]\n/use Path of Elothir\n/use Prismatic Bauble")
+			elseif playerspec == 4 then
+				EditMacro("WSxGND",nil,nil,"/use [mod:alt]Stag Form;[noform:2,mod:shift]!Cat Form;[mod:shift]Dash;[mod,harm,nodead]Cyclone;[mod]Dreamwalk;[form:1,talent:3/3]Ironfur;[@mouseover,help,nodead][]Swiftmend\n/stopmacro [stealth]\n/use Path of Elothir\n/use Prismatic Bauble")
+			end
+		end
+
+		if class == "DEMONHUNTER" then
 			EditMacro("WSxGND",nil,nil,"#showtooltip\n/use [mod:shift,spec:2,talent:1/2]Eye Beam;[mod:shift,spec:1]Blur;[spec:1]Darkness;[spec:2]Empower Wards;")
 		end
 		
@@ -2477,51 +2489,51 @@ SetCVar("nameplateShowFriends", 0)
 		if class == "SHAMAN" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@party1]Cleanse Spirit\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@party2]Cleanse Spirit\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Cleanse Spirit\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Cleanse Spirit\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		elseif class == "MAGE" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@party1]\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@party2]\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		elseif class == "WARLOCK" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@party1]Singe Magic\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@party2]Singe Magic\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Singe Magic\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Singe Magic\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		elseif class == "MONK" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@party1]Detox\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@party2]Detox\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Detox\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")	
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Detox\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")	
 		elseif class == "PALADIN" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@party1]Cleanse\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@party2]Cleanse\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Cleanse\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Cleanse\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		elseif class == "HUNTER" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@party1]Roar of Sacrifice\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@party2]Roar of Sacrifice\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Roar of Sacrifice\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Roar of Sacrifice\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		elseif class == "ROGUE" then
 			EditMacro("WMPw",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@party1]Tricks of the Trade\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@party2]Tricks of the Trade\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Tricks of the Trade\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Tricks of the Trade\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		elseif class == "PRIEST" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@party1]Purify Disease\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@party2]Purify Disease\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Purify Disease\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Purify Disease\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		elseif class == "DEATHKNIGHT" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@arena1]Chains of Ice\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@arena2]Chains of Ice\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@arena3]Chains of Ice\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@arena3]Chains of Ice\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		elseif class == "WARRIOR" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@party1]Charge\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@party2]Charge\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Charge\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Charge\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		elseif class == "DRUID" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/use [mod:ctrl,@party1]Remove Corruption\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/use [mod:ctrl,@party2]Remove Corruption\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Remove Corruption\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/use [mod:ctrl,@party3]Remove Corruption\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		elseif class == "DEMONHUNTER" then
 			EditMacro("WMPAlt+4",nil,nil,"/target [nomod]Boss1\n/target [nomod]Arena1\n/cry\n/run DepositReagentBank();\n/use Ash-Covered Horn\n/use Majestic Elderhorn Hoof")
 			EditMacro("WMPAlt+5",nil,nil,"/target [nomod]Boss2\n/target [nomod]Arena2\n/cry\n/use Moroes' Famous Polish\n/use Darkmoon Cannon\n/use Emerald Winds\n/use Baarut the Brisk")
-			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/cry\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Ley-Enriched Water\n/use Conjured Mana Bun")
+			EditMacro("WMPAlt+6",nil,nil,"/target [nomod]Boss3\n/target [nomod]Arena3\n/cry\n/use Ever-Blooming Frond\n/use The \"Devilsaur\" Lunchbox\n/use Conjured Mana Bun\n/use Ley-Enriched Water")
 		end
 
 		-- Addon to change content of Extra Action Button/Boss Button Depending on Zone, "ctrl+b"
