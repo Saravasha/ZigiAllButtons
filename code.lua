@@ -2012,7 +2012,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "HUNTER" then
 			EditMacro("WSxCGen+Z",nil,nil,"/use [nocombat]Sightless Eye\n/use Aspect of the Chameleon\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle\n/use [nocombat]!Camouflage")
 		elseif class == "ROGUE" then
-			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use [combat]Vanish;[stance:0] Repurposed Fel Focuser\n/use [stance:0,nocombat]Stealth; [nostance:0,spec:1]Deadly Poison;\n/use [nocombat,noexists]Slightly-Chewed Insult Book")
+			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use [combat]Vanish;[stance:0] Repurposed Fel Focuser\n/use [stance:0,nocombat]Stealth; [nostance:0,spec:1]Deadly Poison;\n/use [nocombat,noexists]Slightly-Chewed Insult Book\n/use [nostealth]Lightforged Augment Rune")
 		elseif class == "PRIEST" then
 			EditMacro("WSxCGen+Z",nil,nil,"/use Lightforged Augment Rune\n/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Panflute of Pandaria\n/use Power Word: Fortitude\n/use Haunting Memento\n/cancelaura Spirit of Redemption\n/cancelaura Twice-Cursed Arakkoa Feather")
 		elseif class == "DEATHKNIGHT" then
@@ -2020,7 +2020,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "WARRIOR" then 						 
 			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle\n/use Defensive Stance\n/use Shard of Archstone\n/use Vrykul Toy Boat Kit")
 		elseif class == "DRUID" then
-			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use [nostealth] Repurposed Fel Focuser\n/use [nostealth] Panflute of Pandaria\n/use Fandral's Seed Pouch\n/use !Prowl")
+			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use [nostealth] Repurposed Fel Focuser\n/use [nostealth]Lightforged Augment Rune\n/use [nostealth] Panflute of Pandaria\n/use Fandral's Seed Pouch\n/use !Prowl")
 		elseif class == "DEMONHUNTER" then
 			EditMacro("WSxCGen+Z",nil,nil,"/use Sightless Eye\n/use Repurposed Fel Focuser\n/use Seafarer's Slidewhistle\n/use Lingering Wyrmtongue Essence\n/use The Perfect Blossom\n/cancelaura Wyrmtongue Disguise")
 		end
