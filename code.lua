@@ -308,7 +308,7 @@ SetCVar("nameplateShowFriends", 0)
 		end
 
 		if class == "WARRIOR" then
-			EditMacro("WSxSwapper",nil,nil,"#showtooltip [spec:1/2,talent:2/1][spec:3,talent:1/1]Shockwave;[spec:3,talent:1/2][spec:1/2,talent:2/2]Storm Bolt;[spec:2]Piercing Howl;Charge;\n/use Darkspear Pride\n/summonpet [spec:1]Darkmoon Rabbit;[spec:2]Sunborne Val'kyr;[spec:3]Tuskarr Kite")
+			EditMacro("WSxSwapper",nil,nil,"#showtooltip\n/use Darkspear Pride\n/run local a={\"Darkmoon Rabbit\",\"Sunborne Val'kyr\",\"Tuskarr Kite\",\"Crow\"}b=math.random(1,#a)_,c=C_PetJournal.FindPetIDByName(a[b])do C_PetJournal.SummonPetByGUID(c)end")
 		end
 		
 		if class == "DRUID" then
@@ -2138,7 +2138,7 @@ SetCVar("nameplateShowFriends", 0)
 		if class == "WARLOCK" then
 			if race == "BloodElf" then	
 				if playerspec == 1 then
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal,Midnight") 
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal,Midnight,Grove Defiler") 
 				elseif playerspec == 2 then
 					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Chaotic Wrathsteed,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal")  
 				else
@@ -2158,7 +2158,7 @@ SetCVar("nameplateShowFriends", 0)
 		end
 			
 		if class == "MONK" then
-			EditMacro("WSxSGen+V",nil,nil,"#showtooltip\n/use [flyable] Ban-Lu, Grandmaster's Companion\n/castrandom [nospec:2]Wild Dreamrunner,Heavenly Azure Cloud Serpent,Astral Cloud Serpent,Swift Zulian Tiger,Clutch of Ji-Kun,Riding Turtle,Black Riding Goat\n/use [spec:2]Yu'lei, Daughter of Jade")
+			EditMacro("WSxSGen+V",nil,nil,"/use [flyable,spec:2]Yu'lei, Daughter of Jade; [flyable]Ban-Lu, Grandmaster's Companion;\n/userandom [flyable]Heavenly Azure Cloud Serpent,Astral Cloud Serpent,Clutch of Ji-Kun; Wild Dreamrunner,Swift Zulian Tiger,Riding Turtle,Black Riding Goat")
 		end
 		
 		-- Paladin mounts, shift+v
@@ -2222,11 +2222,11 @@ SetCVar("nameplateShowFriends", 0)
 		end
 		-- Druid Mounts, shift+v
 		if class == "DRUID" then
-			EditMacro("WSxSGen+V",nil,nil,"/cancelform [form:1/2/3]\n/use [flyable] Grove Warden\n/castrandom Astral Cloud Serpent,Vicious War Raptor,Darkmoon Dancing Bear,Spirit of Eche'ro,Wild Dreamrunner,Cloudwing Hippogryph,Lucid Nightmare")
+			EditMacro("WSxSGen+V",nil,nil,"/cancelform [form:1/2/3]\n/userandom [flyable]Grove Warden,Astral Cloud Serpent,Cloudwing Hippogryph; Vicious War Raptor,Darkmoon Dancing Bear,Spirit of Eche'ro,Wild Dreamrunner,Lucid Nightmare,Grove Defiler,Highmountain Elderhorn,Llothien Prowler")
 		end
 		-- Demon Hunter Mounts, shift+v
 		if class == "DEMONHUNTER" then
-			EditMacro("WSxSGen+V",nil,nil,"#showtooltip\n/castrandom [flyable] Arcanist's Manasaber, Slayer's Felbroken Shrieker, Felfire Hawk, Corrupted Dreadwing, Azure Drake, Cloudwing Hippogryph; Felsaber, Wild Dreamrunner, Lucid Nightmare, Illidari Felstalker")
+			EditMacro("WSxSGen+V",nil,nil,"#showtooltip\n/castrandom [flyable]Arcanist's Manasaber,Slayer's Felbroken Shrieker,Felfire Hawk,Corrupted Dreadwing,Azure Drake,Cloudwing Hippogryph; Felsaber,Wild Dreamrunner,Lucid Nightmare,Grove Defiler,Illidari Felstalker")
 		end
 
 	
