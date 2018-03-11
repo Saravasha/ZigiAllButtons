@@ -2138,21 +2138,21 @@ SetCVar("nameplateShowFriends", 0)
 		if class == "WARLOCK" then
 			if race == "BloodElf" then	
 				if playerspec == 1 then
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal,Midnight,Grove Defiler") 
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable] Headless Horseman's Mount,Netherlord's Accursed Wrathsteed,Antoran Gloomhound; Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal,Midnight,Grove Defiler") 
 				elseif playerspec == 2 then
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Chaotic Wrathsteed,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal")  
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable] Headless Horseman's Mount,Netherlord's Chaotic Wrathsteed,Netherlord's Accursed Wrathsteed,Antoran Gloomhound; Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal,Grove Defiler,Midnight")  
 				else
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Brimstone Wrathsteed,Antoran Gloomhound,Netherlord's Chaotic Wrathsteed\n/castrandom [noflyable]Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal") 
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable] Headless Horseman's Mount,Netherlord's Brimstone Wrathsteed,Antoran Gloomhound,Netherlord's Chaotic Wrathsteed; Vicious Skeletal Warhorse,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal,Grove Defiler,Midnight") 
 				end	
 			
 
 			elseif race == "Troll" then	
 				if playerspec == 1 then
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Accursed Wrathsteed\n/castrandom [noflyable]Swift Zulian Tiger,Wild Dreamrunner,Lucid Nightmare,Amani Battle Bear,Vicious War Raptor,Fossilized Raptor,Amani Battle Bear,Bloodfang Widow") 
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Headless Horseman's Mount,Netherlord's Accursed Wrathsteed; Swift Zulian Tiger,Wild Dreamrunner,Lucid Nightmare,Vicious War Raptor,Fossilized Raptor,Amani Battle Bear,Bloodfang Widow,Grove Defiler,Midnight,Vicious Skeletal Warhorse") 
 				elseif playerspec == 2 then
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Netherlord's Chaotic Wrathsteed,Netherlord's Accursed Wrathsteed,Antoran Gloomhound\n/castrandom [noflyable]Swift Zulian Tiger,Wild Dreamrunner,Lucid Nightmare,Fossilized Raptor,Vicious War Raptor,Bloodfang Widow") 
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Netherlord's Chaotic Wrathsteed,Netherlord's Accursed Wrathsteed,Antoran Gloomhound; Swift Zulian Tiger,Wild Dreamrunner,Lucid Nightmare,Fossilized Raptor,Vicious War Raptor,Bloodfang Widow,Grove Defiler,Vicious Skeletal Warhorse") 
 				else
-					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Netherlord's Brimstone Wrathsteed,Netherlord's Chaotic Wrathsteed\n/castrandom [noflyable]Swift Zulian Tiger,Wild Dreamrunner,Lucid Nightmare,Fossilized Raptor,Vicious War Raptor,Amani Battle Bear,Bloodfang Widow") 
+					EditMacro("WSxSGen+V",nil,nil,"/castrandom [flyable]Netherlord's Brimstone Wrathsteed,Netherlord's Chaotic Wrathsteed; Swift Zulian Tiger,Wild Dreamrunner,Lucid Nightmare,Fossilized Raptor,Vicious War Raptor,Amani Battle Bear,Bloodfang Widow,Grove Defiler,Vicious Skeletal Warhorse") 
 				end
 			end
 		end
