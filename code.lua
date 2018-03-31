@@ -1407,12 +1407,12 @@ SetCVar("nameplateShowFriends", 0)
 			elseif playerspec == 2 then
 				EditMacro("WSxSGen+4",nil,nil,"#showtooltip\n/targetenemy [noexists]\n/use [spec:2,talent:7/2,nomod]Cinderstorm;[spec:2,talent:7/3,@cursor,nomod]Meteor;\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Fireball\n/targetlasttarget")
 			else
-				EditMacro("WSxSGen+3",nil,nil,"#showtooltip\n/targetenemy [noexists]\n/use [spec:3,talent:7/2]Glacial Spike;[spec:3,talent:7/3]Comet Storm;Frostbolt;")
+				EditMacro("WSxSGen+4",nil,nil,"#showtooltip\n/targetenemy [noexists]\n/use [spec:3,talent:7/2]Glacial Spike;[spec:3,talent:7/3]Comet Storm;Frostbolt;")
 			end
 		end
 
 		if class == "WARLOCK" then 
-			EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use [spec:1]Unstable Affliction;[spec:2,talent:7/1]Summon Darkglare;[spec:2]Doom\n/stopmacro [spec:2,nomod:alt]\n/targetlasttarget\n/use [spec:1]Unstable Affliction;[spec:3]Havoc\n/targetlasttarget")
+			EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use [spec:1,nomod]Unstable Affliction;[spec:2,talent:7/1]Summon Darkglare;[spec:2]Doom\n/stopmacro [spec:2,nomod:alt]\n/targetlasttarget\n/use [spec:1]Unstable Affliction;[spec:3]Havoc\n/targetlasttarget")
 		elseif class == "MONK" then 
 			EditMacro("WSxSGen+4",nil,nil,"#showtooltip\n/use [spec:2,talent:1/2]Zen Pulse;[talent:1/3]Chi Wave;[talent:1/1]Chi Burst;\n/stopspelltarget\n/targetenemy [noexists]")
 		elseif class == "PALADIN" then
