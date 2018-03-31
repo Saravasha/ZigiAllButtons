@@ -1035,7 +1035,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "MAGE" then
 			EditMacro("WSxGen1",nil,nil,"#showtooltip\n/targetenemy [spec:2]\n/targetenemy [noharm]\n/use [nocombat,noexists]Dazzling Rod;[spec:3,talent:1/1]Ray of Frost;[spec:2]Scorch;[spec:1,talent:1/2]Presence of Mind;[spec:1,talent:1/1]Arcane Familiar;Ice Lance;")
 		elseif class == "WARLOCK" then
-			EditMacro("WSxGen1",nil,nil,"#showtooltip\n/focus [@boss2,exists,nodead] boss2\n/use [noexists,nocombat]Copy of Daglop's Contract;[spec:2]Demonic Empowerment;[spec:3,@focus,exists,nodead]Havoc;[spec:1,talent:1/1]Haunt;[@mouseover,harm,nodead,spec:1][spec:1]Corruption;Drain Life;")
+			EditMacro("WSxGen1",nil,nil,"#showtooltip\n/use [noexists,nocombat]Copy of Daglop's Contract;[spec:2]Demonic Empowerment;[spec:3,@focus,exists,nodead]Havoc;[spec:1,talent:1/1]Haunt;[@mouseover,harm,nodead,spec:1][spec:1]Corruption;Drain Life;")
 		elseif class == "MONK" then
 			EditMacro("WSxGen1",nil,nil,"#showtooltip\n/use [spec:3,talent:7/2]Whirling Dragon Punch;[spec:3,talent:7/3]Serenity;[spec:2]Essence Font;[spec:1]Expel Harm;Crackling Jade Lightning\n/targetenemy [noexists\n/use [nocombat,noexists]Ruthers' Harness")
 		elseif class == "PALADIN" then
@@ -1411,7 +1411,7 @@ SetCVar("nameplateShowFriends", 0)
 			end
 		end
 
-		if class == "WARLOCK" then -- shift+1, alt+shift+1, ctrl+shift+1 siphon life, shifr+4
+		if class == "WARLOCK" then 
 			EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use [spec:1]Unstable Affliction;[spec:2,talent:7/1]Summon Darkglare;[spec:2]Doom\n/stopmacro [spec:2,nomod:alt]\n/targetlasttarget\n/use [spec:1]Unstable Affliction;[spec:3]Havoc\n/targetlasttarget")
 		elseif class == "MONK" then 
 			EditMacro("WSxSGen+4",nil,nil,"#showtooltip\n/use [spec:2,talent:1/2]Zen Pulse;[talent:1/3]Chi Wave;[talent:1/1]Chi Burst;\n/stopspelltarget\n/targetenemy [noexists]")
