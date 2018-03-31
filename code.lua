@@ -1351,7 +1351,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "MAGE" then
 			EditMacro("WSxGen4",nil,nil,"#showtooltip\n/use [nocombat,noexists]Memory Cube;[spec:3]Flurry;[spec:1]Arcane Missiles;[spec:2]Fireball;\n/targetenemy [noexists]\n/cleartarget [dead]")
 		elseif class == "WARLOCK" then
-			EditMacro("WSxGen4",nil,nil,"#showtooltip\n/use [nocombat,noexists]Crystalline Eye of Undravius;[spec:2]Hand of Gul'Dan;[spec:3]Chaos Bolt;[spec:1]Unstable Affliction;\n/targetenemy [noexists]\n/cleartarget [dead]")
+			EditMacro("WSxGen4",nil,nil,"#showtooltip\n/use [nocombat,noexists]Crystalline Eye of Undravius;[spec:2]Hand of Gul'Dan;[spec:3]Chaos Bolt;[spec:1,talent:7/2]Siphon Life;[spec:1]Unstable Affliction;\n/targetenemy [noexists]\n/cleartarget [dead]")
 		elseif class == "MONK" then
 			EditMacro("WSxGen4",nil,nil,"#showtooltip\n/use [nocombat,noexists]Totem of Harmony;[spec:1]Keg Smash;Rising Sun Kick;\n/use Piccolo of the Flaming Fire\n/startattack\n/cleartarget [dead]\n/targetenemy [noexists]")
 		elseif class == "PALADIN" then
@@ -1411,8 +1411,8 @@ SetCVar("nameplateShowFriends", 0)
 			end
 		end
 
-		if class == "WARLOCK" then
-			EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use [spec:1,talent:7/2,nomod]Siphon Life;[spec:1,nomod]Corruption;[spec:2,talent:7/1]Summon Darkglare;[spec:2]Doom\n/stopmacro [spec:2,nomod:alt]\n/targetlasttarget\n/use [spec:1,talent:7/2]Siphon Life;[spec:3]Havoc\n/targetlasttarget")
+		if class == "WARLOCK" then -- shift+1, alt+shift+1, ctrl+shift+1 siphon life, shifr+4
+			EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use [spec:1]Unstable Affliction;[spec:2,talent:7/1]Summon Darkglare;[spec:2]Doom\n/stopmacro [spec:2,nomod:alt]\n/targetlasttarget\n/use [spec:1]Unstable Affliction;[spec:3]Havoc\n/targetlasttarget")
 		elseif class == "MONK" then 
 			EditMacro("WSxSGen+4",nil,nil,"#showtooltip\n/use [spec:2,talent:1/2]Zen Pulse;[talent:1/3]Chi Wave;[talent:1/1]Chi Burst;\n/stopspelltarget\n/targetenemy [noexists]")
 		elseif class == "PALADIN" then
@@ -1478,7 +1478,7 @@ SetCVar("nameplateShowFriends", 0)
 		elseif class == "MAGE" then
 			EditMacro("WSxCSGen+4",nil,nil,"#showtooltip\n/use [spec:2,@focus,harm,nodead]Fireball;Pink Gumball;\n/targetenemy [noharm]\n/cleartarget [dead][nocombat,noharm]\n/stopspelltarget")
 		elseif class == "WARLOCK" then
-			EditMacro("WSxCSGen+4",nil,nil,"/use [spec:1,@focus,harm,nodead]Siphon Life\n/targetenemy [noharm]\n/cleartarget [dead]")
+			EditMacro("WSxCSGen+4",nil,nil,"/use [spec:1,@focus,harm,nodead]Unstable Affliction\n/targetenemy [noharm]\n/cleartarget [dead]")
 		elseif class == "MONK" then
 			EditMacro("WSxCSGen+4",nil,nil,"")
 		elseif class == "PALADIN" then
