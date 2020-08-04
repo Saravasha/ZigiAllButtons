@@ -1748,8 +1748,8 @@ local function eventHandler(self, event)
 					EditMacro("WSxRTS",nil,nil,"#showtooltip [spec:2]Sigil of Misery;Throw Glaive;\n/use [mod:ctrl,spec:2,talent:5/3,@player][mod:shift,spec:2,talent:5/3,@cursor]Sigil of Chains;[mod:alt,@focus,harm,nodead][nomod,@mouseover,harm,nodead][nomod]Throw Glaive;[mod:alt]MOLL-E;\n/startattack")
 					EditMacro("WSxClassT",nil,nil,"#showtooltip [spec:2,talent:5/3]Sigil of Chains;Torment\n/use [help,nocombat]Swapblaster;[spec:2,talent:5/3]Sigil of Chains;Throw Glaive\n/use [nocombat]A Tiny Set of Warglaives\n/startattack")
 					EditMacro("WSxGenF",nil,nil,"#showtooltip Spectral Sight\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt,exists,nodead]All-Seer's Eye;[mod:alt]Legion Communication Orb;[@focus,harm,nodead]Disrupt;[nocombat,noexists]Micro-Artillery Controller")
-					EditMacro("WSxSGen+F",nil,nil,"#showtooltip Spectral Sight\n/cancelaura [mod:alt]Spectral Sight\n/use [nocombat,noexists]Gastropod Shell")
-					EditMacro("WSxCGen+F",nil,nil,"#showtooltip [spec:1,talent:4/3]Netherwalk;Blur\n/cancelaura Wyrmtongue Disguise")
+					EditMacro("WSxSGen+F",nil,nil,"#showtooltip Spectral Sight\n/use [nocombat,noexists]Gastropod Shell")
+					EditMacro("WSxCGen+F",nil,nil,"#showtooltip [spec:1,talent:4/3]Netherwalk;Blur\n/cancelaura Wyrmtongue Disguise\n/cancelaura Spectral Sight")
 					EditMacro("WSxCAGen+F",nil,nil,"#showtooltip [spec:2,talent:5/3]Sigil of Chains;Fel Rush\n/use [spec:2,talent:5/3,@player]Sigil of Chains")
 					EditMacro("WSxGG",nil,nil,"#showtooltip\n/use [mod:alt]S.F.E. Interceptor;[@mouseover,harm,nodead][]Consume Magic")
 					EditMacro("WSxDef",nil,nil,"#showtooltip\n/use [spec:2]Fiery Brand;[spec:1]Blur")
@@ -2089,6 +2089,18 @@ local function eventHandler(self, event)
 	            throttlef = false
 	        end)
 
+	        -- First Aid Bandages Parser
+	        local hasBandages = {
+		        "Tidespray Linen Bandage",
+		        "Deep Sea Bandage",
+	 	   	}
+	 	   	local hasBandagesInBags = ""
+	 	   	for i, hasBandages in pairs(hasBandages) do 
+		 	   	if GetItemCount(hasBandages) >= 1 then
+		 	   		hasBandagesInBags = hasBandages
+		 	   	end
+		 	end
+
 	        -- Magefood parser
 			local hasWaters = {
 				"Refreshing Spring Water",
@@ -2149,9 +2161,9 @@ local function eventHandler(self, event)
 
 			if HS[class] and hsToy[class] and hasWaterInBags then
 				if GetItemCount("Healthstone", false, true) >= 1 then
-					EditMacro("WShow",nil,nil,"/use [mod:alt]"..hasWaterInBags.."[mod:ctrl]"..HS[class]..";[mod]Deep Sea Bandage;Healthstone\n/stopmacro [mod]\n/use Winning Hand"..hsToy[class].."\n/run PlaySound(15160)\n/glare", 1, 1)
+					EditMacro("WShow",nil,nil,"/use [mod:alt]"..hasWaterInBags.."[mod:ctrl]"..HS[class]..";[mod]"..hasBandagesInBags..";Healthstone\n/stopmacro [mod]\n/use Winning Hand"..hsToy[class].."\n/run PlaySound(15160)\n/glare", 1, 1)
 				else
-					EditMacro("WShow",nil,nil,"/use [mod:alt]"..hasWaterInBags.."[mod:ctrl]"..HS[class]..";[mod]Deep Sea Bandage\n/stopmacro [mod]"..hsToy[class].."\n/use Healthstone\n/run PlaySound(15160)\n/cry", 1, 1)
+					EditMacro("WShow",nil,nil,"/use [mod:alt]"..hasWaterInBags.."[mod:ctrl]"..HS[class]..";[mod]"..hasBandagesInBags.."\n/stopmacro [mod]"..hsToy[class].."\n/use Healthstone\n/run PlaySound(15160)\n/cry", 1, 1)
 				end
 			end
 
