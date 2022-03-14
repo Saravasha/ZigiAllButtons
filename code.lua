@@ -2235,48 +2235,34 @@ local function eventHandler(self, event)
 					EditMacro("WSxCAGen+N",nil,nil,"")
 					EditMacro("WSxSGen+H",nil,nil,"#show [spec:1,talent:4/3]Defensive Stance;Whirlwind\n/use [nomounted]Darkmoon Gazer\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\"); else DoEmote(\"kneel\") end end")
 					
-					local dgOH = C_EquipmentSet.GetEquipmentSetID("DoubleGate") and C_EquipmentSet.GetItemLocations(C_EquipmentSet.GetEquipmentSetID("DoubleGate"))
-					local mOH = C_EquipmentSet.GetEquipmentSetID("Menkify!") and C_EquipmentSet.GetItemLocations(C_EquipmentSet.GetEquipmentSetID("Menkify!"))
-					dgOH = dgOH[17] or 1
-					mOH = mOH[17] or 1
-					
-					-- -1 : The item for this slot is unavailable
-					-- 0 : The slot should be emptied
-					-- 1 : This slot is ignored by the equipment set, no change will be made
+					local EquipmentSets = {"DoubleGate", "Menkify!"}
+					local names = {}
+					for i, SetName in ipairs(EquipmentSets) do
+						local SetID = C_EquipmentSet and C_EquipmentSet.GetEquipmentSetID(SetName)
+						if not SetID then return end
 
-					if dgOH then 
-						-- Om mh är <= 1 så finns det ingen location att hämta
-					    -- https://wowpedia.fandom.com/wiki/API_EquipmentManager_UnpackLocation
-					    local player, bank, _, void, slot, bag = EquipmentManager_UnpackLocation(dgOH)
-					    if player and bag then 
-					        local itemID = select(10, GetContainerItemInfo(bag, slot))
-					        if itemID then
+						local ItemLocations = C_EquipmentSet.GetItemLocations(SetID)
+						local OffHand = ItemLocations[17] or 1
+
+						if OffHand > 1 then 
+							-- Om mh är <= 1 så finns det ingen location att hämta
+						    -- https://wowpedia.fandom.com/wiki/API_EquipmentManager_UnpackLocation
+						    local player, bank, _, void, slot, bag = EquipmentManager_UnpackLocation(OffHand)
+						    if player and bag then 
+						        local itemID = select(10, GetContainerItemInfo(bag, slot))
+						        if itemID then
+							        local name = GetItemInfo(itemID) 
+							    	names[EquipmentSets[i]] = name
+						       	end
+						    elseif player then 
+						        local itemID = GetInventoryItemID("player", slot)
 						        local name = GetItemInfo(itemID) 
-						    	dgOH = name
-					       	end
-					    elseif player then 
-					        local itemID = GetInventoryItemID("player", slot)
-					        local name = GetItemInfo(itemID) 
-					    	dgOH = name
-					    end
+						    	names[EquipmentSets[i]] = name
+						    end
+						end
 					end
 
-					if mOH then 
-						local player, bank, _, void, slot, bag = EquipmentManager_UnpackLocation(mOH)
-					    if player and bag then 
-					        local itemID = select(10, GetContainerItemInfo(bag, slot))
-					        if itemID then
-						        local name = GetItemInfo(itemID) 
-						    	mOH = name
-						    end	
-					    elseif player then 
-					        local itemID = GetInventoryItemID("player", slot)
-					        local name = GetItemInfo(itemID) 
-					    	mOH = name
-					    end
-					end
-
-					EditMacro("WSxGen1",nil,nil,"#show\n/use [nocombat,help]Corbyn's Beacon;[spec:1]Colossus Smash;[spec:2]Rampage;[spec:3]Shield Block\n/targetenemy [noexists]\n/startattack\n/use Chalice of Secrets\n/equipslot [equipped:Shields,spec:2] 17 "..dgOH)
+					EditMacro("WSxGen1",nil,nil,"#show\n/use [nocombat,help]Corbyn's Beacon;[spec:1]Colossus Smash;[spec:2]Rampage;[spec:3]Shield Block\n/targetenemy [noexists]\n/startattack\n/use Chalice of Secrets" .. (names["DoubleGate"] and ("\n/equipslot [equipped:Shields,spec:2] 17 " .. names["DoubleGate"]) or ""))
 					EditMacro("WSxSGen+1",nil,nil,"/use Ignore Pain\n/use Chalice of Secrets\n/targetexact Aerylia")
 					EditMacro("WSxGen2",nil,nil,"/use [nocombat,noexists]Vrykul Drinking Horn;[spec:1]Mortal Strike;[spec:2]Bloodthirst;[spec:3]Devastate\n/targetenemy [noexists]\n/cleartarget [noharm]\n/startattack\n/cancelaura Vrykul Drinking Horn\n/equipset [equipped:Shields,spec:1]Noon!")
 					EditMacro("WSxCSGen+2",nil,nil,"")
@@ -2292,7 +2278,7 @@ local function eventHandler(self, event)
 					EditMacro("WSxCSGen+5",nil,nil,"//use [@party2,help,nodead][@targettarget,help,nodead]Intervene")
 					EditMacro("WSxGen6",nil,nil,"#show [spec:3]Thunder clap;Whirlwind;\n/use [spec:2,talent:6/3,mod:ctrl][spec:1,mod:ctrl]Bladestorm;[spec:3,talent:6/3,mod:ctrl]Avatar;[nospec:3]Whirlwind;[spec:3]Thunder Clap\n/startattack\n/use Words of Akunda")
 					EditMacro("WSxSGen+6",nil,nil,"#show Shield Block\n/use [spec:3,talent:6/3,@player][spec:1,talent:7/3,@player]Ravager;[spec:2]Rampage;[spec:3]Shield Block;Sweeping Strikes\n/targetenemy [noexists,nospec:2]\n/targetenemy [spec:2]\n/startattack")
-					EditMacro("WSxGen7",nil,nil,"/use [mod]Shield Block;[equipped:Shields,nospec:3]Shield Slam;[spec:2,talent:6/2]Dragon Roar;[spec:2,talent:6/3]Bladestorm;[spec:1]Sweeping Strikes;Whirlwind\n/startattack\n/equipslot [noequipped:Shields,mod] 17 "..mOH) 
+					EditMacro("WSxGen7",nil,nil,"/use [mod]Shield Block;[equipped:Shields,nospec:3]Shield Slam;[spec:2,talent:6/2]Dragon Roar;[spec:2,talent:6/3]Bladestorm;[spec:1]Sweeping Strikes;Whirlwind\n/startattack" .. (names["Menkify!"] and ("\n/equipslot [noequipped:Shields,mod] 17 " .. names["Menkify!"]) or "")) 
 					EditMacro("WSxQQ",nil,nil,"#show Pummel\n/use [mod:alt,@focus,exists,nodead]Storm Bolt;[mod:shift]Berserker Rage;[@mouseover,harm,nodead,nomod]Charge\n/use [@mouseover,harm,nodead,nomod][nomod]Pummel\n/use Mote of Light\n/use World Shrinker")
 					EditMacro("WSxStuns",nil,nil,"#show\n/use [@mouseover,harm,nodead][]Charge\n/use [noexists,nocombat]Arena Master's War Horn\n/startattack\n/cleartarget [dead][help]\n/targetenemy [noharm]\n/use Prismatic Bauble")
 					EditMacro("WSxRTS",nil,nil,"#show Heroic Throw\n/use [nomod,@mouseover,help,nodead][nomod,help,nodead]Intervene;[mod:alt,@focus,harm,nodead][nomod,@mouseover,harm,nodead][nomod]Hamstring;[mod:alt]MOLL-E;[nospec:3,mod]Piercing Howl;[mod]Intimidating Shout\n/startattack")
