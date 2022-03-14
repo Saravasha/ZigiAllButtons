@@ -274,7 +274,7 @@ local function eventHandler(self, event)
 			["Molten Front"] = true,
 			-- Pandaria
 			["Isle of Thunder"] = true,
-			["Mogu Island Daily Area"] = true,
+			["Mogu Island Daily Area"] = true, -- Isle of Thunder
 			["Isle of Giants"] = true,
 			["Timeless Isle"] = true,
 			-- Draenor
@@ -292,14 +292,32 @@ local function eventHandler(self, event)
 			["Malorne's Nightmare"] = true, -- Druid Emerald Dream Scenario
 			["Artifact - The Vortex Pinnacle - Shaman Order Hall"] = true, -- Shaman Skywall Scenario
 			["Firelands_Artifact"] = true, -- Shaman Firelands Scenario
+			["Death Knight Campaign - Scarlet Monastery"] = true, -- Death Knight Scarlet Monastery Scenario
 			-- Argus
 			["Krokuun"] = true,
 			["Antoran Wastes"] = true,
-			["Mac'Aree"] = true,
+			["Mac'Aree"] = true, -- Removed in 9.1.5 but still used in API in some places
+			["Eredath"] = true,
 			["Invasion Points"] = true,
 			-- Battle for Azeroth
 			["8.1 Darkshore Alliance Quests"] = true, -- Darkshore Unlock Scenario
 			["8.1 Darkshore Horde Quests"] = true, -- Darkshore Unlock Scenario
+			["Mechagon City"] = true,
+			["The Great Sea Horde"] = true, -- Horde War Campaign Scenario
+			["Crapapolis"] = true, -- Goblin Heritage
+			["Crapapolis - Scenario"] = true,
+			["Vale of Eternal Twilight"] = true, -- Vision of N'Zoth
+			["Vision of the Twisting Sands"] = true, -- Vision of N'Zoth
+			-- Shadowlands
+			["Shadowlands"] = true,
+			["Oribos"] = true,
+			["Maldraxxus Broker Islands"] = true, -- Shattered Grove
+			["The Maw"] = true,
+			["Korthia"] = true,
+			["Caverns of Contemplation"] = true, -- Korthia
+			["Torghast"] = true,
+			["Font of Fealty"] = true, -- Chains of Domination Campaign Scenario
+			["Tazavesh, the Veiled Market"] = true,
 		}
 		-- Garrisons Map IDs
 		local garrisonId = { [1152] = true, [1330] = true, [1153] = true, [1158] = true, [1331] = true, [1159] = true, }
