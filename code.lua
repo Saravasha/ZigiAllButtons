@@ -2269,13 +2269,11 @@ local function eventHandler(self, event)
 						    if player and bag then 
 						        local itemID = select(10, GetContainerItemInfo(bag, slot))
 						        if itemID then
-							        local name = GetItemInfo(itemID) 
-							    	names[EquipmentSets[i]] = name
+							        names[EquipmentSets[i]] = GetItemInfo(itemID)
 						       	end
 						    elseif player then 
 						        local itemID = GetInventoryItemID("player", slot)
-						        local name = GetItemInfo(itemID) 
-						    	names[EquipmentSets[i]] = name
+						        names[EquipmentSets[i]] = GetItemInfo(itemID)
 						    end
 						end
 					end
