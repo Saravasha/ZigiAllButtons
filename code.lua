@@ -28,6 +28,7 @@ local function eventHandler(self, event)
 		-- Configure Battlefield Map
 		if BattlefieldMapFrame then 
 			BattlefieldMapFrame:SetScale(1.4)
+			-- BattlefieldMapFrame:SetAlpha(1)
 			BattlefieldMapFrame:SetPoint("TOPLEFT")
 		end
 		
@@ -658,7 +659,7 @@ local function eventHandler(self, event)
 				pets = "\"Pocket Cannon\",\"Gilnean Raven\",\"Sneaky Marmot\",\"Giant Sewer Rat\",\"Creepy Crate\",\"Crackers\",\""..covPets.."\""
 				classText = "#show Vanish"
 			elseif class == "PRIEST" then
-				pets = "\"Nightmare Bell\",\"Argi\",\"K'ute\",\"Dread Hatchling\",\"Argent Gruntling\",\"Shadow\",\"Uuna\",\""..covPets.."\""
+				pets = "\"Argi\",\"K'ute\",\"Dread Hatchling\",\"Argent Gruntling\",\"Shadow\",\"Uuna\",\""..covPets.."\""
 				classText = "#show Mass Dispel"
 				if playerspec == 2 then
 					pets = "\"Argi\",\"K'ute\",\"Argent Gruntling\",\"Argi\",\"Sunborne Val'kyr\",\"Uuna\",\""..covPets.."\""
@@ -1980,14 +1981,14 @@ local function eventHandler(self, event)
 					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:alt]Jeeves;[mod:ctrl]"..glider..";[mod]6;[nocombat]Redemption;"..pwned.."\n/use [mod:ctrl]Absolution"..brazier)
 					EditMacro("WSxCAGen+F",nil,nil,"#show [spec:1,combat][spec:1,exists]Aura Mastery;[combat]Turn Evil;Contemplation\n/use Contemplation")
 					EditMacro("WSxT45",nil,nil,"#show\n/use [mod,spec:1,talent:1/3,@player]Light's Hammer;[talent:3/3]Blinding Light;[talent:3/2]Repentance;Hammer of Justice")
-					EditMacro("WSxGen1",nil,nil,"/use [@mouseover,exists,nodead,spec:1][harm,nodead,spec:1]Holy Shock;[nocombat,noexists]!Devotion Aura;[spec:3]Blade of Justice;[@mouseover,harm,nodead][]Judgment\n/use Pretty Draenor Pearl\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxGen1",nil,nil,"/use [@mouseover,exists,nodead,spec:1][exists,nodead,spec:1]Holy Shock;[nocombat,noexists]!Devotion Aura;[spec:3]Blade of Justice;[@mouseover,harm,nodead][]Judgment\n/use Pretty Draenor Pearl\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxSGen+1",nil,nil,"#show Blessing of Protection\n/use [mod:alt,@party3,help,nodead][mod:ctrl,@party2,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Flash of Light\n/use Vindicator's Armor Polish Kit")
 					EditMacro("WSxGen2",nil,nil,"#show\n/use Crusader Strike\n/startattack\n/targetenemy [noexists]\n/cleartarget [dead]\n/cancelaura X-Ray Specs")
 					EditMacro("WSxSGen+2",nil,nil,"#show\n/use [@party4,help,nodead,mod:alt][@mouseover,help,nodead][]Flash of Light\n/use Gnomish X-Ray Specs")
 					EditMacro("WSxCSGen+2",nil,nil,"/use [spec:1,@focus,help,nodead][spec:1,@party1,help,nodead]Cleanse;[@focus,help,nodead][@party1,help,nodead]Cleanse Toxins")
 					EditMacro("WSxGen3",nil,nil,"/use [spec:1,@mouseover,help,nodead][spec:1,help,nodead]Light of the Martyr;[@mouseover,harm,nodead][harm,nodead]Hammer of Wrath;Contemplation\n/targetenemy [noexists]\n/stopspelltarget")
 					EditMacro("WSxSGen+3",nil,nil,"/use [spec:1,talent:4/3]Rule of Law;[spec:3,talent:1/3]Execution Sentence;Consecration\n/targetenemy [noexists]\n/use Soul Evacuation Crystal")
-					EditMacro("WSxCSGen+3",nil,nil,"/use [spec:1,@focus,help,nodead][spec:1,@party2,help,nodead]Cleanse;[@focus,help,nodead][@party2,help,nodead]Cleanse Toxins")
+					EditMacro("WSxCSGen+3",nil,nil,"/use [spec:1,@focus,help,nodead][spec:1,@party2,help,nodead]Cleanse;[@focus,help,nodead][@party2,help,nodead]Cleanse Toxins;[nocombat,noharm]Forgotten Feather")
 					EditMacro("WSxGen4",nil,nil,"/use [spec:2,help,nodead,nocombat]Dalaran Disc;[help,nodead,nocombat]Holy Lightsphere;[spec:2,@mouseover,harm,nodead][spec:2]Avenger's Shield;[@mouseover,harm,nodead][]Judgment\n/targetenemy [noexists]\n/startattack\n/cleartarget [dead]")
 					EditMacro("WSxCGen+4",nil,nil,"/use [@party3,help,nodead,mod:alt]Holy Shock;[spec:1,@mouseover,help,nodead,talent:7/2][spec:1,talent:7/2]Beacon of Faith;[spec:3,talent:7/3,@cursor]Final Reckoning;!Devotion Aura\n/startattack [combat]")
 					EditMacro("WSxCSGen+4",nil,nil,"/use [@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Word of Glory")
@@ -2174,7 +2175,7 @@ local function eventHandler(self, event)
 					EditMacro("WSxCSGen+2",nil,nil,"/use [@focus,help,nodead,nospec:3][@party1,help,nodead,nospec:3]Purify;[@focus,help,nodead][@party1,help,nodead]Purify Disease\n/use [nocombat]Thaumaturgist's Orb\n/use [@party1,mod]Apexis Focusing Shard")
 					EditMacro("WSxGen3",nil,nil,"/targetenemy [noexists]\n/cleartarget [dead]\n/use [@mouseover,harm,nodead][harm,nodead]Shadow Word: Death\n/use Scarlet Confessional Book\n/petattack\n/use Ivory Feather\n/use [nocombat,noexists,spec:3]Twitching Eyeball")
 					EditMacro("WSxSGen+3",nil,nil,"/targetenemy [noexists]\n/stopspelltarget\n/cleartarget [dead]\n/use [@mouseover,harm,nodead,nomod][nomod]Shadow Word: Pain\n/use Totem of Spirits\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Shadow Word: Pain\n/targetlasttarget")
-					EditMacro("WSxCSGen+3",nil,nil,"/use [nospec:2,@focus,harm,nodead]Shadow Word: Pain;[@party2,help,nodead,nospec:3]Purify;[@party2,help,nodead]Purify Disease;[nocombat,noharm]Spirit Wand\n/stopspelltarget\n/use [@party2,mod]Apexis Focusing Shard")
+					EditMacro("WSxCSGen+3",nil,nil,"/use [nospec:2,@focus,harm,nodead]Shadow Word: Pain;[@party2,help,nodead,nospec:3]Purify;[@party2,help,nodead]Purify Disease;[nocombat,noharm]Forgotten Feather\n/stopspelltarget\n/use [@party2,mod]Apexis Focusing Shard")
 					EditMacro("WSxGen4",nil,nil,"#showtooltip\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat,noexists,nochanneling]Pretty Draenor Pearl\n/use [spec:3]Mind Blast;[spec:2,@mouseover,help,nodead][spec:2]Holy Word: Serenity;[@mouseover,help,nodead][]Penance")
 					EditMacro("WSxCSGen+4",nil,nil,"/use [spec:3,@focus,harm,nodead]Vampiric Touch;[@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Power Word: Shield;[nocombat]Romantic Picnic Basket\n/use [@party1]Apexis Focusing Shard")
 					EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,spec:3,harm,nodead]Devouring Plague;[@focus,help,nodead][@party2,help,nodead]Power Word: Shield\n/use Battle Standard of Coordination\n/use [@party2]Apexis Focusing Shard")
@@ -2237,7 +2238,7 @@ local function eventHandler(self, event)
 						EditMacro("WSxSGen+5",nil,nil,"/use [@mouseover,harm,nodead,nomod][harm,nodead,nomod]Devouring Plague;Soul Evacuation Crystal\n/targetenemy [noharm]\n/cleartarget [dead]\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Devouring Plague\n/targetlasttarget")
 						EditMacro("WSxClassT",nil,nil,"/use [@mouseover,harm,nodead,talent:4/3][talent:4/3]Psychic Horror"..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]\n/stopspelltarget")
 						EditMacro("WSxT90",nil,nil,"#show [talent:6/3]Void Torrent;[talent:6/1]Damnation;Mind Vision\n/use [mod,@focus,harm,nodead,talent:4/3][@mouseover,harm,nodead,talent:4/3][talent:4/3,harm,nodead]Psychic Horror\n/use [mod,@focus,help,nodead][@mouseover,help,nodead][]Leap of Faith")
-						EditMacro("WSxGen7",nil,nil,"/use [@player,spec:3,talent:5/3,mod]Shadow Crash;[@mouseover,exists,nodead][nochanneling:Mind Sear,talent:3/3][exists,nodead]Mind Sear;[talent:3/3]Searing Nightmare\n/targetenemy [noexists]\n/cleartarget [dead]")
+						EditMacro("WSxGen7",nil,nil,"/use [@player,spec:3,talent:5/3,mod]Shadow Crash;[@mouseover,exists,nodead,talent:3/3]Mind Sear;[talent:3/3,channeling:Mind Sear]Searing Nightmare;[@mouseover,exists,nodead][]Mind Sear\n/targetenemy [noexists]\n/cleartarget [dead]")
 						-- EditMacro("WSxCAGen+B",nil,nil,"/run if not InCombatLockdown()then local B=UnitName(\"target\") EditMacro(\"WSxGen+B\",nil,nil,\"/use [mod:shift,@\"..B..\"]Shadow Mend;[@\"..B..\"]Power Word: Shield\", nil)print(\"Vigil set to : \"..B)else print(\"Combat!\")end")
 						-- EditMacro("WSxCAGen+N",nil,nil,"/run if not InCombatLockdown()then local N=UnitName(\"target\") EditMacro(\"WSxGen+N\",nil,nil,\"/use [mod:shift,@\"..N..\"]Shadow Mend;[@\"..N..\"]Power Word: Shield\", nil)print(\"Vigil#2 set to: \"..N)else print(\"Combat!\")end")
 						-- EditMacro("WSxCAGen+B",nil,nil,"")
