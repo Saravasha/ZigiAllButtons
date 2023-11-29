@@ -19,6 +19,57 @@ frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 /run if IsControlKeyDown() then C_PartyInfo.LeaveParty() elseif IsShiftKeyDown() then LFGTeleport(IsInLFGDungeon()) end
 --]]
 
+function ZigiHunterTrack(order)
+    if order == nil then order = true end
+
+    local TrackOrder = {
+        [1] = "Track Humanoids",
+        [2] = "Track Hidden",
+        [3] = "Track Beasts",
+        [4] = "Track Demons",
+        [5] = "Track Dragonkin",
+        [6] = "Track Elementals",
+        [7] = "Track Giants",
+        [8] = "Track Undead",
+    }
+    if IsPlayerSpell(229533) then
+    	table.insert(TrackOrder,"Track Mechanicals")
+    end
+    if IsPlayerSpell(43308) then
+    	table.insert(TrackOrder,"Find Fish")
+    end
+    local IsTracked = tInvert(TrackOrder)
+    local ActiveTracking = {}
+    local cache = {}
+
+    for index = 1, C_Minimap.GetNumTrackingTypes() do
+        local name, icon, active, type, subType, spellID = C_Minimap.GetTrackingInfo(index)
+        
+        if IsTracked[name] then
+            cache[IsTracked[name]] = index
+            if active then
+                ActiveTracking[IsTracked[name]] = true
+            end
+
+            C_Minimap.SetTracking(index, false)
+        end
+    end
+
+    local current = 0
+    for i = 1, #TrackOrder do
+        if ActiveTracking[i] then
+            current = i
+        end
+    end
+
+    local prev, next = current-1, current+1
+    if prev < 1 then prev = #TrackOrder end
+    if next > #TrackOrder then next = 1 end
+
+    C_Minimap.SetTracking(order and cache[next] or cache[prev], true)
+end
+
+
 -- bind to function
 local function b(spellName, macroCond, semiCol)
 
@@ -165,6 +216,8 @@ local function b(spellName, macroCond, semiCol)
 			[120] = "Cone of Cold",
 			[122] = "Frost Nova",
 			[133] = "Fireball",
+			[414664] = "Mass Invisibility",
+			[414660] = "Mass Barrier",
 		},
 		["WARLOCK"] = {
 			[20707] = "Soulstone",
@@ -190,14 +243,13 @@ local function b(spellName, macroCond, semiCol)
 			[267217] = "Nether Portal",
 			[710] = "Banish",
 			[205179] = "Phantom Singularity",
-			[387073] = "Soul Tap",
 			[196447] = "Channel Demonfire",
 			[333889] = "Fel Domination",
 			[27243] = "Seed of Corruption",
 			[108416] = "Dark Pact",
 			[386833] = "Guillotine",
 			[316099] = "Unstable Affliction",
-			[264057] = "Soul Strike",
+			[428344] = "Soul Strike",
 			[5740] = "Rain of Fire",
 			[30283] = "Shadowfury",
 			[17962] = "Conflagrate",
@@ -221,6 +273,7 @@ local function b(spellName, macroCond, semiCol)
 			[686] = "Shadow Bolt",
 			[980] = "Agony",
 			[63106] = "Siphon Life",
+			[198590] = "Drain Soul",
 		},
 		["MONK"] = {
 			[399491] = "Sheilun's Gift",
@@ -269,7 +322,7 @@ local function b(spellName, macroCond, semiCol)
 			[386276] = "Bonedust Brew",
 			[196725] = "Refreshing Jade Wind",
 			[387184] = "Weapons of Order",
-			[197908] = "Mana Tea",
+			[115294] = "Mana Tea",
 			[115399] = "Black Ox Brew",
 			[388615] = "Restoral",
 			[101545] = "Flying Serpent Kick",
@@ -283,6 +336,7 @@ local function b(spellName, macroCond, semiCol)
 			[115203] = "Fortifying Brew",
 		},
 		["PALADIN"] = {
+			[183435] = "Retribution Aura",
 			[85256] = "Templar's Verdict",
 			[31884] = "Avenging Wrath",
 			[53563] = "Beacon of Light",
@@ -343,6 +397,8 @@ local function b(spellName, macroCond, semiCol)
 			[205191] = "Eye for an Eye",
 			[213644] = "Cleanse Toxins",
 			[114165] = "Holy Prism",
+			[414273] = "Hand of Divinity",
+			[414170] = "Daybreak",
 		},
 		["HUNTER"] = {
 			[388045] = "Sentinel Owl",
@@ -399,6 +455,7 @@ local function b(spellName, macroCond, semiCol)
 			[342049] = "Chimaera Shot",
 			[186289] = "Aspect of the Eagle",
 			[187707] = "Muzzle",
+			[400456] = "Salvo",
 			[259391] = "Chakrams",
 		},
 		["ROGUE"] = { 
@@ -434,7 +491,7 @@ local function b(spellName, macroCond, semiCol)
 			[6770] = "Sap",
 			[195457] = "Grappling Hook",
 			[385627] = "Kingsbane",
-			[381802] = "Indiscriminate Carnage",
+			-- [381802] = "Indiscriminate Carnage",
 			[1966] = "Feint",
 			[1776] = "Gouge",
 			[381989] = "Keep It Rolling",
@@ -483,7 +540,7 @@ local function b(spellName, macroCond, semiCol)
 			[596] = "Prayer of Healing",
 			[47788] = "Guardian Spirit",
 			[9484] = "Shackle Undead",
-			[214621] = "Schism",
+			[424509] = "Schism",
 			[228260] = "Void Eruption",
 			[64901] = "Symbol of Hope",
 			[335467] = "Devouring Plague",
@@ -518,13 +575,13 @@ local function b(spellName, macroCond, semiCol)
 			[15487] = "Silence",
 			[120644] = "Halo",
 			[108920] = "Void Tendrils",
-			[341374] = "Damnation",
 			[64044] = "Psychic Horror",
 			[47585] = "Dispersion",
 			[263346] = "Dark Void",
 			[372835] = "Lightwell",
 			[213634] = "Purify Disease",
 			[122121] = "Divine Star",
+			[421453] = "Ultimate Penitence",
 		},
 		["DEATHKNIGHT"] = {
 			[47568] = "Empower Rune Weapon",
@@ -720,6 +777,7 @@ local function b(spellName, macroCond, semiCol)
 			[197626] = "Starsurge",
 			[197628] = "Starfire",
 			[50464] = "Nourish",
+			[102693] = "Grove Guardians",
 			[204066] = "Lunar Beam",
 			[197625] = "Moonkin Form",
 		},
@@ -781,21 +839,72 @@ local function b(spellName, macroCond, semiCol)
 			[369459] = "Source of Magic",
 			[370960] = "Emerald Communion",
 			[374348] = "Renewing Blaze",
+			[407876] = "Accretion",
+		[407869] = "Anachronism",
+		[407243] = "Aspects' Favor",
+		[408233] = "Bestow Weyrnstone",
+		[360827] = "Blistering Scales",
+		[403631] = "Breath of Eons",
+		[409676] = "Chrono Ward",
+		[404195] = "Defy Fate",
+		[403264] = "Black Attunement",
+		[403265] = "Bronze Attunement",
+		[414969] = "Dream of Spring",
+		[395152] = "Ebon Might",
+		[410784] = "Echoing Strike",
+		[395160] = "Eruption",
+		[375722] = "Essence Attunement",
+		[396187] = "Essence Burst",
+		[412774] = "Fate Mirror",
+		[408083] = "Font of Magic",
+		[410787] = "Geomancy",
+		[375796] = "Hoarded Power",
+		[408775] = "Ignition Rush",
+		[371016] = "Imposing Presence",
+		[410261] = "Inferno's Blessing",
+		[412713] = "Interwoven Threads",
+		[410643] = "Molten Blood",
+		[408004] = "Momentum Shift",
+		[409267] = "Motes of Possibility",
+		[410260] = "Overlord",
+		[410253] = "Perilous Fate",
+		[407866] = "Plot the Future",
+		[369908] = "Power Nexus",
+		[409311] = "Prescience",
+		[410687] = "Prolong Life",
+		[407814] = "Pupil of Alexstrasza",
+		[409329] = "Reactive Hide",
+		[406907] = "Regenerative Chitin",
+		[406659] = "Ricocheting Pyroclast",
+		[408543] = "Seismic Slam",
+		[406732] = "Spatial Paradox",
+		[410352] = "Stretch Time",
+		[410685] = "Symbiotic Bloom",
+		[408002] = "Tectonic Locus",
+		[404977] = "Time Skip",
+		[412710] = "Timelessness",
+		[412723] = "Tomorrow, Today",
+		[412733] = "Unyielding Domain",
+		[396286] = "Upheaval",
+		[406904] = "Volcanism",
+		[371806] = "Deep Breath",
 		},
 	}
 	classSpecTalentList = classSpecTalentList[class]
-	for k,v in pairs(classSpecTalentList) do
-		if v == spellName then
-			if IsPlayerSpell(k) or IsSpellKnown(k) then
-				-- return (select(1,GetSpellInfo(k)))
-				-- v[1] = spellName
-				-- v[2] = macroCond
-				-- print(spellName)
- 				return (macroCond or "")..((select(1,GetSpellInfo(k))) or "")..(semiCol or "")
-			end 
+	if not InCombatLockdown() then 
+		for k,v in pairs(classSpecTalentList) do
+			if v == spellName then
+				if IsPlayerSpell(k) or IsSpellKnown(k) then
+					-- return (select(1,GetSpellInfo(k)))
+					-- v[1] = spellName
+					-- v[2] = macroCond
+					-- print(spellName)
+	 				return (macroCond or "")..((select(1,GetSpellInfo(k))) or "")..(semiCol or "")
+				end 
+			end
 		end
+		return fallback or ""
 	end
-	return fallback or ""
 end
 
 local function eventHandler(self, event)
@@ -806,7 +915,7 @@ local function eventHandler(self, event)
 		frame:UnregisterEvent("PLAYER_REGEN_ENABLED")
 
 
-		-- Template Class Table
+		-- Template Class if else block
 
 		-- if class == "SHAMAN" then
 		-- elseif class == "MAGE" then 
@@ -833,6 +942,8 @@ local function eventHandler(self, event)
 		local faction = UnitFactionGroup("player")
 		local _,race = UnitRace("player")
 		local _,class = UnitClass("player")
+		local sex = UnitSex("player")
+		local playerName = UnitName("player")
 
 		local level = UnitLevel("player")
 		local eLevel = UnitEffectiveLevel("player")
@@ -841,30 +952,32 @@ local function eventHandler(self, event)
 
 		local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
 
-		if (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_LOGIN" or event == "PLAYER_ENTERING_WORLD") and not throttledMessage then
-			throttledMessage = true
-	        C_Timer.After(2, function()
-	            -- denna kod körs efter 2 sekunder
-	            throttledMessage = false
-			-- if Instanced Content 
-			if instanceType ~= "none" then
-				SetBinding("A","STRAFELEFT")
-				SetBinding("D","STRAFERIGHT")
-			else
-			-- else: InstanceType: "none"
-				SetBinding("A","TURNLEFT")
-				SetBinding("D","TURNRIGHT")
+		if not InCombatLockdown() then
+			if (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_LOGIN" or event == "PLAYER_ENTERING_WORLD") and not throttledMessage then
+				throttledMessage = true
+		        C_Timer.After(2, function()
+		            -- denna kod körs efter 2 sekunder
+			            throttledMessage = false
+					-- if Instanced Content 
+					if instanceType ~= "none" then
+						SetBinding("A","STRAFELEFT")
+						SetBinding("D","STRAFERIGHT")
+					else
+					-- else: InstanceType: "none"
+						SetBinding("A","TURNLEFT")
+						SetBinding("D","TURNRIGHT")
+					end
+		        end)
 			end
-	        end)
 		end
 
 		 
 			
-			DEFAULT_CHAT_FRAME:AddMessage("ZigiAllButtons: ZONE_CHANGED_NEW_AREA\nRecalibrating related macros :)",0.5,1.0,0.0)
+		DEFAULT_CHAT_FRAME:AddMessage("ZigiAllButtons: ZONE_CHANGED_NEW_AREA\nRecalibrating related macros :)",0.5,1.0,0.0)
 
-		local playerspec = GetSpecialization(false,false)
+		local playerSpec = GetSpecialization(false,false)
 
-		local petspec = GetSpecialization(false,true)
+		local petSpec = GetSpecialization(false,true)
 		local pwned = "Horde Flag of Victory"
 		if faction == "Alliance" then 
 			pwned = "Alliance Flag of Victory" 
@@ -884,10 +997,7 @@ local function eventHandler(self, event)
 		if faction == "Alliance" then
 			fftpar = "Touch of the Naaru"
 		end
-		local factionMurloc = ",".."\"Gillvanas\""
-		if faction == "Alliance" then
-			factionMurloc = ",".."\"Finduin\""
-		end
+		
 		local factionPride = "Darkspear Pride"
 		if faction == "Alliance" then
 			factionPride = "Gnomeregan Pride"
@@ -1051,26 +1161,13 @@ local function eventHandler(self, event)
 			[4] = "Necrolord Hearthstone",
 		} 
 		
-        local covPets = {
-        	[0] = {""},
-        	[1] = {"Ruffle","Lost Featherling","Steward Featherling","Courage","Purity","Larion Pouncer","Helpful Glimmerfly", },
-        	[2] = {"Sinheart","Burdened Soul", "Dal", "Dredger Butler", "Will of Remornia", "Char"},
-        	[3] = {"Trootie","Floofa", "Gloober, as G'huun", "Sir Reginald", "Lavender Nibbler", "Willowbreeze"},
-        	[4] = {"Jiggles","Micromancer","Minimancer","Toenail","Shy Melvin","Oonar's Arm", "Sludge Feeler"},
-        }
-       	covPets = covPets[slBP]
-       	covPets = covPets[random(#covPets)]
-       	if slBP ~= 0 then 
-       		covPets = ",\""..covPets.."\""
-        end
-
         -- uses covEnum	
         local covToys = {
 			[0] = {""},
-			[1] = {"Steward's First Feather\n/use Malfunctioning Goliath Gauntlet"},
-			[2] = {"Bondable Sinstone"},
+			[1] = {"Steward's First Feather"},
+			[2] = {"Rapid Recitation Quill"},
 			[3] = {"Spring Florist's Pouch\n/use Seed of Renewed Souls"},
-			[4] = {"Apprentice Slimemancer's Boots"},
+			[4] = {"Regenerating Slime Vial"},
 		}
        	-- CovToys
 		covToys = covToys[slBP]
@@ -1081,7 +1178,7 @@ local function eventHandler(self, event)
 		-- Hearthstones
 		local HS = {
 			["SHAMAN"] = "Ohn'ir Windsage's Hearthstone",
-			["MAGE"] = "Fire Eater's Hearthstone",
+			["MAGE"] = "Tome of Town Portal",
 			["WARLOCK"] = "Headless Horseman's Hearthstone",
 			["MONK"] = "Brewfest Reveler's Hearthstone",
 			["PALADIN"] = "Hearthstone",
@@ -1091,7 +1188,7 @@ local function eventHandler(self, event)
 			["DEATHKNIGHT"] = covHS[slBP],
 			["WARRIOR"] = "The Innkeeper's Daughter",
 			["DRUID"] = "Noble Gardener's Hearthstone",
-			["DEMONHUNTER"] = covHS[slBP],
+			["DEMONHUNTER"] = "Ethereal Portal",
 			["EVOKER"] = "Timewalker's Hearthstone",
 		}
 			
@@ -1113,7 +1210,7 @@ local function eventHandler(self, event)
 			["PRIEST"] = "\n/use Steamy Romance Novel Kit\n/cancelaura For da Blood God!\n/use For da Blood God!",
 			["DEATHKNIGHT"] = "\n/use Coldrage's Cooler",
 			["WARRIOR"] = "\n/cancelaura Tournament Favor\n/use Tournament Favor\n/use Kovork Kostume",
-			["DRUID"] = "\n/cancelaura Make like a Tree\n/use Ancient's Bloom\n/use Primal Stave of Claw and Fur",
+			["DRUID"] = "\n/cancelaura Make like a Tree\n/use Ancient's Bloom\n/use Primal Stave of Claw and Fur\n/use Dreamsurge Remnant",
 			["DEMONHUNTER"] = "\n/cancelaura Golden Hearthstone Card: Lord Jaraxxus\n/use Golden Hearthstone Card: Lord Jaraxxus",
 			["EVOKER"] = "\n"..randomHoloviewer.."\n/use A Collection Of Me",
 		}
@@ -1199,6 +1296,8 @@ local function eventHandler(self, event)
 			["The Dragon's Hoard"] = true,
 			["Temporal Conflux"] = true,
 			["The Primalist Future"] = true,
+			["Zaralek Cavern"] = true,
+			["Emerald Dream"] = true,
 		}
 
 		local slZones = {
@@ -1236,9 +1335,9 @@ local function eventHandler(self, event)
 		}
 		-- speciella item sets
 		
-		local tpPants, noPants = "Tipipants", EQS[playerspec]
-		-- print("noPants = ", EQS[playerspec])
-		if C_EquipmentSet.GetEquipmentSetID(tpPants) ~= nil and playerspec ~= 5 then
+		local tpPants, noPants = "Tipipants", EQS[playerSpec]
+		-- print("noPants = ", EQS[playerSpec])
+		if C_EquipmentSet.GetEquipmentSetID(tpPants) ~= nil and playerSpec ~= 5 then
 			tpPants = C_EquipmentSet.GetEquipmentSetID(tpPants)
 			noPants = C_EquipmentSet.GetEquipmentSetID(noPants)
 			tpPants = "C_EquipmentSet.UseEquipmentSet("..tpPants..")" 
@@ -1247,17 +1346,21 @@ local function eventHandler(self, event)
 	 
 		-- set spec title
 			-- Shaman titles
-		local SST = {
-			[1] = "Gorgeous",
-			[2] = "Storm's End",
-			[3] = "Gorgeous"
-		}
-		if (class == "SHAMAN" and UnitName("player") == "Raxana" and race == "Orc") then
-			SST = {
-				[1] = "Mistwalker", 
-				[2] = "Lady of War",
-				[3] = "of the Deeps",
-			}
+		local SST = {}
+		if class == "SHAMAN" then
+			 if (playerName == "Raxana" and race == "Orc") then
+				SST = {
+					[1] = "Mistwalker", 
+					[2] = "Lady of War",
+					[3] = "of the Deeps",
+				}
+			else 
+				SST = {
+					[1] = "Gorgeous",
+					[2] = "Storm's End",
+					[3] = "Gorgeous"
+				}
+			end
 		elseif class == "MAGE" then
 			SST = {
 				[1] = "Headmistress", 
@@ -1265,14 +1368,17 @@ local function eventHandler(self, event)
 				[3] = "Merrymaker",
 			}
 		elseif class == "WARLOCK" then
-			SST = {
-				[1] = "of The Black Harvest", 
-				[2] = "Matron",
-				[3] = "Netherlord",
-			}
-			if (UnitName("player") == "Darkglace" or UnitName("player") == "Voidlisa") and playerspec == 2 then
+			if (playerName == "Darkglace" or playerName == "Voidlisa") then
 				SST = {
+					[1] = "of The Black Harvest",
 					[2] = "Lady of War",
+					[3] = "Netherlord",
+				}
+			else
+				SST = {
+					[1] = "of the Nightfall", 
+					[2] = "Matron",
+					[3] = "Netherlord",
 				}
 			end
 		elseif class == "MONK" then
@@ -1285,9 +1391,9 @@ local function eventHandler(self, event)
 			SST = {
 				[1] = "The Lightbringer", 
 				[2] = "Highlord",
-				[3] = "Gorgeous",
+				[3] = "Crusader",
 			}
-			if UnitName("player") == "Blackvampkid" and playerspec == 3 then
+			if playerName == "Blackvampkid" and playerSpec == 3 then
 				SST = { 
 				[3] = "Lady of War",
 			}
@@ -1331,12 +1437,21 @@ local function eventHandler(self, event)
 				}
 			end
 		elseif class == "DRUID" then
-			SST = {
-				[1] = "Starcaller", 
-				[2] = "The Crazy Cat Lady",
-				[3] = "Guardian of Cenarius",
-				[4] = "the Dreamer",
-			}					
+			if sex == 2 then
+				SST = {
+					[1] = "Starcaller", 
+					[2] = "The Crazy Cat Man",
+					[3] = "Guardian of Cenarius",
+					[4] = "the Dreamer",
+				}
+			elseif sex == 3 then					
+				SST = {
+					[1] = "Starcaller", 
+					[2] = "The Crazy Cat Lady",
+					[3] = "Guardian of Cenarius",
+					[4] = "the Dreamer",
+				}
+			end
 		elseif class == "DEMONHUNTER" then
 			SST = {
 				[1] = "Demonslayer", 
@@ -1346,28 +1461,29 @@ local function eventHandler(self, event)
 			SST = {
 				[1] = "Malicious", 
 				[2] = "the Forbidden",
+				[3] = "the Forbidden",
 			}					
         end
         -- pre specializations
-        if (class and playerspec == 5) then 
+        if (class and playerSpec == 5) then 
         	SST = { 
         		[5] = "the Patient"
         	}
         end
 
         if IsEquippedItem("Mirror of the Blademaster") then
-        	SST[playerspec] = "Timelord"
+        	SST[playerSpec] = "Timelord"
         end
 
 		local invisPot = "Malfunctioning Stealthman 54"
 
 		local hasBell = "Cooking School Bell"
 
-		if EQS[playerspec] then
-
-			EditMacro("WSpecs!",nil,nil,"/equipset "..EQS[playerspec].."\n/run x=1 if(IsShiftKeyDown())then x=2 elseif(IsControlKeyDown())then x=3 elseif(IsModifierKeyDown())then x=4 end if(x~=GetSpecialization())then SetSpecialization(x) end\n/stopcasting")
-		end
+		if EQS[playerSpec] then
 		
+		EditMacro("WSpecs!",nil,nil,"/run if not InCombatLockdown() then "..noPants.." x=1 if(IsShiftKeyDown())then x=2 elseif(IsControlKeyDown())then x=3 elseif(IsModifierKeyDown())then x=4 end if(x~=GetSpecialization())then SetSpecialization(x) end end\n/stopcasting")
+		end
+			
 		local oOtas = "\n/use Orb of Deception"
 		if race ~= "BloodElf" and eLevel >= 25 then
 			oOtas = "\n/use Orb of the Sin'dorei"
@@ -1384,7 +1500,7 @@ local function eventHandler(self, event)
 		local locPvPQ = "[@mouseover,exists,nodead][]Command Demon"
 		local locPvPSThree = ""
 		local locPvPF = "[@focus,harm,nodead]Command Demon;"
-		local ptdSG = GetItemCount("Protocol Transference Device")
+		-- local ptdSG = GetItemCount("Protocol Transference Device")
 		local chameleon = IsSpellKnown(61648)
 		if chameleon == true then
 			chameleon = "Aspect of the Chameleon"
@@ -1392,11 +1508,11 @@ local function eventHandler(self, event)
 			chameleon = "Hunter's Call"
 		end 
      	-- ptdSG, mechanical device
-		if ptdSG >=1 then
-			ptdSG = "[mod:alt]Protocol Transference Device;"
-		elseif ptdSG <= 1 then 
-			ptdSG = ""
-		end
+		-- if ptdSG >=1 then
+		-- 	ptdSG = "[mod:alt]Protocol Transference Device;"
+		-- elseif ptdSG <= 1 then 
+		-- 	ptdSG = ""
+		-- end
 		local hasManaGem = ""
 
 		-- Target BG Healers and Set BG Healers // Helpful measures in non-pvp areas
@@ -1430,7 +1546,7 @@ local function eventHandler(self, event)
 			["DEMONHUNTER"] = "Consume Magic",
 			["EVOKER"] = "Unravel",
 		}
-		if class == "ROGUE" and playerspec == 2 then 
+		if class == "ROGUE" and playerSpec == 2 then 
 			numctrlcc[class] = "Kidney Shot"
 		end
 		local numnomodcc = {
@@ -1450,9 +1566,9 @@ local function eventHandler(self, event)
 		}
 
 		if class == "DRUID" then
-			if (playerspec == 2 or playerspec == 3) then
+			if (playerSpec == 2 or playerSpec == 3) then
 				numnomodcc[class] = "Skull Bash"
-			elseif playerspec == 4 then
+			elseif playerSpec == 4 then
 				numnomodcc[class] = "Cyclone"
 			end
 		end 
@@ -1499,112 +1615,49 @@ local function eventHandler(self, event)
 	            throttled = false
 	        end)
 
-	        local pets = ""
+	        -- Showtooltip on Alt+J
 			local classText = ""
 			if class == "SHAMAN" then
-				classText = "#show "..b("Earth Elemental","","")
-				if playerspec == 1 then
-					pets = "\"Snowfang\",\"Pebble\",\"Zephyrian Prince\",\"Lil' Ragnaros\""..covPets
-				elseif playerspec == 2 then
-					pets = "\"Frostwolf Ghostpup\",\"Pebble\",\"Primal Stormling\""..covPets
-				else
-					classText = "#show "..b("Mana Tide Totem","","")
-					pets = "\"Snowfang\",\"Bound Stream\",\"Pebble\",\"Drafty\""..covPets
-				end
-				if race == "Troll" then
-					pets = "\"Sen'jin Fetish\",\"Lashtail Hatchling\",\"Searing Scorchling\",\"Mojo\""..covPets
+				classText = b("Earth Elemental","#show ","")
+				if b("Mana Tide Totem") == "Mana Tide Totem" then
+					classText = b("Mana Tide Totem","#show ","")
 				end
 			elseif class == "MAGE" then
 				classText = "/use Pilfered Sweeper" 
-				pets = "\"Lil' Tarecgosa\",\"Trashy\",\"Wondrous Wisdomball\""..covPets
-				if playerspec == 2 then
-					pets = "\"Phoenix Hatchling\",\"Animated Tome\",\"Nethaera's Light\""..covPets
-				elseif playerspec == 3 then
-					pets = "\"Magical Crawdad\",\"Water Waveling\",\"Tiny Snowman\""..covPets
-				end
 			elseif class == "WARLOCK" then
 				classText = ""
-				pets = "\"Eye of the Legion\",\"Cross Gazer\",\"Sister of Temptation\",\"Nibbles\""..covPets
-				if playerspec == 2 then
-					pets = "\"Rebellious Imp\",\"Eye of the Legion\",\"Sister of Temptation\",\"Nibbles\",\"Baa'l\""..covPets
-				elseif playerspec == 3 then
-					pets = "\"Rebellious Imp\",\"Lesser Voidcaller\",\"Netherspace Abyssal\",\"Eye of the Legion\",\"Nibbles\""..covPets
-				end
 			elseif class == "MONK" then
 				classText = "#show "..b("Black Ox Brew","","")
-				local banfu = "\"Ban-Fu, Cub of Ban-Lu\""
-				if playerspec == 1 then 
-					pets = "\"Zao, Calfling of Niuzao\","..banfu..covPets
-				elseif playerspec == 2 then 
+				if playerSpec == 2 then 
 					classText = "#show "..b("Thunder Focus Tea","","")
-					pets = {"Chi-Chi, Hatchling of Chi-Ji","Yu'la, Broodling of Yu'lon"}
-					pets = "\""..pets[random(#pets)].."\","..banfu..covPets
-				else
+				elseif playerSpec == 3 then
 					classText = "#show "..b("Invoke Xuen, the White Tiger","","")
-					pets = "\"Xu-Fu, Cub of Xuen\","..banfu..covPets
 				end
 			elseif class == "PALADIN" then
-				classText = "#show "..b("Lay on Hands","","")
-				pets = "\"K'ute\",\"Uuna\",\"Bound Lightspawn\""..factionMurloc..covPets
+				classText = "#show "..b("Lay on Hands","","").."\n/use Contemplation"
 			elseif class == "HUNTER" then
 				classText = "#show Command Pet"
-				pets = "\"Rocket Chicken\",\"Nuts\",\"Tito\",\"Stormwing\",\"Son of Skum\""..covPets
-				if playerspec == 2 then
-					pets = "\"Alarm-o-Bot\",\"Tito\",\"Stormwing\",\"Crow\""..covPets
-				elseif playerspec == 3 then
-					pets = "\"Baby Elderhorn\",\"Nuts\",\"Tito\",\"Stormwing\",\"Crow\""..covPets
-				end
 			elseif class == "ROGUE" then
 				classText = "#show Vanish"
-				pets = "\"Toxic Wasteling\",\"Spawn of Merektha\",\"Sneaky Marmot\",\"Creepy Crate\""..covPets
-				if playerspec == 2 then
-					pets = "\"Pocket Cannon\",\"Captain Nibs\",\"Sneaky Marmot\",\"Cap'n Crackers\""..covPets
-				elseif playerspec == 3 then
-					pets = "\"Bronze Whelpling\",\"Gilnean Raven\",\"Sneaky Marmot\",\"Creepy Crate\""..covPets
-				end
 			elseif class == "PRIEST" then
 				classText = "#show "..b("Mass Dispel","","")
-				pets = "\"Argi\",\"K'ute\",\"Dread Hatchling\",\"Shadow\",\"Uuna\""..covPets
-				if playerspec == 2 then
-					pets = "\"Bound Lightspawn\",\"K'ute\",\"Sunborne Val'kyr\",\"Uuna\""..covPets
-				elseif playerspec == 3 then
-					pets = "\"K'ute\",\"Hungering Claw\",\"Dread Hatchling\",\"Faceless Minion\""..covPets
-				end
 			elseif class == "DEATHKNIGHT" then
 				classText = "#show "..b("Raise Dead")
-				pets = "\"Bloodbrood Whelpling\",\"Blightbreath\",\"Boneshard\",\"Naxxy\""..covPets
-				if playerspec == 2 then
-					pets = "\"Frostbrood Whelpling\",\"Mr. Bigglesworth\",\"Boneshard\""..covPets	
-				elseif playerspec == 3 then
-					pets = "\"Vilebrood Whelpling\",\"Grotesque\",\"Mr. Bigglesworth\""..covPets
-				end
 			elseif class == "WARRIOR" then
 				classText = "/use "..factionPride..""
-				pets = "\"Darkmoon Rabbit\",\"Sunborne Val'kyr\""..factionMurloc..covPets
-				-- druid
+				if race == "NightElf" then 
+					SST[playerSpec] = "the unstoppable"
+					classText = ""
+				end
 			elseif class == "DRUID" then
 				if (race == "Tauren" and GetItemCount("Ancient Tauren Talisman") == 1) then
 					hasBell = "Ancient Tauren Talisman"
 				end
 				classText = "#show Rebirth\n/use Wisp in a Bottle"
-				pets = "\"Stardust\",\"Singing Sunflower\",\"Ragepeep\""..covPets
-				if playerspec == 2 then
-					pets = "\"Cinder Kitten\",\"Singing Sunflower\""..covPets
-				elseif (UnitName("player") == "Fannylands" and playerspec == 3) then
-					pets = "\"Nightmare Whelpling\",\"Nightmare Lasher\",\"Nightmare Treant\""..covPets
-				elseif playerspec == 3 then
-					pets = "\"Lil' Ursoc\",\"Singing Sunflower\""..covPets
-				elseif playerspec == 4 then	
-					pets = "\"Blossoming Ancient\",\"Broot\",\"Singing Sunflower\""..covPets
-				end
 			elseif class == "DEMONHUNTER" then
 				classText = ""
-				pets = "\"Murkidan\",\"Emmigosa\",\"Abyssius\",\"Micronax\",\"Wyrmy Tunkins\",\"Fragment of Desire\""..covPets
 			elseif class == "EVOKER" then
 				classText = "#show "..b("Time Spiral","","")
-				pets = "\"Drakks\",\"Murkastrasza\",\"Spyragos\",\"Bronze Racing Enthusiast\",\"Viridescent Duck\""
-				hasBell = ""
-				-- SST[playerspec] = ""
 			end
 			
 			-- Winter Veil Holiday Override
@@ -1624,19 +1677,19 @@ local function eventHandler(self, event)
 			end
 
 			-- print("classText =", classText)
-			-- print("playerspec =", playerspec)
-			-- print("SST[playerspec] =", SST[playerspec])
+			-- print("playerSpec =", playerSpec)
+			-- print("SST[playerSpec] =", SST[playerSpec])
 			-- print("hasBell =", hasBell)
 			-- print("pets =", pets)
-			EditMacro("WSxSwapper",nil,nil,classText.."\n/settitle "..SST[playerspec].."\n/use "..hasBell.."\n/run local a={"..pets.."}b=math.random(1,#a)_,c=C_PetJournal.FindPetIDByName(a[b])do C_PetJournal.SummonPetByGUID(c)end")
+			EditMacro("WSxSwapper",nil,nil,classText.."\n/settitle "..SST[playerSpec].."\n/use "..hasBell.."\n/run ZigiTogglePet()")
 
 	        -- print("ZONE_CHANGED_NEW_AREA or BAG_UPDATE_DELAYED or PET_SPECIALIZATION_CHANGED")
 
 	         -- Role definition scope for dps potions
 			local primary = "int"
-			if (class == "DEMONHUNTER") or (class == "DRUID" and (playerspec == 2 or playerspec == 3)) or (class == "HUNTER") or (class == "MONK" and playerspec ~= 2) or (class == "ROGUE") or (class == "SHAMAN" and playerspec == 2) then
+			if (class == "DEMONHUNTER") or (class == "DRUID" and (playerSpec == 2 or playerSpec == 3)) or (class == "HUNTER") or (class == "MONK" and playerSpec ~= 2) or (class == "ROGUE") or (class == "SHAMAN" and playerSpec == 2) then
 				primary = "agi"
-			elseif (class == "DEATHKNIGHT") or (class == "WARRIOR") or (class == "PALADIN" and playerspec ~= 1) then
+			elseif (class == "DEATHKNIGHT") or (class == "WARRIOR") or (class == "PALADIN" and playerSpec ~= 1) then
 				primary = "str"
 			end
 			-- Throughput Potion synthesizer 
@@ -1667,7 +1720,9 @@ local function eventHandler(self, event)
 				EditMacro("Wx3ShowPot", nil, nil, "#show\n/use Potion of Phantom Fire\n/use Hell-Bent Bracers", 1, 1)	
 			elseif GetItemCount(169299, false, true) >= 1 then
 				EditMacro("Wx3ShowPot", nil, nil, "#show\n/use Potion of Unbridled Fury\n/use Hell-Bent Bracers", 1, 1)
-			elseif GetItemCount(191389, false, true) >= 1 then -- Fleeting Elemental Potion of Power ◆◆◆
+			elseif GetItemCount(191383, false, true) >= 1 then -- Ultimate Power ◆◆◆
+			    EditMacro("Wx3ShowPot", nil, nil,"#show\n/use item:191383\n/use Hell-Bent Bracers")	
+			elseif GetItemCount(191389, false, true) >= 1 then -- Elemental Potion of Power ◆◆◆
 			    EditMacro("Wx3ShowPot", nil, nil,"#show\n/use item:191389\n/use Hell-Bent Bracers")
 			elseif GetItemCount(191388, false, true) >= 1 then -- Fleeting Elemental Potion of Power ◆◆
 			    EditMacro("Wx3ShowPot", nil, nil,"#show\n/use item:191388\n/use Hell-Bent Bracers")
@@ -1696,7 +1751,7 @@ local function eventHandler(self, event)
 					zA = "/use [@mouseover,harm,nodead][@cursor]Combat Ally"
 				elseif instanceName == "Argus" then
 					-- Argus: Vindicaar Matrix Crystal
-					zA = "/use [@mouseover,exists,nodead][@cursor]Vindicaar Matrix Crystal"
+					zA = "/use [mod:alt,@mouseover,harm,nodead][mod:alt,@cursor]Combat Ally;[@mouseover,exists,nodead][@cursor]Vindicaar Matrix Crystal"
 				elseif (instanceName == "Horrific Vision of Orgrimmar" or instanceName == "Horrific Vision of Stormwind") and IsSpellKnown(314955) then
 					-- Horrific Vision: Sanity Restoration Orb
 					zA = "/use [@mouseover,exists,nodead][@cursor]Sanity Restoration Orb"
@@ -1738,11 +1793,20 @@ local function eventHandler(self, event)
     				alt4 = ink
 					alt5 = hasCannon
 					alt6 = ""
+					if GetItemCount("Fleeting Sands") > 0 then
+						alt4 = alt4.."\n/use Fleeting Sands"
+					end 
 					if GetItemCount("Shikaar Hunting Horn") > 0 then
 						alt6 = "\n/use Shikaar Hunting Horn"
 					end 
 					CZ = ""
 					alt9 = "\n/use Element-Infused Rocket Helmet"
+					if GetItemCount("Sticky Warp Grenade") >= 1 then
+						hasShark = "Sticky Warp Grenade"
+					end
+					if GetItemCount("Gravitational Displacer") >= 1 then
+						hasScrapper = "Gravitational Displacer"
+					end
 			    elseif IsInJailersTower() == true then
 					local torghastAnimaCell = {
 					"Ravenous Anima Cell",
@@ -1926,23 +1990,23 @@ local function eventHandler(self, event)
 				local covSpecial = ""
 				-- Kyrian, 
 				if cov[slBP] == "Kyrian" then
-					covSpecial = "\n/use Bondable Val'kyr Diadem\n/use Acrobatic Steward"
-				-- Venthyr, "Door of Shadows"
+					covSpecial = "\n/use Bondable Val'kyr Diadem\n/use Acrobatic Steward\n/use Malfunctioning Goliath Gauntlet"
+				-- Venthyr, 
 				elseif cov[slBP] == "Venthyr" then
-					covSpecial = "\n/use Tome of Small Sins"
-				-- Night Fae, "Soulshape"
+					covSpecial = "\n/use [exists,nodead]Tome of Small Sins;Bondable Sinstone"
+				-- Night Fae,
 				elseif cov[slBP] == "Night Fae" then
-					covSpecial = "\n/use Sparkle Wings\n/use Gormling in a Bag"
-				-- Necrolord, "Fleshcraft" 
+					covSpecial = "\n/use Sparkle Wings\n/use [nocombat,nostealth]Gormling in a Bag"
+				-- Necrolord, 
 				elseif cov[slBP] == "Necrolord" then
-					covSpecial = "\n/use Regenerating Slime Vial"
+					covSpecial = "\n/use Apprentice Slimemancer's Boots"
 				end
 				-- (Shaman är default/fallback)
 				local ccz = "\n/use [nospec:3]Lightning Shield;Water Shield"
 				if class == "MAGE" then
 					ccz = "\n/use [combat,help,nodead][nocombat]Arcane Intellect;Invisibility"
 				elseif class == "WARLOCK" then
-					ccz = "\n/use Lingering Wyrmtongue Essence\n/use [nocombat]Heartsbane Grimoire\n/use Inquisitor's Gaze"
+					ccz = "\n/use Lingering Wyrmtongue Essence\n/use [nocombat,noexists]Heartsbane Grimoire"
 				elseif class == "MONK" then
 					ccz = "\n/use Mystical Orb of Meditation"
 				elseif class == "PALADIN" then
@@ -1960,7 +2024,12 @@ local function eventHandler(self, event)
 				elseif class == "DEATHKNIGHT" then
 					ccz = "\n/use Haunting Memento\n/use [nopet,spec:3]Raise Dead"
 				elseif class == "WARRIOR" then
-					ccz = "\n/use Battle Shout\n/use Shard of Archstone\n/use Brynja's Beacon"
+					ccz = "\n/use Battle Shout\n/use Shard of Archstone"
+					if cov[slBP] == "Kyrian" then
+						ccz = ccz.."\n/use Mark of Purity"
+					else
+						ccz = ccz.."\n/use Brynja's Beacon"
+					end
 				elseif class == "DRUID" then
 					ccz = "\n/use Fandral's Seed Pouch\n/use Ravenbear Disguise\n/use Mark of the Wild\n/use !Prowl"
 				elseif class == "DEMONHUNTER" then
@@ -1971,7 +2040,10 @@ local function eventHandler(self, event)
 				
 				if ccz and CZ and AR then
 					-- print(CZ..ccz..AR..covSpecial)
-					EditMacro("WSxCGen+Z",nil,nil,"/use Seafarer's Slidewhistle\n/use [nostealth]Repurposed Fel Focuser\n/use "..CZ..ccz..AR..covSpecial)
+					if CZ ~= "" then 
+						CZ = "\n/use "..CZ
+					end
+					EditMacro("WSxCGen+Z",nil,nil,"/use Seafarer's Slidewhistle\n/use [nostealth]Repurposed Fel Focuser"..CZ..ccz..AR..covSpecial)
 					--DEFAULT_CHAT_FRAME:AddMessage("ZigiAllButtons: Recalibrating zone based variables :)\nalt4 = "..alt4.."\nalt5 = "..alt5.."\nalt6 = "..alt6.."\nCZ = "..CZ.."\nccz = "..ccz.."\naC = "..aC.."\nPoA = "..PoA.."\nAR = "..AR.."\nconTE = "..conTE.."\nconRE = "..conRE.."\nconBE = "..conBE.."\nconCE = "..conCE,0.5,1.0,0.0)
 				end		
 				-- print("pp = "..pp)
@@ -2037,7 +2109,9 @@ local function eventHandler(self, event)
 					"Soulful Healing Potion",
 					"Cosmic Healing Potion",
 					"Refreshing Healing Potion",
+					"Dreamwalker's Healing Potion",
 					"item:137222",
+					"Powerful Flask of Renewal",
 				}
 				local hasTonicInBags = ""
 						hasTonicInBags = eqhsNeck
@@ -2060,12 +2134,23 @@ local function eventHandler(self, event)
 		    	EditMacro("WGrenade",nil,nil,"#show [mod:alt]"..hasScrapper..";"..hasShark.."\n/use Hot Buttered Popcorn\n/use [mod:alt]"..hasScrapper..";"..hasShark)
 				
 				local sttFBpoS = ""
+				local function getCov(slBP)
+					-- body
+					if slBP == 4 then
+						sttFBpoS = "Notfar's Favorite Food"
+					else
+						sttFBpoS = "Foul Belly"
+					end
+					return sttFBpoS
+				end
 				if slBP == 1 and GetItemCount("item:177278") > 0 then  
 					sttFBpoS = "item:177278"
+				elseif slBP == 4 then
+					sttFBpoS = "Notfar's Favorite Food"
 				else
 					sttFBpoS = "Foul Belly"
 				end
-				EditMacro("WTonic",nil,nil,"#show [mod:shift]"..sttFBpoS..";"..hasTonicInBags.."\n/use Foul Belly\n/use "..hasTonicInBags)
+				EditMacro("WTonic",nil,nil,"#show [mod:shift]"..sttFBpoS..";"..hasTonicInBags.."\n/use "..getCov(slBP).."\n/use "..hasTonicInBags)
 
 				 -- First Aid Bandages Parser
 		        local hasBandages = {
@@ -2094,6 +2179,7 @@ local function eventHandler(self, event)
 				    "Sparkling Oasis Water",
 				    "Highland Spring Water",
 				    "Ley-Enriched Water",
+				    "Grub Grub",
 				    "item:170068",
 				    "item:169763",
 				    "Seafoam Coconut Water",
@@ -2134,26 +2220,26 @@ local function eventHandler(self, event)
 				end
 
 
-				if (class == "MAGE" and playerspec == 3) or (class == "DEATHKNIGHT" and playerspec == 2) then
+				if (class == "MAGE" and playerSpec == 3) or (class == "DEATHKNIGHT" and playerSpec == 2) then
 					HS[class] = "Greatfather Winter's Hearthstone"
-				elseif (class == "MAGE" and playerspec == 1) then
-					HS[class] = "Tome of Town Portal"
-				elseif (class == "WARLOCK" and UnitName("player") == "Voidlisa") then
+				-- elseif (class == "MAGE" and playerSpec == 1) then
+				-- 	HS[class] = "Tome of Town Portal"
+				elseif (class == "WARLOCK" and playerName == "Voidlisa") then
 					HS[class] = "Venthyr Sinstone"
-				elseif (class == "MONK" and playerspec ~= 1) or (class == "PALADIN" and playerspec ~=3) then
-					HS[class] = "Kyrian Hearthstone"
-				elseif (class == "HUNTER" and playerspec == 2) then 
+				elseif (class == "MONK" and playerSpec ~= 1) or (class == "PALADIN" and playerSpec ~=3) then
+					HS[class] = covHS[slBP]
+				elseif (class == "HUNTER" and playerSpec == 2) then 
 					HS[class] = "Holographic Digitalization Hearthstone"
 				elseif class == "PRIEST" then
-					if playerspec == 2 then
+					if playerSpec == 2 then
 						HS[class] = "Peddlefeet's Lovely Hearthstone"
-					elseif playerspec == 1 then
+					elseif playerSpec == 1 then
 						HS[class] = "Eternal Traveler's Hearthstone"
 					end
 				elseif class == "DRUID" then
-					if playerspec == 1 then
+					if playerSpec == 1 then
 						HS[class] = "Lunar Elder's Hearthstone"
-					elseif playerspec == 4 then
+					elseif playerSpec == 4 then
 						HS[class] = "Noble Gardener's Hearthstone"
 					end
 				end
@@ -2190,17 +2276,21 @@ local function eventHandler(self, event)
 							sgen2hasWaterInBags = hasWaterInBags
 						end
 						EditMacro("WSxSGen+1",nil,nil,"/run local c=C_Container for i=0,4 do for x=1,c.GetContainerNumSlots(i)do y=c.GetContainerItemLink(i,x)if y and GetItemInfo(y)==\""..sgen2hasWaterInBags.."\"then c.PickupContainerItem(i,x)DropItemOnUnit(\"target\")return end end end\n/click TradeFrameTradeButton")
-						EditMacro("WSxSGen+2",nil,nil,"#show "..b("Presence of Mind","[combat][exists,nodead]",";")..sgen2hasWaterInBags.."\n/use [nocombat,noexists]"..sgen2hasWaterInBags.."\n/use Gnomish X-Ray Specs\n/stopcasting [spec:2]\n/use "..b("Presence of Mind","[combat][exists,nodead]",";").."[nocombat]Conjure Refreshment")
+						EditMacro("WSxSGen+2",nil,nil,"#show "..b("Presence of Mind","[combat][harm,nodead]",";")..sgen2hasWaterInBags.."\n/use [nocombat,noexists]"..sgen2hasWaterInBags.."\n/use Gnomish X-Ray Specs\n/stopcasting [spec:2]\n/use "..b("Presence of Mind","[combat][harm,nodead]",";").."[nocombat]Conjure Refreshment")
+						EditMacro("WSxSGen+F",nil,nil,"#show Familiar Stone\n/cancelaura [mod:alt]Shado-Pan Geyser Gun\n/use [help,nocombat,mod:alt]B. F. F. Necklace;[nocombat,noexists,mod:alt]Gastropod Shell;[nomod:alt]"..hasManaGem.."\n/use [nomod:alt]Familiar Stone")
 					end
 
 					if GetItemCount(hasWaterInBags) > 0 then 
 						hasWaterInBags = "[mod:alt]"..hasWaterInBags..";"
 					end
 					if GetItemCount(hasBandagesInBags) > 0 then
+						EditMacro("WFirstAid",nil,nil,"/run local c,g = GetTitleName(GetCurrentTitle()),GetCurrentTitle() if not((c == \"Field Medic\") or (g == 372)) then SetTitleByName(\"Field Medic\") end\n/use "..hasBandagesInBags)
 						hasBandagesInBags = "[mod]"..hasBandagesInBags..";"
 					end
 					if GetItemCount("Healthstone", false, true) >= 1 then
 						EditMacro("WShow",nil,nil,"/use "..hasWaterInBags..HS[class]..hasBandagesInBags.."Healthstone\n/stopmacro [mod]"..hsToy[class].."\n/run PlaySound(15160)\n/glare", 1, 1)
+					elseif GetItemCount("Weyrnstone", false, true) >= 1 then
+						EditMacro("WShow",nil,nil,"/use "..hasWaterInBags..HS[class]..hasBandagesInBags.."Weyrnstone\n/stopmacro [mod]"..hsToy[class].."\n/run PlaySound(15160)\n/glare", 1, 1)
 					else
 						EditMacro("WShow",nil,nil,"/use "..hasWaterInBags..HS[class]..hasBandagesInBags.."\n/stopmacro [mod]"..hsToy[class].."\n/use Healthstone\n/run PlaySound(15160)\n/cry", 1, 1)
 					end
@@ -2238,10 +2328,10 @@ local function eventHandler(self, event)
 				elseif class == "HUNTER" then
 					bladlast = "[nopet]Call Pet 5;[pet]Command Pet"
 					-- hunter med bl drums
-					if (name == nil and petspec ~= 1 and hasDrumsInBags) then
+					if (name == nil and petSpec ~= 1 and hasDrumsInBags) then
 						bladlast = "[nopet]Call Pet 5;[pet]"..hasDrumsInBags
 					-- hunter med bl pet
-					-- elseif (name == nil and petspec == 1) then
+					-- elseif (name == nil and petSpec == 1) then
 					-- 	bladlast = "[nopet]Call Pet 5;[pet]Command Pet" 
 					-- lone wolf hunter med bl drums
 					elseif name == "Lone Wolf" then
@@ -2261,49 +2351,6 @@ local function eventHandler(self, event)
 				else
 					EditMacro("WSxFavMount",nil,nil,"#show " ..bladlast.. "\n/run C_MountJournal.SummonByID(0)\n/dismount [mounted]\n/cancelform Bear Form\n/cancelform Cat Form\n/cancelaura Zen Flight\n/cancelaura Flaming Hoop\n/cancelaura Prowl\n/use Celebration Firework\n/cancelaura Stealth")
 				end
-				--  T75 Talents, "Ctrl+7" bind Bloodlusts etc and SGen+G Biggest Dick in the game, Poppa BL, Ctrl+7 and ptdSG injector
-				if class == "SHAMAN" then
-					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..ptdSG..""..b("Purge","[@mouseover,harm,nodead][harm,nodead]",";")..b("Greater Purge","[@mouseover,harm,nodead][harm,nodead]",";")..b("Healing Stream Totem","[]",";").."\n/use Flaming Hoop\n/targetenemy [noexists]\n/cleartarget [dead]")
-				-- Is class Mage
-				elseif class == "MAGE" then
-					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..ptdSG..""..b("Spellsteal","","").."\n/use [noexists,nocombat]Flaming Hoop\n/targetenemy [noexists]\n/use Poison Extraction Totem")
-				-- Is class Warlock
-				elseif class == "WARLOCK" then
-					EditMacro("WSxSGen+G",nil,nil,"/use "..ptdSG.."\n/use "..b("Mortal Coil","[@mouseover,harm,nodead][]",";")..b("Howl of Terror","[]",";").."\n/use Flaming Hoop")
-				-- Is class Monk
-				elseif class == "MONK" then
-					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..ptdSG..b("Diffuse Magic","[]",";")..b("Dampen Harm","[]",";").."Pandaren Scarecrow\n/use [noexists,nocombat]Flaming Hoop")
-				-- Is class Paladin
-				elseif class == "PALADIN" then
-				    EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..ptdSG.."Hammer of Justice\n/use [noexists,nocombat]Flaming Hoop\n/targetenemy [noexists]")
-				-- Is class Hunter
-				elseif class == "HUNTER" then
-					EditMacro("WSxSGen+G",nil,nil,"#show "..b("Tranquilizing Shot","[]","").."\n/use "..b("Tranquilizing Shot","[@mouseover,harm,nodead][]","").."\n/use [nocombat,noexists,nomounted]Nat's Fishing Chair\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
-				-- Is class Rogue
-				elseif class == "ROGUE" then
-					if ptdSG and class == "ROGUE" then
-						ptdSG = "[mod:alt]Protocol Transference Device;"
-					end
-					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt,nocombat,noexists]Darkmoon Gazer;[@focus,harm,nodead,stance:1/2/3];"..ptdSG.."[@mouseover,harm,nodead][harm,nodead]Shiv;Pick Lock")
-					EditMacro("WSxSGen+G",nil,nil,"#show\n/targetenemy [noexists]\n/use [stance:0,nocombat]Stealth;[mod:alt,@focus,exists,nodead][]Kidney Shot\n/use [nocombat,noexists,stance:0]Flaming Hoop")
-				-- is class Prist
-				elseif class == "PRIEST" then
-					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..ptdSG..b("Dispel Magic","[@mouseover,harm,nodead][harm,nodead]",";").."Personal Spotlight\n/use [noexists,nocombat] Flaming Hoop\n/targetenemy [noexists]")
-				-- Is class Death Knight
-				elseif class == "DEATHKNIGHT" then
-					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..ptdSG..b("Asphyxiate","[]",";")..b("Blinding Sleet","[]",";")..b("Raise Dead","[nopet]",";").."[pet]!Gnaw\n/use [noexists,nocombat] Flaming Hoop\n/petattack [harm,nodead]")
-				-- Is class Warrior
-				elseif class == "WARRIOR" then
-					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..ptdSG..b("Storm Bolt","[]",";").."Victory Rush\n/use [noexists,nocombat]Flaming Hoop")
-				-- Is class Druid
-				elseif class == "DRUID" then
-					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..ptdSG..b("Maim","[form:2]",";")..b("Soothe","[]","").."\n/use [noexists,nocombat]Flaming Hoop\n/targetenemy [noexists]") 
-				-- Is class Demon Hunter
-				elseif class == "DEMONHUNTER" then
-					EditMacro("WSxSGen+G",nil,nil,"/use "..ptdSG..b("Fel Eruption","[]",";")..b("Chaos Nova","[]",";").."Consume Magic\n/use [noexists,nocombat] Flaming Hoop")
-				elseif class == "EVOKER" then
-					EditMacro("WSxSGen+G",nil,nil,""..b("Unravel","#show ","\n").."/use "..ptdSG..b("Unravel","[@mouseover,harm,nodead][harm,nodead]",";").."Expunge\n/use [noexists,nocombat]Flaming Hoop")
-				end -- class
 			end -- map
 		end -- event
 		-- Byta talent eller zone events
@@ -2414,7 +2461,7 @@ local function eventHandler(self, event)
 				["DEMONHUNTER"] = "Imprison",
 				["EVOKER"] = "Sleep Walk",
 			}
-			if class == "ROGUE" and playerspec == 2 then
+			if class == "ROGUE" and playerSpec == 2 then
 				wmpctrlcc[class] = "Kidney Shot"
 			end
 			local wmpnomodcc = {
@@ -2433,7 +2480,7 @@ local function eventHandler(self, event)
 				["EVOKER"] = "Quell",
 			}
 			if class == "DRUID" then
-				if (playerspec == 2 or playerspec == 3) then
+				if (playerSpec == 2 or playerSpec == 3) then
 					wmpnomodcc[class] = "Skull Bash"
 				else
 					wmpnomodcc[class] = "Cyclone"
@@ -2494,8 +2541,6 @@ local function eventHandler(self, event)
 						covA = "Kindred Spirits"
 					elseif class == "DEMONHUNTER" then
 						covA = "Elysian Decree"
-					elseif class == "EVOKER" then
-						covA = "Boon of the Covnants"
 					end
 				-- Necrolord, "Fleshcraft" 
 				elseif cov[slBP] == "Necrolord" then
@@ -2524,8 +2569,6 @@ local function eventHandler(self, event)
 						covA = "Adaptive Swarm(Necrolord)"
 					elseif class == "DEMONHUNTER" then
 						covA = "Fodder to the Flame"
-					elseif class == "EVOKER" then
-						covA = "Boon of the Covnants"
 					end
 				-- Night Fae, "Soulshape"
 				elseif cov[slBP] == "Night Fae" then
@@ -2551,11 +2594,9 @@ local function eventHandler(self, event)
 					elseif class == "WARRIOR" then
 						covA = "Ancient Aftershock"
 					elseif class == "DRUID" then
-						covA = "Convoke the Spirits(Night Fae)"
+						covA = "Convoke the Spirits(Shadowlands)"
 					elseif class == "DEMONHUNTER" then
 						covA = "The Hunt"
-					elseif class == "EVOKER" then
-						covA = "Boon of the Covnants"
 					end
 				-- Venthyr, "Door of Shadows"
 				elseif cov[slBP] == "Venthyr" then
@@ -2584,13 +2625,14 @@ local function eventHandler(self, event)
 						covA = "Ravenous Frenzy"
 					elseif class == "DEMONHUNTER" then
 						covA = "Sinful Brand"
-					elseif class == "EVOKER" then
-						covA = "Boon of the Covnants"
 					end
 				end
 				
 				-- hard exceptions
 
+				if class == "EVOKER" then 
+					covA = "Boon of the Covenants"
+				end
 				
 				
 				sigB = "[@mouseover,exists,nodead,mod][@cursor,mod]"..sigA
@@ -2602,6 +2644,14 @@ local function eventHandler(self, event)
 				-- elseif (slBP == 2 and class == "WARRIOR") then 
 				-- 	hoaEq = "13"
 				-- 	slBPGen = sigB..";"..hoaEq
+				elseif (IsEquippedItem("Heart of Azeroth") and (not slZones[z])) then
+					sigA = "The Golden Banana"
+					covA = "Murglasses"
+					if slBP == 3 then
+						sigA = "Seed of Renewed Souls"
+					end
+					sigB = "[@mouseover,exists,nodead,mod][@cursor,mod]"..sigA
+					slBPGen = sigB..";"..hoaEq
 				elseif (slBP ~= 0 and not slZones[z]) then
 					sigA = "The Golden Banana"
 					covA = "Murglasses"
@@ -2679,11 +2729,7 @@ local function eventHandler(self, event)
 							sigA = b("Sheilun's Gift")
 						end
 					elseif class == "PALADIN" then
-						if b("Tyr's Deliverance") == "Tyr's Deliverance" then
-							covA = b("Tyr's Deliverance")
-						elseif b("Eye of Tyr") == "Eye of Tyr" then
-							covA = b("Eye of Tyr")
-						elseif b("Blessing of Summer") == "Blessing of Summer" then
+						if b("Blessing of Summer") == "Blessing of Summer" then
 							covA = b("Blessing of Summer")
 						elseif b("Divine Toll") == "Divine Toll" then
 							covA = b("Divine Toll")
@@ -2732,8 +2778,6 @@ local function eventHandler(self, event)
 							sigA = b("Empyreal Blaze")
 						elseif b("Void Torrent") == "Void Torrent" then
 							sigA = b("Void Torrent")
-						elseif b("Damnation") == "Damnation" then
-							sigA = b("Damnation")
 						elseif b("Rapture") == "Rapture" then
 							sigA = b("Rapture")
 						end
@@ -2746,11 +2790,11 @@ local function eventHandler(self, event)
 							covA = b("Empower Rune Weapon")
 						end
 						if b("Rune Tap") == "Rune Tap" then
-							covA = b("Rune Tap")
+							sigA = b("Rune Tap")
 						elseif b("Horn of Winter") == "Horn of Winter" then
-							covA = b("Horn of Winter")
+							sigA = b("Horn of Winter")
 						elseif b("Abomination Limb") == "Abomination Limb" then
-							covA = b("Abomination Limb")
+							sigA = b("Abomination Limb")
 						end
 					elseif class == "WARRIOR" then
 						if b("Spear of Bastion") == "Spear of Bastion" then
@@ -2780,6 +2824,9 @@ local function eventHandler(self, event)
 						if b("Soul Carver") == "Soul Carver" then
 							sigA = b("Soul Carver")
 						end
+						if b("Fel Barrage") == "Fel Barrage" then
+							covA = b("Fel Barrage")
+						end
 					elseif class == "EVOKER" then
 					end
 					sigB = "[@mouseover,exists,nodead,mod][@cursor,mod]"..sigA
@@ -2787,8 +2834,6 @@ local function eventHandler(self, event)
 					slBPGen = sigB..";"..covB
 				elseif slBP ~= 0 then 
 					slBPGen = sigB..";"..covB
-				elseif (IsEquippedItem("Heart of Azeroth") and slBP == 0) then
-					slBPGen = hoaEq
 				else
 					slBPGen = "13"
 				end
@@ -2812,7 +2857,7 @@ local function eventHandler(self, event)
 				elseif class == "WARLOCK" then
 					hoaEq = b("Demonic Gateway")
 				elseif class == "MONK" then 
-					hoaEq = b("Fortifying Brew")
+					hoaEq = b("Fortifying Brew","[]","")
 				elseif class == "PALADIN" then 
 					hoaEq = b("Blessing of Sacrifice")
 				elseif class == "HUNTER" then 
@@ -2822,7 +2867,7 @@ local function eventHandler(self, event)
 				elseif class == "PRIEST" then 
 					hoaEq = b("Evangelism","[]",";").."Mind Soothe"
 				elseif class == "DEATHKNIGHT" then 
-					hoaEq = b("Wraith Walk")
+					hoaEq = b("Wraith Walk","[]",";")..b("Anti-Magic Zone","[]","")
 				elseif class == "WARRIOR" then 
 					hoaEq = b("Piercing Howl")
 				elseif class == "DRUID" then 
@@ -2830,16 +2875,22 @@ local function eventHandler(self, event)
 				elseif class == "DEMONHUNTER" then 
 					hoaEq = "Shattered Souls"
 				elseif class == "EVOKER" then 
-					hoaEq = b("Oppressing Roar")
+					hoaEq = b("Oppressing Roar","[]",";")..b("Obsidian Scales","[]","")
 				end
 				
-				EditMacro("WArtifactCDs",nil,nil,"#show\n/stopspelltarget\n/stopspelltarget\n/cast [help,dead,nomod]Unstable Temporal Time Shifter;"..slBPGen)
+				local resItem = GetItemCount("Unstable Temporal Time Shifter")
+				if resItem > 1 then 
+					resItem = "[help,dead,nomod]Unstable Temporal Time Shifter;"
+				else 
+					resItem = "[help,dead,nomod]9;"
+				end
+				EditMacro("WArtifactCDs",nil,nil,"#show\n/stopspelltarget\n/stopspelltarget\n/cast "..resItem..slBPGen)
 				EditMacro("WSxCAGen+§",nil,nil,"/cast [@player,mod:shift]"..sigA..";[@player][@mouseover,exists,nodead][@cursor]"..covA)
 				-- print("sigA = "..sigA)
 				-- print(slZones[z])
 
 				
-				EditMacro("WSxAGen+4",nil,nil,"#showtooltip\n/use [@mouseover,exists,nodead][@cursor][]13")
+				EditMacro("WSxAGen+4",nil,nil,"#showtooltip 13\n/use Iridal, the Earth's Master\n/use [@mouseover,exists,nodead][@cursor][]13")
 
 				--[[				EditMacro("WSxAGen+4",nil,nil,"/run local Z,_,d=\"Mirror of the Blademaster\",GetItemCooldown(124224) if IsEquippedItem(Z) and d==0 then SendChatMessage(\"Daddy, i'm going to use \" .. Z .. \" pls no moverino", "SAY\") end")
 				--]]
@@ -2847,8 +2898,9 @@ local function eventHandler(self, event)
 				-- EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use 14\n/use [nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;Eternal Black Diamond Ring")
 				
 				local pennantClass = "\n/use Honorable Pennant"
-
-				if class == "ROGUE" and playerspec ~= 2 then
+				if race == "Orc" then
+					pennantClass = "\n/use Clan Banner"
+				elseif class == "ROGUE" and playerSpec ~= 2 then
 					pennantClass = "\n/use Honorable Pennant\n/cancelaura A Mighty Pirate"
 				elseif class == "ROGUE" then 
 					pennantClass = "\n/use Jolly Roger\n/cancelaura Honorable Pennant"
@@ -2875,56 +2927,73 @@ local function eventHandler(self, event)
 					nPepe = name
 					--[[print("nPepe = "..nPepe)--]]
 				end
+
+				local healer, tank = "help,nodead","help,nodead" 
+				for i = 1, 5 do 
+					if UnitGroupRolesAssigned("party"..i) == "TANK" then 
+						tank = "@".."party"..i 
+						-- print(tank)
+					end 
+					if UnitGroupRolesAssigned("party"..i) == "HEALER" then 
+						healer = "@".."party"..i 
+						-- print(healer)
+					end 
+				end
 			 
 				-- Main Class configuration
 				-- Shaman, Raxxy
 				if class == "SHAMAN" then
-					EditMacro("WSxGen1",nil,nil,"#show\n/use "..b("Static Discharge","[@mouseover,harm,nodead][harm,nodead]",";")..b("Feral Lunge","[@mouseover,harm,nodead][harm,nodead]",";")..b("Unleash Life","[@mouseover,help,nodead][help,nodead]",";")..b("Frost Shock","[@mouseover,harm,nodead][harm,nodead]",";").."Xan'tish's Flute\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxSGen+1",nil,nil,"#show [nocombat,noexists]Haunted War Drum;Frost Shock\n/use [mod:alt,@party3,help,nodead][mod:ctrl,@party2,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Healing Surge\n/use [nocombat]Haunted War Drum")
+					EditMacro("WSxGen1",nil,nil,"#show\n/use "..b("Ice Strike","[harm,nodead]",";")..b("Unleash Life","[@mouseover,help,nodead][help,nodead]",";")..b("Frost Shock","[@mouseover,harm,nodead][harm,nodead]",";").."Xan'tish's Flute\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxSGen+1",nil,nil,"#show [nospec:2]Healing Stream Totem;Frost Shock\n/use [mod:alt,@party3,help,nodead][mod:ctrl,@party2,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Healing Surge\n/use [nocombat]Haunted War Drum")
 					EditMacro("WSxGen2",nil,nil,"#show\n/use [nocombat,noexists]Raging Elemental Stone;"..b("Lava Lash","",";").."[@mouseover,harm,nodead][]Lightning Bolt\n/targetenemy [noexists]\n/startattack\n/cleartarget [dead]")
 					EditMacro("WSxSGen+2",nil,nil,"#show\n/use [mod:alt,@party4,help,nodead][@mouseover,help,nodead][]Healing Surge\n/cancelaura X-Ray Specs\n/use Gnomish X-Ray Specs")
-					EditMacro("WSxGen3",nil,nil,"#show\n/stopspelltarget\n/startattack\n/targetenemy [noexists]\n/use [nocombat,noexists]Tadpole Cloudseeder;"..b("Stormstrike","[]",";")..b("Lava Burst","[@mouseover,harm,nodead][]","").."\n/cleartarget [dead]\n/use Words of Akunda")
+					EditMacro("WSxGen3",nil,nil,"#show\n/stopspelltarget\n/startattack\n/targetenemy [noexists]\n/use [nocombat,noexists]Tadpole Cloudseeder;"..b("Stormstrike","[]",";")..b("Lava Burst","[@mouseover,harm,nodead][]",";").."Primal Strike\n/cleartarget [dead]\n/use Words of Akunda")
 					EditMacro("WSxSGen+3",nil,nil,"#show Flame Shock\n/cleartarget [dead]\n/targetenemy [noexists]\n/use [@mouseover,harm,nodead,nomod:alt][nomod:alt]Flame Shock\n/use Totem of Spirits\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Flame Shock\n/targetlasttarget")
-					EditMacro("WSxGen4",nil,nil,"#show "..b("Downpour","","").."\n/use "..b("Icefury","[]",";")..b("Lava Burst","[nospec:3,@mouseover,harm,nodead][nospec:3]",";")..b("Chain Heal","[@mouseover,help,nodead][]","").."\n/targetenemy [noexists]\n/cleartarget [dead]\n/use Smolderheart\n/startattack")
-					EditMacro("WSxSGen+4",nil,nil,"#show\n/targetenemy [noexists]\n/use "..b("Riptide","[@party1,help,nodead,mod:alt]",";")..b("Chain Heal","[mod:alt,@party1,help,nodead]",";")..b("Healing Surge","[mod:alt,@party1,help,nodead]",";").."\n/use "..b("Sundering","[]",";")..b("Ice Strike","[]",";")..b("Icefury","[]",";")..b("Stormkeeper","[]",";")..b("Downpour","[@cursor]",";")..b("Storm Elemental","[pet:Storm Elemental]Tempest;",";")..b("Fire Elemental","[pet:Fire Elemental,@mouseover,harm,nodead][pet:Fire Elemental]Meteor",";")..b("Chain Heal","[@mouseover,help,nodead]","").."\n/use [nocombat,noexists]Sen'jin Spirit Drum\n/cleartarget [dead]")
+					EditMacro("WSxGen4",nil,nil,"#show\n/use "..b("Wellspring","[]",";")..b("Icefury","[]",";")..b("Lava Burst","[nospec:3,@mouseover,harm,nodead][nospec:3]",";")..b("Chain Heal","[@mouseover,help,nodead][]","").."\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat,noexists,nospec:3]Smolderheart\n/startattack")
+					EditMacro("WSxSGen+4",nil,nil,"#show\n/targetenemy [noexists]\n/use "..b("Riptide","[@party1,help,nodead,mod:alt]",";")..b("Chain Heal","[mod:alt,@party1,help,nodead]",";")..b("Healing Surge","[mod:alt,@party1,help,nodead]",";").."\n/use "..b("Sundering","[]",";")..b("Healing Tide Totem","[spec:3]",";")..b("Stormkeeper","[]",";")..b("Downpour","[@cursor]",";")..b("Storm Elemental","[pet:Storm Elemental]Tempest",";")..b("Fire Elemental","[pet:Fire Elemental,@mouseover,harm,nodead][pet:Fire Elemental]Meteor",";").."\n/use [nocombat,noexists]Sen'jin Spirit Drum\n/cleartarget [dead]")
 					EditMacro("WSxCGen+4",nil,nil,"#show\n/use [@party3,help,nodead,mod:alt]Riptide;"..b("Ascendance","[]",";")..b("Stormkeeper","[]",";")..b("Wellspring","¨[]",";")..b("Totemic Projection","[@cursor]",";")..b("Downpour","[@cursor]","").."\n/targetenemy [noexists]\n/use Trawler Totem")
 					EditMacro("WSxGen5",nil,nil,"/targetenemy [noexists,nomod]\n/target [@Greater Earth,mod]\n/use "..b("Spirit Link Totem","[mod,@cursor]",";")..b("Earth Elemental","[mod,@pet,help,nodead][mod,help,nodead]Healing Surge;[mod]",";")..b("Earth Shock","[]",";")..b("Healing Wave","[@mouseover,help,nodead][]",";").."Lightning Bolt\n/targetlasttarget [mod,exists]")
-					EditMacro("WSxSGen+5",nil,nil,"#show "..b("Earthen Wall Totem","","")..b("Ancestral Protection Totem","","").."\n/cast "..b("Riptide","[@party2,help,nodead,mod:alt]",";")..b("Chain Heal","[mod:alt,@party2,help,nodead]",";")..b("Ice Strike","[]",";")..b("Doom Winds","[]",";")..b("Downpour","[@cursor]",";")..b("Wellspring","[]",";")..b("Storm Elemental","[pet:Storm Elemental]Tempest;",";")..b("Fire Elemental","[pet:Fire Elemental,@mouseover,harm,nodead][pet:Fire Elemental]Meteor;",";")..b("Frost Shock","[@mouseover,harm,nodead][]","").."\n/use [nocombat,noexists]Lava Fountain\n/targetenemy [noexists]")
+					EditMacro("WSxSGen+5",nil,nil,"#show ".."\n/cast [nocombat,noexists]Lava Fountain\n/stopspelltarget\n/cast "..b("Riptide","[@party2,help,nodead,mod:alt]",";")..b("Chain Heal","[mod:alt,@party2,help,nodead]",";")..b("Storm Elemental","[pet:Storm Elemental]Tempest;",";")..b("Fire Elemental","[pet:Fire Elemental,@mouseover,harm,nodead][pet:Fire Elemental]Meteor;",";")..b("Doom Winds","[]",";")..b("Stormkeeper","[]",";")..b("Healing Stream Totem","[]",";")..b("Frost Shock","[]","").."\n/targetenemy [noexists]")
 					EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use [mod:ctrl,@party4,help,nodead]Riptide;[nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;14\n/use Eternal Black Diamond Ring")
-					EditMacro("WSxGen6",nil,nil,"#show\n/targetenemy [noexists,nomod]"..b("Feral Spirit","\n/use [mod]",";")..b("Fire Elemental","\n/use [mod]",";")..b("Storm Elemental","\n/use [mod]",";")..b("Earth Elemental","\n/target [@Greater Earth Ele,mod]\n/use [help,mod,nodead]Healing Surge;[mod]","\n/targetlasttarget [mod]").."\n/use "..b("Crash Lightning","[]",";")..b("Chain Lightning","[@mouseover,harm,nodead][]",";").."Primal Strike\n/cleartarget [dead]")
-					EditMacro("WSxSGen+6",nil,nil,"/use "..b("Healing Tide Totem","[spec:3]",";")..b("Chain Heal","[@mouseover,help,nodead][help,nodead]",";")..b("Fire Nova","[]",";")..b("Ice Strike","[]",";")..b("Windfury Totem","[]",";")..b("Chain Lightning","[@mouseover,harm,nodead][]",";").."\n/use [nocombat,noexists]Goren \"Log\" Roller\n/use Orb of Deception\n/leavevehicle")
-					EditMacro("WSxGen7",nil,nil,"/use "..b("Healing Rain","[mod:shift,@player][@cursor]",";")..b("Earthquake","[mod:shift,@player][@cursor]",";")..b("Windfury Totem","[mod:shift]",";")..b("Chain Lightning","[@mouseover,harm,nodead][harm,nodead]",";").."Bom'bay's Color-Seein' Sauce\n/startattack\n/use [noexists,nocombat]Moonfang's Paw")
-					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Liquid Magma Totem","[mod:shift,@player][@cursor]",";")..b("Ice Strike","[]",";")..b("Fire Nova","[]",";")..b("Wellspring","[]",";")..b("Water Shield","[]",";")..b("Spirit Link Totem","[]",";")..b("Healing Rain","[mod:shift,@player][@cursor]",";")..b("Frost Shock","[@mouseover,harm,nodead][]",";")..b("Chain Lightning","[@mouseover,harm,nodead][]",""))
+					if playerSpec == 3 then
+						EditMacro("WSxGen6",nil,nil,"/targetenemy [noexists,nomod]"..b("Earth Elemental","\n/target [@Greater Earth Ele,mod:ctrl]\n/use [help,mod:ctrl,nodead]Healing Surge;[mod:ctrl]","\n/targetlasttarget [mod:ctrl]").."\n/use "..b("Healing Rain","[@cursor]",";").."[@mouseover,help,nodead]Chain Heal;[@mouseover,harm,nodead][harm,nodead]Chain Lightning;Chain Heal")
+					else
+						EditMacro("WSxGen6",nil,nil,"/targetenemy [noexists,nomod]\n/use "..b("Feral Spirit","[mod:ctrl]",";")..b("Fire Elemental","[mod:ctrl]",";")..b("Storm Elemental","[mod:ctrl]",";")..b("Crash Lightning","[]",";").."[@mouseover,harm,nodead][]Chain Lightning")
+					end
+					EditMacro("WSxSGen+6",nil,nil,"#show "..b("Earthen Wall Totem","[]","")..b("Ancestral Protection Totem","[]","")..b("Feral Lunge","[]","").."\n/use [@mouseover,help,nodead]Chain Heal;[@mouseover,harm,nodead][harm,nodead]Chain Lightning;Chain Heal\n/use [nocombat,noexists]Goren \"Log\" Roller\n/use Orb of Deception\n/leavevehicle\n/targetenemy [noexists]")
+					EditMacro("WSxGen7",nil,nil,"/use "..b("Healing Rain","[mod:shift,@player]",";")..b("Earthquake","[mod:shift,@player][@cursor]",";")..b("Windfury Totem","[mod:shift]",";").."[@mouseover,harm,nodead][]Chain Lightning\n/startattack")
+					EditMacro("WSxGen8",nil,nil,"#show\n/stopspelltarget\n/use "..b("Liquid Magma Totem","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Downpour","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Healing Rain","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Fire Nova","[]",";").."Frost Shock")
 					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Primordial Wave","[]",";")..b("Healing Stream Totem","[]",";")..b("Windfury Totem","[]",";")..b("Ice Strike","[]",";")..b("Fire Nova","[]",";")..b("Earthliving Weapon","[]",";")..b("Spirit Link Totem","[]",";")..b("Tremor Totem","[]",";")..b("Downpour","[@cursor]",";")..b("Water Walking","",""))
-					EditMacro("WSxCSGen+2",nil,nil,"/use [spec:3,@focus,help,nodead][spec:3,@party1,help,nodead]Purify Spirit;[@focus,help,nodead][@party1,help,nodead]Cleanse Spirit;[nocombat,noharm]Spirit Wand;")
-					EditMacro("WSxCSGen+3",nil,nil,"/use [spec:3,@focus,help,nodead][spec:3,@party2,help,nodead]Purify Spirit;[nospec:2,@focus,harm,nodead]Flame Shock;[@party2,help,nodead]Cleanse Spirit;[nocombat,noharm]Cranky Crab;\n/cleartarget [dead]\n/stopspelltarget")
-					EditMacro("WSxCSGen+4",nil,nil,"/use [@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Earth Shield")
-					EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,help,nodead][@party2,help,nodead][@targettarget,help,nodead]Earth Shield\n/use [spec:3]Waterspeaker's Totem")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ancestral Spirit;"..pwned.."\n/use [mod:ctrl]Ancestral Vision"..brazier)
+					EditMacro("WSxCSGen+2",nil,nil,"/use [mod:alt,spec:3,@party3,help,nodead][spec:3,@party1,help,nodead][spec:3,@targettarget,help,nodead]Purify Spirit;[mod:alt,@party3,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Cleanse Spirit;[nocombat,noharm]Spirit Wand")
+					EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,harm,nodead]Flame Shock;[mod:alt,spec:3,@party4,help,nodead][spec:3,@party2,help,nodead]Purify Spirit;[mod:alt,@party4,help,nodead][@party2,help,nodead]Cleanse Spirit;[nocombat,noharm]Cranky Crab;\n/cleartarget [dead]\n/stopspelltarget")
+					EditMacro("WSxCSGen+4",nil,nil,"/use [mod:alt,@party3,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Chain Heal")
+					EditMacro("WSxCSGen+5",nil,nil,"/use [mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead][@targettarget,help,nodead]Chain Heal\n/use [spec:3]Waterspeaker's Totem")
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ancestral Spirit;"..pwned.."\n/use [mod:ctrl]Ancestral Vision"..brazier)
 					EditMacro("WSxGenQ",nil,nil,"/stopcasting [nomod:alt]\n/use "..b("Hex","[mod:alt,@focus,harm,nodead]",";")..b("Tremor Totem","[mod:shift]",";").."[help,nodead]Foot Ball;[nocombat,noexists]The Golden Banana;"..b("Wind Shear","[@mouseover,harm,nodead][]","").."\n/use [nocombat,spec:3]Bubble Wand\n/cancelaura Bubble Wand")
 					EditMacro("WSkillbomb",nil,nil,"/use "..b("Fire Elemental","","")..b("Storm Elemental","","")..b("Feral Spirit","","")..b("Earth Elemental","\n/use ","").."\n/use Rukhmar's Sacred Memory"..b("Ascendance","\n/use ","")..""..dpsRacials[race].."\n/use [@player]13\n/use 13\n/use Flippable Table\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")	
 					EditMacro("WSxGenE",nil,nil,"#show [nocombat,noexists]Party Totem;Capacitor Totem\n/use "..b("Mana Spring Totem","[mod:alt]",";")..b("Capacitor Totem","[@cursor]","").."\n/use Haunting Memento\n/use [nocombat,noexists]Party Totem")
 					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Capacitor Totem","[mod:alt,@player]",";")..b("Nature's Swiftness","","")..oOtas..covToys)
 					EditMacro("WSxSGen+E",nil,nil,"#show\n/use [mod:alt,@player]Earthbind Totem;"..b("Healing Stream Totem","","").."\n/use Arena Master's War Horn\n/use Totem of Spirits\n/use [nocombat]Void-Touched Souvenir Totem")
-					EditMacro("WSxGenR",nil,nil,"#show Earthbind Totem\n/use "..b("Totemic Projection","[@cursor,mod:ctrl]",";").."[mod:shift,@cursor]Earthbind Totem;"..b("Frost Shock","[@mouseover,harm,nodead][harm,nodead]",";").."\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxGenT",nil,nil,"/use "..b("Wind Rush Totem","[mod:alt,@player][@cursor]",";")..b("Earthgrab Totem","[mod:alt,@player][@cursor]",";")..b("Thunderstorm","[@mouseover,exists,nodead][]","")..b("Frost Shock","[@mouseover,harm,nodead][harm,nodead]","")..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxGenR",nil,nil,"#show Earthbind Totem\n/use "..b("Totemic Projection","[mod:ctrl,@cursor]",";").."[mod:shift,@cursor]Earthbind Totem;"..b("Frost Shock","[@mouseover,harm,nodead][]",";").."\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxGenT",nil,nil,"/use "..b("Thunderstorm","[@mouseover,exists,nodead][]",";")..b("Frost Shock","[@mouseover,harm,nodead][harm,nodead]",";").."[help,nocombat]Swapblaster"..nPepe.."\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxSGen+T",nil,nil,"#show\n/use "..b("Lightning Lasso","[@mouseover,harm,nodead][]",";")..b("Thunderstorm","[@mouseover,exists,nodead][]",";")..b("Earthquake","[@cursor]",";")..b("Purge","[@mouseover,harm,nodead][]",";")..b("Greater Purge","[@mouseover,harm,nodead][]",";")..b("Frost Shock","[@mouseover,harm,nodead][]",""))
-				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use "..b("Wellspring","",""))
-					EditMacro("WSxGenU",nil,nil,"#show\n/use Reincarnation")
-					EditMacro("WSxGenF",nil,nil,"#show "..b("Totemic Projection","","").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt,@cursor]Far Sight;"..b("Wind Shear","[@focus,harm,nodead]",";").."Mrgrglhjorn\n/use Survey")
-					EditMacro("WSxSGen+F",nil,nil,"#show\n/use [nocombat,noexists,mod:alt]Gastropod Shell;[nocombat,noexists]Totem of Harmony"..b("Thunderstorm","\n/use [@mouseover,exists,nodead][]","").."\n/cancelform [mod:alt]")
-					EditMacro("WSxCGen+F",nil,nil,"#show "..b("Ancestral Guidance","[]",";")..b("Totemic Projection","[]","").."\n/use "..b("Ancestral Guidance","","").."\n/use "..fftpar.."\n/cancelaura Thistleleaf Disguise")
-					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Spirit Walk","[]",";")..b("Spiritwalker's Grace","[]",";")..b("Earthliving Weapon","[]",";")..b("Gust of Wind","[]","").."\n/run if not InCombatLockdown() then if GetSpellCooldown(198103)==0 then "..tpPants.." else "..noPants.." end end\n/use Gateway Control Shard")
+				    EditMacro("WSxCGen+T",nil,nil,"#show\n/stopspelltarget\n/use "..b("Wind Rush Totem","[@mouseover,exists,nodead][@cursor]","")..b("Earthgrab Totem","[@mouseover,exists,nodead][@cursor]",""))
+					EditMacro("WSxGenU",nil,nil,"#show\n/use "..b("Gust of Wind","[]",";")..b("Spirit Walk","[]",";").."Reincarnation")
+					EditMacro("WSxGenF",nil,nil,"#show "..b("Totemic Projection","","").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt,@cursor]Far Sight;"..b("Wind Shear","[@focus,harm,nodead]",";").."Mrgrglhjorn")
+					EditMacro("WSxSGen+F",nil,nil,"#show\n/use [help,nocombat,mod:alt]B.B.F. Fist;[nocombat,noexists,mod:alt]Gastropod Shell;[nocombat,noexists]Totem of Harmony;"..b("Stoneskin Totem","[@cursor]",";")..b("Tranquil Air Totem","[@cursor]",";")..b("Gust of Wind","[]",";")..b("Spirit Walk","[]",";").."\n/cancelform [mod:alt]")
+					EditMacro("WSxCGen+F",nil,nil,"#show "..b("Ancestral Guidance","[]",";")..b("Totemic Projection","[]","").."\n/use "..b("Ancestral Guidance","","").."\n/use "..fftpar.."\n/cancelaura Thistleleaf Disguise\n/use Bom'bay's Color-Seein' Sauce")
+					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Tremor Totem","","").."\n/run if not InCombatLockdown() then if GetSpellCooldown(198103)==0 then "..tpPants.." else "..noPants.." end end\n/use Gateway Control Shard")
 					EditMacro("WSxGenG",nil,nil,"/use [mod:alt]Darkmoon Gazer;"..b("Purge","[@mouseover,harm,nodead]",";")..b("Greater Purge","[@mouseover,harm,nodead]",";").."[spec:3,@mouseover,help,nodead][spec:3]Purify Spirit;"..b("Cleanse Spirit","[@mouseover,help,nodead][]").."\n/targetenemy [noexists]\n/use Poison Extraction Totem")
-				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Earthen Wall Totem","[@cursor]",";")..b("Ancestral Protection Totem","[@cursor]",""))
+					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..b("Purge","[@mouseover,harm,nodead][harm,nodead]",";")..b("Greater Purge","[@mouseover,harm,nodead][harm,nodead]",";")..b("Healing Stream Totem","[]",";").."\n/use Flaming Hoop\n/targetenemy [noexists]\n/cleartarget [dead]")
+				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Earthen Wall Totem","[@cursor]",";")..b("Ancestral Protection Totem","[@cursor]",";"))
 					EditMacro("WSxCSGen+G",nil,nil,"/use "..b("Purge","[@focus,harm,nodead]",";")..b("Greater Purge","[@focus,harm,nodead]",";")..b("Purify Spirit","[@focus,help,nodead]",";")..b("Cleanse Spirit","[@focus,help,nodead]",";")..b("Poison Cleansing Totem","[]",";")..b("Tremor Totem","[]",";")..b("Capacitor Totem","","").."\n/cancelaura Whole-Body Shrinka'\n/cancelaura Growing Pains")
-					EditMacro("WSxSGen+H",nil,nil,"#show\n/use "..b("Stoneskin Totem","[@cursor]",";")..b("Tranquil Air Totem","[@cursor]",";")..b("Thunderstorm","[]",";")..b("Hex","[]","").."\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
+					EditMacro("WSxGenH",nil,nil,"#show\n/use "..b("Totemic Recall","[]",";")..b("Stoneskin Totem","[@cursor]",";")..b("Tranquil Air Totem","[@cursor]",";")..b("Hex","[]","").."\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
 					EditMacro("WSxCGen+J",nil,nil,"#show [spec:3,talent:1/3]Unleash Life;[spec:2,talent:1/3]Elemental Blast;[spec:1,talent:1/3]Static Discharge;Flame Shock\n/use "..invisPot)
-					EditMacro("WSxGenZ",nil,nil,"#show\n/use [mod:alt]Flametongue Weapon;[mod:shift,@player,spec:3]Spirit Link Totem;"..b("Astral Shift","[nomod]","").."\n/use Whole-Body Shrinka'\n/use [mod:alt]Gateway Control Shard")
-					EditMacro("WSxGenX",nil,nil,"/use "..b("Windfury Weapon","[mod:alt]",";")..b("Earthliving Weapon","[mod:alt]",";").."[mod:ctrl]Astral Recall;"..b("Spirit Walk","[mod:shift]",";")..b("Spiritwalker's Grace","[mod:shift]",";")..b("Earth Shield","[@mouseover,help,nodead][]",";")..b("Lightning Shield","","").."\n/use Void Totem\n/use Deceptia's Smoldering Boots")
-					EditMacro("WSxGenC",nil,nil,"/use [help,nodead,nocombat]Chasing Storm\n/use "..b("Hex","[@mouseover,exists,nodead,mod:ctrl][mod:ctrl]",";")..b("Mana Tide Totem","[mod:shift]",";")..b("Riptide","[@mouseover,help,nodead][]",";")..b("Thunderstorm","[@mouseover,exists,nodead][]",";")..b("Feral Spirit","","").."\n/use Thistleleaf Branch")
-					EditMacro("WSxAGen+C",nil,nil,"#show\n/use [nocombat,noexists]Vol'Jin's Serpent Totem\n/use "..b("Totemic Recall","").."\n/click TotemFrameTotem1 RightButton\n/cry")
-					EditMacro("WSxGenV",nil,nil,"/use "..b("Gust of Wind","[]",";")..b("Feral Lunge","[]",";")..b("Spiritwalker's Grace","","")..b("Spirit Walk","[]",";")..b("Ghost Wolf","[noform]","").."\n/use Panflute of Pandaria\n/use Croak Crock\n/cancelaura Rhan'ka's Escape Plan\n/use Desert Flute\n/use Sparklepony XL")
+					EditMacro("WSxGenZ",nil,nil,"#show\n/use [mod:alt]Flametongue Weapon;[mod:shift,@player,spec:3]Spirit Link Totem;"..b("Astral Shift","[nomod]","").."\n/use Whole-Body Shrinka'\n/use [mod:alt]Gateway Control Shard\n/use Moonfang's Paw")
+					EditMacro("WSxGenX",nil,nil,"/use "..b("Windfury Weapon","[mod:alt]",";")..b("Earthliving Weapon","[mod:alt]",";").."[mod:ctrl]Astral Recall;"..b("Spirit Walk","[mod:shift]",";")..b("Spiritwalker's Grace","[mod:shift]",";")..b("Earth Shield","["..tank.."][@mouseover,help,nodead][]",";")..b("Lightning Shield","","").."\n/use Void Totem\n/use Deceptia's Smoldering Boots")
+					EditMacro("WSxGenC",nil,nil,"/use [help,nodead,nocombat]Chasing Storm".."\n/use "..b("Hex","[@mouseover,exists,nodead,mod:ctrl][mod:ctrl]",";")..b("Mana Tide Totem","[mod]",";")..b("Totemic Recall","[mod]",";")..b("Riptide","[@mouseover,help,nodead][]",";")..b("Hex","[]",";")..b("Thunderstorm","[@mouseover,exists,nodead][]","").."\n/use Thistleleaf Branch")
+					EditMacro("WSxAGen+C",nil,nil,"#show\n/use [nocombat,noexists]Vol'Jin's Serpent Totem\n/use "..b("Totemic Recall","").."\n/click TotemFrameTotem1 RightButton\n/cry\n/cancelaura Chasing Storm")
+					EditMacro("WSxGenV",nil,nil,"#show "..b("Spiritwalker's Grace","","").."\n/use "..b("Feral Lunge","[@mouseover,harm,nodead][]",";")..b("Gust of Wind","[]",";")..b("Spiritwalker's Grace","[]",";")..b("Spirit Walk","[]",";")..b("Ghost Wolf","[noform]","").."\n/use Panflute of Pandaria\n/use Croak Crock\n/cancelaura Rhan'ka's Escape Plan\n/use Desert Flute\n/use Sparklepony XL")
 					EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";[@mouseover,help,nodead][nomod:alt]Water Walking\n/use [swimming,nomod:alt]Barnacle-Encrusted Gem\n/use [mod:alt]Weathered Purple Parasol")   
 
 				-- Mage, maggi, nooniverse
@@ -2936,95 +3005,100 @@ local function eventHandler(self, event)
 					EditMacro("WSxGen1",nil,nil,"/targetenemy [noharm,nodead]\n/use [nocombat,noexists]Dazzling Rod\n/use "..b("Ray of Frost","[]",";")..b("Radiant Spark","[@mouseover,harm,nodead][]",";")..b("Ice Lance","[]",";")..b("Phoenix Flames","[@mouseover,harm,nodead][]",";")..b("Frostbolt","[]",";"))
 					EditMacro("WSxGen2",nil,nil,"/use "..b("Arcane Blast","[harm,nodead]",";")..b("Scorch","[@mouseover,harm,nodead][harm,nodead]",";")..b("Frostbolt","[harm,nodead]",";").."Akazamzarak's Spare Hat\n/targetenemy [noharm]\n/cleartarget [dead]\n/use Kalec's Image Crystal\n/use Archmage Vargoth's Spare Staff")
 					EditMacro("WSxGen3",nil,nil,"/use "..b("Pyroblast","[@mouseover,harm,nodead][harm,nodead]","")..b("Arcane Surge","[]",";")..b("Glacial Spike","[]",";")..b("Supernova","[]","").."\n/use [spec:2]Smolderheart\n/use Dalaran Initiates' Pin\n/targetenemy [noexists]")
-					EditMacro("WSxSGen+3",nil,nil,"/targetenemy [noexists]\n/use [nocombat,noexists]Archmage Vargoth's Spare Staff;"..b("Nether Tempest","[]",";")..b("Arcane Blast","","")..b("Living Bomb","[nomod:alt]",";")..b("Ebonbolt","[]",";")..b("Frostbolt","[nomod:alt]","")..b("Pyroblast","","\n/use [nocombat]Brazier of Dancing Flames\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]Pyroblast\n/targetlasttarget"))
+					EditMacro("WSxSGen+3",nil,nil,"/targetenemy [noexists]\n/use [nocombat,noexists]Archmage Vargoth's Spare Staff;"..b("Nether Tempest","[nomod:alt]",";")..b("Arcane Blast","[nomod:alt]",";")..b("Living Bomb","[nomod:alt]",";")..b("Icy Veins","[pet:Water Elemental,@mouseover,harm,nodead][pet:Water Elemental]Water Jet;[nomod:alt]Frostbolt;","")..b("Pyroblast","[nomod:alt]","\n/use [nocombat]Brazier of Dancing Flames\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]Pyroblast\n/targetlasttarget"))
 					EditMacro("WSxGen4",nil,nil,"/use "..b("Fireball","[@mouseover,harm,nodead][harm,nodead]",";")..b("Flurry","[harm,nodead]",";")..b("Arcane Missiles","[harm,nodead]",";").."Memory Cube\n/targetenemy [noexists]\n/cleartarget [dead]\n/stopspelltarget")
 					EditMacro("WSxSGen+4",nil,nil,"/stopspelltarget\n/use "..b("Touch of the Magi","[nomod:alt]",";")..b("Comet Storm","[nomod:alt]",";")..b("Ebonbolt","[nomod:alt]",";")..b("Meteor","[@mouseover,exists,nodead,nomod:alt,spec:2][@cursor,nomod:alt,spec:2]",";")..b("Dragon's Breath","[nomod:alt]",";")..b("Frostbolt","[nomod:alt]","")..b("Fireball","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]","\n/targetlasttarget"))
-					EditMacro("WSxCGen+4",nil,nil,"#show\n/use "..b("Rune of Power","","")..b("Focus Magic","[@mouseover,help,nodead][]","").."\n/use [nocombat,noexists]Faded Wizard Hat")
-					EditMacro("WSxGen5",nil,nil,"/targetenemy [noexists]\n/use "..b("Alter Time", "[mod]!",";")..b("Arcane Barrage","[@mouseover,harm,nodead][harm,nodead]",";")..b("Ice Lance","[@mouseover,harm,nodead][harm,nodead]",";")..b("Fire Blast","[@mouseover,harm,nodead][harm,nodead]",";")..broom)
-					EditMacro("WSxSGen+5",nil,nil,"/targetenemy [noexists]\n/cleartarget [dead]\n/clearfocus [dead]\n/use [mod:alt,pet,@player][pet,@cursor]Freeze"..b("Evocation",";",";")..b("Fire Blast","[@mouseover,harm,nodead][]",";")..b("Frost Nova","",""))
+					EditMacro("WSxCGen+4",nil,nil,"#show\n/use "..b("Mass Invisibility","","")..b("Mass Barrier","[]","").."\n/use [nocombat,noexists]Faded Wizard Hat")
+					EditMacro("WSxGen5",nil,nil,"/stopspelltarget [@mouseover,harm,nodead][harm,nodead]\n/targetenemy [noexists]\n/use "..b("Alter Time", "[mod]!",";")..b("Arcane Barrage","[@mouseover,harm,nodead][harm,nodead]",";")..b("Ice Lance","[@mouseover,harm,nodead][harm,nodead]",";")..b("Fire Blast","[@mouseover,harm,nodead][harm,nodead]",";")..broom)
+					EditMacro("WSxSGen+5",nil,nil,"/stopspelltarget\n/targetenemy [noexists]\n/cleartarget [dead]\n/use "..b("Icy Veins","[mod:alt,pet:Water Elemental,@player][@mouseover,exists,nodead,pet:Water Elemental][pet:Water Elemental,@cursor]Freeze;[@mouseover,harm,nodead][]Fire Blast;","")..b("Evocation","[]",";")..b("Pyroblast","[@mouseover,harm,nodead][]Fire Blast;",""))
 					EditMacro("WSxGen6",nil,nil,"#show\n/use "..b("Icy Veins","[mod:ctrl]","")..b("Arcane Surge","[mod:ctrl]","")..b("Combustion","[mod:ctrl]","").."\n/use "..b("Mirror Image","[mod:ctrl]",";")--[[..b("Phoenix Flames","[@mouseover,harm,nodead][]",";")--]]..b("Frozen Orb","[@cursor]",";")..b("Supernova","[@mouseover,exists,nodead][]",";")..b("Dragon's Breath","[]",";")..b("Arcane Explosion","[]",""))
 					EditMacro("WSxSGen+6",nil,nil,"#show\n/use [nocombat,noexists]Mystical Frosh Hat\n/use "..b("Meteor","[@player,spec:2]",";")..b("Dragon's Breath","[]",";"))
-					EditMacro("WSxGen7",nil,nil,"#show\n/stopspelltarget\n/use "..b("Blizzard","[mod:shift,@player][@cursor]",";")..b("Flamestrike","[mod:shift,@player][@cursor]",";")..b("Arcane Orb","[]",";")..b("Ice Nova","[]",";")..b("Blast Wave","","")..b("Arcane Explosion","","")..b("Touch of the Magi","",";"))
-					EditMacro("WSxGen8",nil,nil,"#show\n/stopspelltarget\n/use "..b("Dragon's Breath","[spec:2]",";")..b("Meteor","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Arcane Explosion","[]",""))
-					EditMacro("WSxGen9",nil,nil,"#show "..b("Arcane Familiar").."\n/use "..b("Arcane Explosion","",""))
-					EditMacro("WSxCSGen+2",nil,nil,"/use [@focus,help,nodead][@party1,help,nodead]Remove Curse")
-					EditMacro("WSxCSGen+3",nil,nil,"#show\n/use "..b("Pyroblast","[@focus,harm,nodead]",";").."[@party2,help,nodead]Remove Curse;[exists,nodead]Magical Saucer\n/targetenemy [noharm]\n/cleartarget [dead][nocombat,noharm]\n/stopspelltarget")
-					EditMacro("WSxCSGen+4",nil,nil,"/use [spec:2,@focus,harm,nodead]Fireball;[@focus,help,nodead][@party1,help,nodead]Slow Fall;Pink Gumball\n/targetenemy [noharm]\n/cleartarget [dead][nocombat,noharm]\n/stopspelltarget\n/use [nocombat,noexists]Ogre Pinata")
-					EditMacro("WSxCSGen+5",nil,nil,"#show Ice Block\n/use [@party2,help,nodead]Slow Fall\n/use [nocombat,noexists]Shado-Pan Geyser Gun\n/cancelaura [combat]Shado-Pan Geyser Gun\n/stopmacro [combat]\n/click ExtraActionButton1")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
+					EditMacro("WSxGen7",nil,nil,"#show\n/stopspelltarget\n/use "..b("Blizzard","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Flamestrike","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Arcane Orb","[]",";")..b("Ice Nova","[]",";")..b("Blast Wave","","")..b("Arcane Explosion","","")..b("Touch of the Magi","",";"))
+					EditMacro("WSxGen8",nil,nil,"#show\n/stopspelltarget\n/use "..b("Shifting Power","[]",";")..b("Dragon's Breath","[spec:2]",";")..b("Meteor","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Arcane Explosion","[]",""))
+					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Arcane Familiar","[nocombat,noexists]",";")..b("Arcane Explosion","",""))
+					EditMacro("WSxCSGen+2",nil,nil,"/use [mod:alt,@party3,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Remove Curse")
+					EditMacro("WSxCSGen+3",nil,nil,"#show\n/use "..b("Pyroblast","[@focus,harm,nodead]",";").."[mod:alt,@party4,help,nodead][@party2,help,nodead]Remove Curse;[exists,nodead]Magical Saucer\n/targetenemy [noharm]\n/cleartarget [dead][nocombat,noharm]\n/stopspelltarget")
+					EditMacro("WSxCSGen+4",nil,nil,"/use [spec:2,@focus,harm,nodead]Fireball;[mod:alt,@party3,help,nodead][@party1,help,nodead]Slow Fall;Pink Gumball\n/targetenemy [noharm]\n/cleartarget [dead][nocombat,noharm]\n/stopspelltarget\n/use [nocombat,noexists]Ogre Pinata")
+					EditMacro("WSxCSGen+5",nil,nil,"#show Ice Block\n/use [mod:alt,@party4,help,nodead][@party2,help,nodead]Slow Fall\n/use [nocombat,noexists]Shado-Pan Geyser Gun\n/cancelaura [combat]Shado-Pan Geyser Gun\n/stopmacro [combat]\n/click ExtraActionButton1")
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
 					EditMacro("WSxGenQ",nil,nil,"#show\n/stopcasting [nomod]\n/use [mod:alt,@focus,harm,nodead]Polymorph;[mod:shift]Winning Hand;[@mouseover,harm,nodead][harm,nodead]Counterspell;Nightborne Guard's Vigilance\n/use [mod:shift]Ice Block;")
 					EditMacro("WSkillbomb",nil,nil,"#show\n/use "..b("Combustion","[]",";")..b("Icy Veins","[]",";")..b("Mirror Image","","").."\n/use "..b("Arcane Surge","","")..""..dpsRacials[race].."\n/use Rukhmar's Sacred Memory\n/use [@player]13\n/use 13\n/use Hearthstone Board\n/use Gleaming Arcanocrystal\n/use Big Red Raygun"..hasHE)
 					EditMacro("WSxGenE",nil,nil,"#show\n/use "..b("Mass Polymorph","[mod:alt]",";")..b("Blast Wave","[mod:alt]",";")..b("Frost Nova","","").."\n/use Manastorm's Duplicator")
 					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Ice Floes","[]",";")..b("Ice Nova","","").."\n/use [spec:2]Blazing Wings"..oOtas..covToys)
 					EditMacro("WSxSGen+E",nil,nil,"#show\n/use [mod:alt,@player,pet]Freeze;"..b("Ice Nova","[]",""))
 					EditMacro("WSxGenR",nil,nil,"#show "..b("Cone of Cold","","").."\n/use "..b("Cone of Cold","[mod:shift]",";")..b("Slow","[]",";")..b("Frostbolt","","").."\n/targetenemy [noexists]")
-					EditMacro("WSxGenT",nil,nil,"/use "..b("Fire Blast","[@mouseover,harm,nodead][]","").."\n/targetenemy [noexists]\n/cleartarget [dead]\n/petattack [@mouseover,harm,nodead][]"..nPepe)
+					EditMacro("WSxGenT",nil,nil,"/use "..b("Fire Blast","[@mouseover,harm,nodead][]","").."\n/targetenemy [noexists]\n/use Titanium Seal of Dalaran\n/cleartarget [dead]\n/petattack [@mouseover,harm,nodead][]"..nPepe)
 					EditMacro("WSxSGen+T",nil,nil,"#show\n/use "..b("Blast Wave","","").."\n/use [help,nocombat]Swapblaster")
 				    EditMacro("WSxCGen+T",nil,nil,"#show\n/stopspelltarget\n/use "..b("Ring of Frost","[mod:alt,@player][@mouseover,exists,nodead][@cursor]",""))
-					EditMacro("WSxGenF",nil,nil,"#show "..b("Mirror Image").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/stopcasting [nomod]\n/use [mod:alt]Farwater Conch;[@focus,harm,nodead]Counterspell;Mrgrglhjorn\n/use Survey")
-					EditMacro("WSxSGen+F",nil,nil,"#show Familiar Stone\n/cancelaura [mod:alt] Shado-Pan Geyser Gun\n/use [mod:alt,nocombat,noexists]Gastropod Shell;[nomod:alt]Arcane Familiar Stone\n/use [nomod:alt]Fiery Familiar Stone\n/use [nomod:alt]Icy Familiar Stone\n/use [nomod:alt]Familiar Stone")
+					EditMacro("WSxGenF",nil,nil,"#show "..b("Mirror Image").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/stopcasting [nomod]\n/use [mod:alt]Farwater Conch;[@focus,harm,nodead]Counterspell;Mrgrglhjorn")
 					EditMacro("WSxCGen+F",nil,nil,"#show "..b("Invisibility","[combat]","")..";"..b("Ice Block","","")..b("Alter Time","\n/use ",""))
-					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Ring of Frost","[]",";")..b("Mirror Image","[]","").."\n/stopmacro [indoors]\n/use 16\n/run if not (InCombatLockdown() or IsEquippedItem(\"Dragonwrath, Tarecgosa's Rest\") and IsMounted) then EquipItemByName(71086) else Dismount() end\n/equipset [nomounted]"..EQS[playerspec])
+					local cagenf = "#show "..b("Ring of Frost","[]",";")..b("Mirror Image","[]","")
+					EditMacro("WSxCAGen+F",nil,nil,cagenf)
+					if playerName == "Nooniverse" then
+						EditMacro("WSxCAGen+F",nil,nil,cagenf.."\n/run C_MountJournal.SummonByID(1727)")
+					end
 					EditMacro("WSxGenG",nil,nil,"#show\n/targetenemy [noharm]\n/use [mod:alt]Darkmoon Gazer"..b("Spellsteal",";[@mouseover,harm,nodead]",";")..b("Remove Curse","[@mouseover,help,nodead][]","").."\n/use [noexists,nocombat]Set of Matches")
+					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..b("Spellsteal","","").."\n/use [noexists,nocombat]Flaming Hoop\n/targetenemy [noexists]\n/use Poison Extraction Totem")
 				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Arcane Familiar","[]",""))
 					EditMacro("WSxCSGen+G",nil,nil,"#show "..b("Cold Snap","[]",";")..b("Greater Invisibility","[]",";").."\n/use "..b("Spellsteal","[@focus,harm,nodead]","").."\n/use Poison Extraction Totem")
-					EditMacro("WSxSGen+H",nil,nil,"#show "..b("Ice Nova").."\n/targetenemy [noharm]\n/use Nat's Fishing Chair\n/use Home Made Party Mask\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
+					EditMacro("WSxGenH",nil,nil,"#show "..b("Ice Nova").."\n/targetenemy [noharm]\n/use Nat's Fishing Chair\n/use Home Made Party Mask\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
 					EditMacro("WSxCGen+J",nil,nil,"#show "..b("Arcane Familiar","[]",";")..b("Ice Nova","[]",";")..b("Scorch","[]",";")..b("Frost Nova","[]","").."\n/use "..invisPot)
 					EditMacro("WSxGenZ",nil,nil,"#show\n/use [mod:alt]Gateway Control Shard;"..b("Invisibility","[nocombat]",";")..b("Ice Block","!",""))
 					EditMacro("WSxGenX",nil,nil,"#show\n/use [mod:alt]Conjure Refreshment;[mod:ctrl]Teleport: Hall of the Guardian;"..b("Displacement","[mod:shift]",";")..b("Alter Time","[mod:shift]",";")..b("Prismatic Barrier","",";")..b("Blazing Barrier","",";")..b("Ice Barrier","","").."\n/use [nomod,spec:1]Arcano-Shower;[nomod,spec:2]Blazing Wings")
-					EditMacro("WSxGenC",nil,nil,"#show\n/use [@mouseover,harm,nodead,mod:ctrl][mod:ctrl]Polymorph;"..b("Conjure Mana Gem","[mod:shift]",";")..b("Cold Snap","[mod:shift]",";")..b("Greater Invisibility","[]",";")..b("Mirror Image","","").."\n/cancelaura X-Ray Specs\n/use [mod:shift]Mana Gem")
+					EditMacro("WSxGenC",nil,nil,""..b("Conjure Mana Gem","/use [mod:shift]Mana Gem\n/use [mod:shift]","").."\n/use "..b("Cold Snap","[mod:shift]",";")..b("Alter Time","[mod:shift]",";")..b("Mirror Image","[nomod]",";").."[@mouseover,harm,nodead,mod][mod][]Polymorph\n/cancelaura X-Ray Specs\n/ping [mod:ctrl,@mouseover,harm,nodead][mod:ctrl,harm,nodead]onmyway")
 					EditMacro("WSxAGen+C",nil,nil,"#show\n/use Worn Doll\n/run PetDismiss();\n/cry")
 					EditMacro("WSxGenV",nil,nil,"#show\n/use Blink\n/dismount [mounted]\n/use [nomod]Panflute of Pandaria\n/cancelaura Rhan'ka's Escape Plan\n/use Illusion\n/use Prismatic Bauble\n/use Choofa's Call")
 					EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";[@mouseover,help,nodead][noswimming]Slow Fall;Barnacle-Encrusted Gem\n/use [mod:alt]Weathered Purple Parasol")
 		
 				-- Warlock, vårlök
 				elseif class == "WARLOCK" then
-					EditMacro("WSxGen1",nil,nil,"/use "..b("Soulstone","[@mouseover,help,dead][help,dead]",";")..b("Soul Fire","[]",";")..b("Havoc","[@mouseover,harm,nodead][]",";")..b("Soul Strike","[]",";")..b("Summon Vilefiend","[]",";")..b("Soul Swap","[@mouseover,harm,nodead][]",";")..b("Drain Life","[]",";")..b("Corruption","[@mouseover,harm,nodead][]",";").."\n/use Copy of Daglop's Contract\n/targetenemy [noexists]\n/use Imp in a Ball")
+					EditMacro("WSxGen1",nil,nil,"/use "..b("Soulstone","[@mouseover,help,dead][help,dead]",";")..b("Soul Fire","[]",";")..b("Havoc","[@mouseover,harm,nodead][]",";")..b("Soul Strike","[@mouseover,harm,nodead][]",";")..b("Summon Vilefiend","[]",";")..b("Soul Swap","[@mouseover,harm,nodead][]",";")..b("Drain Life","[]",";")..b("Corruption","[@mouseover,harm,nodead][]",";").."\n/use Copy of Daglop's Contract\n/targetenemy [noexists]\n/use Imp in a Ball\n/cancelaura Ring of Broken Promises")
 					EditMacro("WSxSGen+1",nil,nil,"/run local c=C_Container for i=0,4 do for x=1,c.GetContainerNumSlots(i) do y=c.GetContainerItemLink(i,x) if y and GetItemInfo(y)==\"Healthstone\" then c.PickupContainerItem(i,x) DropItemOnUnit(\"target\") return end end end\n/click TradeFrameTradeButton")
-					EditMacro("WSxGen2",nil,nil,"/targetlasttarget [noexists,nocombat]\n/use [harm,dead,nocombat]Soul Inhaler;"..b("Incinerate","[]",";")..b("Unstable Affliction","[@mouseover,harm,nodead][]",";")..b("Shadow Bolt","[]",";").."\n/use Accursed Tome of the Sargerei\n/startattack\n/clearfocus [dead]\n/use Haunting Memento\n/use Verdant Throwing Sphere\n/use Totem of Spirits")
-					EditMacro("WSxSGen+2",nil,nil,"#show\n/use [nomod:alt,harm,nodead]Drain Life;[nomod:alt]Create Healthstone\n/use [nocombat,noexists]Gnomish X-Ray Specs\n/cleartarget [dead]\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Unstable Affliction\n/targetlasttarget")
-					EditMacro("WSxGen3",nil,nil,"/targetlasttarget [noexists,nocombat]\n/use [nocombat,noexists]Pocket Fel Spreader;[harm,dead]Narassin's Soul Gem;"..b("Drain Soul","[@mouseover,harm,nodead][]",";")..b("Shadowburn","[@mouseover,harm,nodead][]",";")..b("Call Dreadstalkers","[@mouseover,harm,nodead][]",";")..b("Immolate","[@mouseover,harm,nodead]","")..b("Shadow Bolt","[@mouseover,harm,nodead][]",";").."\n/targetenemy [noexists]")
+					EditMacro("WSxGen2",nil,nil,"/targetlasttarget [noexists,nocombat]\n/use [harm,dead,nocombat]Soul Inhaler;"..b("Incinerate","[]",";")..b("Agony","[@mouseover,harm,nodead,nomod:alt][nomod:alt]",";")..b("Shadow Bolt","[]",";").."\n/use Accursed Tome of the Sargerei\n/startattack\n/clearfocus [dead]\n/use Haunting Memento\n/use Verdant Throwing Sphere\n/use Totem of Spirits")
+					EditMacro("WSxSGen+2",nil,nil,"/use [nomod:alt,harm,nodead]Drain Life;[nomod:alt]Healthstone\n/use [noexists,nomod:alt]Create Healthstone\n/use [nocombat,noexists]Gnomish X-Ray Specs\n/cleartarget [dead]"..b("Unstable Affliction","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use ","\n/targetlasttarget"))
+					EditMacro("WSxGen3",nil,nil,"/targetlasttarget [noexists,nocombat]\n/use [nocombat,noexists]Pocket Fel Spreader;[harm,dead]Narassin's Soul Gem;"..b("Shadowburn","[@mouseover,harm,nodead][]",";")..b("Call Dreadstalkers","[@mouseover,harm,nodead][]",";")..b("Malefic Rapture","[]",";")..b("Immolate","[@mouseover,harm,nodead]",";")..b("Shadow Bolt","[@mouseover,harm,nodead][]","").."\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+3",nil,nil,"/targetenemy [noexists]\n/use "..b("Doom","[@mouseover,harm,nodead,nomod:alt][nomod:alt]",";")..b("Immolate","[@mouseover,harm,nodead,nomod:alt][nomod:alt]",";")..b("Corruption","[@mouseover,harm,nodead,nomod:alt][nomod:alt]","").."\n/use Totem of Spirits\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use "..b("Doom","[]",";")..b("Immolate","[]",";")..b("Corruption","[]","").."\n/targetlasttarget")
 					EditMacro("WSxGen4",nil,nil,"/use [nocombat,noexists]Crystalline Eye of Undravius;[spec:2]Hand of Gul'dan;"..b("Chaos Bolt","[]",";")..b("Haunt","[@mouseover,harm,nodead][]",";")..b("Unstable Affliction","[@mouseover,harm,nodead][]","").."\n/targetenemy [noexists]\n/cleartarget [dead]\n/cancelaura Crystalline Eye of Undravius\n/use Poison Extraction Totem")
-					EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use "..b("Havoc","[@mouseover,harm,nodead,nomod:alt][nomod:alt]",";")..b("Agony","[@mouseover,harm,nodead,nomod:alt][nomod:alt]",";")..b("Grimoire of Sacrifice","[nomod:alt]",";")..b("Power Siphon","[]",";")..b("Corruption","[@mouseover,harm,nodead,nomod:alt][nomod:alt]","").."\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use "..b("Agony","[]",";")..b("Havoc","[]",";")..b("Corruption","[]","").."\n/targetlasttarget")
-					EditMacro("WSxCGen+4",nil,nil,"/use "..b("Nether Portal","[]",";")..b("Soul Fire","[]",";")..b("Demonic Gateway","[@cursor]","").."\n/targetenemy [noexists]\n/cleartarget [dead]\n/use Gateway Control Shard")
-					EditMacro("WSxGen5",nil,nil,"/use [pet:Voidwalker/Voidlord,mod:ctrl]Suffering;[mod:ctrl]Fel Domination\n/use [nopet:Voidwalker/Voidlord,mod:ctrl]Summon Voidwalker;"..b("Demonbolt","[@mouseover,harm,nodead,nomod:ctrl][nomod:ctrl]",";")..b("Conflagrate","[@mouseover,harm,nodead,nomod:ctrl][nomod:ctrl]",";").."\n/use Fire-Eater's Vial\n/targetenemy [noexists]")
+					EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use "..b("Havoc","[@mouseover,harm,nodead,nomod:alt][nomod:alt]",";")..b("Unstable Affliction","[@mouseover,harm,nodead,nomod:alt][nomod:alt]",";")..b("Power Siphon","[]",";")..b("Corruption","[@mouseover,harm,nodead,nomod:alt][nomod:alt]","").."\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use "..b("Agony","[]",";")..b("Havoc","[]",";")..b("Corruption","[]","").."\n/targetlasttarget")
+					EditMacro("WSxCGen+4",nil,nil,"/use "..b("Nether Portal","[]",";")..b("Soul Fire","[]",";")..b("Demonic Gateway","[@cursor]","").."\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxGen5",nil,nil,"/use [pet:Voidwalker,mod:ctrl]Suffering;[mod:ctrl]Fel Domination;[nocombat,noexists]Fire-Eater's Vial\n/use [nopet:Voidwalker,mod:ctrl]Summon Voidwalker;"..b("Demonbolt","[@mouseover,harm,nodead][]",";")..b("Conflagrate","[@mouseover,harm,nodead][]",";").."Shadow Bolt\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+5",nil,nil,"#show\n/targetenemy [noexists]\n/use "..b("Summon Infernal","[mod:alt,@cursor]",";")..b("Grimoire: Felguard","[]",";")..b("Bilescourge Bombers","[@player]",";")..b("Demonic Strength","[pet:Felguard/Wrathguard]",";").."[nopet:Felguard/Wrathguard,spec:2]Summon Felguard;"..b("Channel Demonfire","[nomod:alt]",";")..b("Siphon Life","[@mouseover,harm,nodead,nomod:alt][nomod:alt]",";")..b("Corruption","[nomod:alt]","").."\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use "..b("Siphon Life","[]",";")..b("Corruption","[]","").."\n/targetlasttarget")
-					EditMacro("WSxGen6",nil,nil,"/use "..b("Summon Darkglare","[mod]",";")..b("Summon Demonic Tyrant","[mod]",";")..b("Summon Infernal","[mod,@player]",";")..b("Seed of Corruption","[@mouseover,harm,nodead][]",";")..b("Implosion","[@mouseover,harm,nodead][]",";")..b("Rain of Fire","[@cursor]","").."\n/startattack")
-					EditMacro("WSxSGen+6",nil,nil,"/use "..b("Rain of Fire","[@player]",";").."[spec:2,nopet:Felguard/Wrathguard]Summon Felguard;[pet:Felguard/Wrathguard]!Felstorm;"..b("Phantom Singularity","[]",";")..b("Vile Taint","[@player]",";").."Command Demon\n/stopmacro [@pet,nodead]\n/run PetDismiss()")
-					EditMacro("WSxGen7",nil,nil,"/use "..b("Cataclysm","[mod:shift,@player][@cursor]",";")..b("Malefic Rapture","[]",";")..b("Bilescourge Bombers","[@player,mod:shift][@cursor]",";")..b("Demonic Strength","[@mouseover,harm,nodead][]",";").."\n/targetenemy [noexists]\n/use Legion Pocket Portal")
-					EditMacro("WSxGen8",nil,nil,"#showtooltip\n/use "..b("Guillotine","[@player,mod:shift][@cursor]",";")..b("Implosion","[]",";")..b("Soul Tap","[]",";").."Subjugate Demon")
+					EditMacro("WSxGen6",nil,nil,"/use "..b("Summon Darkglare","[mod]",";")..b("Summon Demonic Tyrant","[mod]",";")..b("Summon Infernal","[mod,@cursor]",";")..b("Seed of Corruption","[@mouseover,harm,nodead][]",";")..b("Implosion","[@mouseover,harm,nodead][]",";")..b("Soul Strike","[@mouseover,harm,nodead][]",";")..b("Rain of Fire","[@cursor]","").."\n/startattack")
+					EditMacro("WSxSGen+6",nil,nil,"/use "..b("Rain of Fire","[@player]",";")..b("Malefic Rapture","[]",";").."[spec:2,nopet:Felguard/Wrathguard]Summon Felguard;[pet:Felguard/Wrathguard]!Felstorm;Command Demon\n/stopmacro [@pet,nodead]\n/run PetDismiss()")
+					EditMacro("WSxGen7",nil,nil,"/stopspelltarget\n/use "..b("Cataclysm","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Phantom Singularity","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Vile Taint","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Bilescourge Bombers","[@player,mod:shift][@mouseover,exists,nodead][@cursor]",";")..b("Demonic Strength","[@mouseover,harm,nodead][]",";").."\n/targetenemy [noexists]")
+					EditMacro("WSxGen8",nil,nil,"#showtooltip\n/use "..b("Guillotine","[@player,mod:shift][@cursor]",";")..b("Soul Rot","[@mouseover,harm,nodead][]",";")..b("Summon Soulkeeper","[@player,mod][@cursor]",";")..b("Implosion","[]",";").."Subjugate Demon")
 					EditMacro("WSxGen9",nil,nil,"#show [nocombat,noexists]Create Soulwell;"..b("Summon Soulkeeper","[@player,mod][@cursor]",";")..b("Inquisitor's Gaze","[]",";")..b("Implosion","[]",";").."\n/use "..b("Summon Soulkeeper","[@player,mod][@cursor]",";")..b("Inquisitor's Gaze","[]",";")..b("Implosion","[]",";"))
-					EditMacro("WSxCSGen+2",nil,nil,"/use [spec:1,@focus,harm,nodead]Unstable Affliction;[nocombat,noexists]Legion Invasion Simulator\n/targetenemy [noharm]\n/cleartarget [dead]")
-					EditMacro("WSxCSGen+3",nil,nil,"/use [nocombat,noexists]The Perfect Blossom;[spec:1,@focus,harm,nodead]Corruption;[spec:3,@focus,harm,nodead]Immolate;[spec:2,@focus,harm,nodead]Doom;Fel Petal;\n/targetenemy [noharm]\n/cleartarget [dead]")
+					EditMacro("WSxCSGen+2",nil,nil,"/use [spec:1,@focus,harm,nodead]Unstable Affliction;[@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Singe Magic;[nocombat,noexists]Legion Invasion Simulator\n/targetenemy [noharm]\n/cleartarget [dead]")
+					EditMacro("WSxCSGen+3",nil,nil,"/use [nocombat,noexists]The Perfect Blossom;[spec:1,@focus,harm,nodead]Corruption;[spec:2,@focus,harm,nodead]Doom;[spec:3,@focus,harm,nodead]Immolate;[@party2,help,nodead]Singe Magic;Fel Petal;\n/targetenemy [noharm]\n/cleartarget [dead]")
 					EditMacro("WSxCSGen+4",nil,nil,"/use [spec:1,@focus,harm,nodead]Agony;[spec:3,@focus,harm,nodead]Havoc\n/targetenemy [noharm]\n/cleartarget [dead]\n/use [nocombat]Micro-Artillery Controller")
 					EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,harm,nodead]Siphon Life\n/cleartarget [dead]\n/use Battle Standard of Coordination\n/stopmacro [combat]\n/use [noexists]Spire of Spite")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
 					EditMacro("WSxGenQ",nil,nil,"#show\n/stopcasting [nomod,nopet]\n/use [@focus,mod:alt,harm,nodead]Fear;[mod:shift]Demonic Circle;"..locPvPQ.."\n/use [nocombat,noexists]Vixx's Chest of Tricks\n/cancelaura Wyrmtongue Collector Disguise")
-					EditMacro("WSkillbomb",nil,nil,"#show\n/use "..b("Summon Demonic Tyrant","[]",";")..b("Nether Portal","[]",";")..b("Summon Infernal","[@cursor]",";")..b("Summon Darkglare","[]",";").."\n/use Jewel of Hellfire\n/use [@player]13\n/use 13"..dpsRacials[race].."\n/use Shadescale\n/use Adopted Puppy Crate\n/use Big Red Raygun")
+					EditMacro("WSkillbomb",nil,nil,"#show\n/use "..b("Summon Demonic Tyrant","[]",";")..b("Nether Portal","[]",";")..b("Summon Infernal","[@player]",";")..b("Summon Darkglare","[]",";").."\n/use Jewel of Hellfire\n/use [@player]13\n/use 13"..dpsRacials[race].."\n/use Shadescale\n/use Adopted Puppy Crate\n/use Big Red Raygun")
 					EditMacro("WSxGenE",nil,nil,"/stopspelltarget\n/use "..b("Soulburn","[mod:alt]",";")..b("Shadowfury","[@mouseover,exists,nodead,nocombat][@cursor]",";")..b("Amplify Curse","[]","")..b("Soulburn","[]",""))
 					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Shadowfury","[mod:alt,@player]",";")..b("Fel Domination","","")..""..oOtas..covToys)
-					EditMacro("WSxSGen+E",nil,nil,"#show Spell Lock\n/use [mod:alt,@focus,harm,nodead,pet:Felhunter/Observer][@mouseover,harm,nodead,pet:Felhunter/Observer][pet:Felhunter/Observer]Spell Lock;Fel Domination\n/use [nopet:Felhunter/Observer]Summon Felhunter")
-					EditMacro("WSxGenR",nil,nil,"/use [mod:ctrl,nopet]Summon Sayaad;"..b("Shadowflame","[mod:shift]",";")..b("Mortal Coil","[@mouseover,harm,nodead,mod:shift][mod:shift]",";")..b("Howl of Terror","[mod:shift]",";")..b("Curse of Exhaustion","[@mouseover,harm,nodead][]","").."\n/targetenemy [noexists]\n/stopmacro [nomod:ctrl]\n/target [@pet,nodead,pet]\n/kiss\n/targetlasttarget")
+					EditMacro("WSxSGen+E",nil,nil,"#show [nopet:Felhunter]Summon Felhunter;Spell Lock\n/use [mod:alt,@focus,harm,nodead,pet:Felhunter/Observer][@mouseover,harm,nodead,pet:Felhunter/Observer][pet:Felhunter/Observer]Spell Lock;Fel Domination\n/use [nopet:Felhunter/Observer]Summon Felhunter")
+					EditMacro("WSxGenR",nil,nil,"/use [mod:ctrl]Summon Sayaad;[mod:ctrl,pet]Lesser Invisibility;"..b("Shadowflame","[mod:shift]",";")..b("Curse of Exhaustion","[@mouseover,harm,nodead,nomod:ctrl][nomod:ctrl]","").."\n/targetenemy [noexists,nomod]\n/stopmacro [nomod:ctrl][nopet]\n/target pet\n/kiss\n/targetlasttarget [exists]")
 					EditMacro("WSxGenT",nil,nil,"/use [mod:alt]Legion Communication Orb;[pet:Incubus/Succubus/Shivarra]Whiplash;[@mouseover,harm,nodead,pet:Felguard/Wrathguard][pet:Felguard/Wrathguard]!Pursuit;Soul Shards\n/petattack [@mouseover,harm,nodead][]\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxSGen+T",nil,nil,"#show "..b("Shadowflame","[]",";").."Curse of Weakness\n/use [@mouseover,harm,nodead][harm,nodead]Curse of Weakness;[help,nocombat]Swapblaster"..nPepe.."\n/targetenemy [noexists]\n/cleartarget [dead]")
 				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use [@mouseover,help][]Soulstone")
 					EditMacro("WSxGenU",nil,nil,"#show [help]Soulstone;[nopet]Summon Imp;"..b("Amplify Curse","[]",";").."Soulstone\n/use "..b("Amplify Curse","[]",";").."[nopet]Summon Imp")
 					EditMacro("WSxGenF",nil,nil,"#show Demonic Circle\n/focus [@mouseover,exists]mouseover\n/stopmacro [@mouseover,exists]\n/stopcasting [nomod,nopet]\n/use [mod,exists,nodead]All-Seer's Eye;[mod]Eye of Kilrogg;"..locPvPF.."\n/use [noexists,nocombat,nomod]Tickle Totem")
-					EditMacro("WSxSGen+F",nil,nil,"/use [mod:alt,nocombat,noexists]Gastropod Shell;[pet:Felguard/Wrathguard,nomod:alt]Threatening Presence;[pet:Imp]Flee;[pet:Voidwalker]Suffering;Command Demon\n/petautocasttoggle [mod:alt]Legion Strike;[pet:Voidwalker]Suffering;Threatening Presence")
-					EditMacro("WSxCGen+F",nil,nil,"#show Ritual of Doom\n/use [nocombat,noexists,pet:Incubus/Succubus/Shivarra]Lesser Invisibility;[group]Ritual of Doom;Bewitching Tea Set\n/use "..fftpar.."\n/cancelaura Wyrmtongue Disguise\n/cancelaura Burning Rush\n/cancelaura Heartsbane Curse")
+					EditMacro("WSxSGen+F",nil,nil,"/use [mod:alt,nocombat,noexists]Gastropod Shell;[pet:Felguard/Wrathguard]Threatening Presence;[pet:Imp]Flee;[pet:Voidwalker]Suffering\n/use B. F. F. Necklace\n/petautocasttoggle [mod:alt]Legion Strike;[pet:Voidwalker]Suffering;Threatening Presence")
+					EditMacro("WSxCGen+F",nil,nil,"#show [nocombat]Ritual of Doom;"..b("Amplify Curse","[]","").."\n/use [group,nocombat]Ritual of Doom;"..b("Amplify Curse","[]","").."\n/use Bewitching Tea Set\n/use "..fftpar.."\n/cancelaura Wyrmtongue Disguise\n/cancelaura Burning Rush\n/cancelaura Heartsbane Curse")
 					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Soulburn","[]",";")..
 						--\n/run if not InCombatLockdown() then if GetSpellCooldown(111771)==0 then "..tpPants.." else "..noPants.." end end
 						"\n/stopcasting\n/use "..b("Soulburn","[]",";").."\n/use "..b("Demonic Gateway","[@cursor]","").."\n/use Gateway Control Shard")
-					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt]S.F.E. Interceptor;[@mouseover,harm,nodead,pet:Felhunter/Observer][pet:Felhunter/Observer,harm,nodead]Devour Magic;[@mouseover,exists,nodead][]Command Demon\n/stopspelltarget")
+					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt]S.F.E. Interceptor;[@mouseover,harm,nodead,pet:Felhunter][pet:Felhunter,harm,nodead]Devour Magic;[@mouseover,exists,nodead][]Command Demon\n/stopspelltarget")
 					--[@mouseover,harm,nodead,pet:Felhunter/Observer][pet:Felhunter/Observer,harm,nodead]Devour Magic;[pet:Voidwalker/Voidlord]Consuming Shadows;[pet:Imp]Flee;[@mouseover,exists,nodead][]Command Demon
-				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use [help,nodead,pet:Imp/Fel Imp][@player,pet:Imp/Fel Imp]Singe Magic;Fel Domination\n/use [nopet:Imp/Fel Imp]Summon Imp")
+					EditMacro("WSxSGen+G",nil,nil,"/use \n/use "..b("Mortal Coil","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]",";")..b("Howl of Terror","[]",";").."\n/use Flaming Hoop")
+				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use [help,nodead,pet:Imp/Fel Imp][@player,pet:Imp/Fel Imp]Singe Magic;Fel Domination\n/use [nopet:Imp/Fel Imp]Summon Imp\n/use Legion Pocket Portal")
 					EditMacro("WSxCSGen+G",nil,nil,"#show [mod]Create Soulwell;"..b("Grimoire of Sacrifice","[]",";")..b("Dark Pact","[]",";").."Summon Felhunter\n/use "..b("Grimoire of Sacrifice","[pet]",";").."[nopet][combat]Summon Felhunter;Create Soulwell\n/use [nopet]Summon Felhunter")
-					EditMacro("WSxSGen+H",nil,nil,"#show Demonic Circle: Teleport\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end"..b("Soulburn","\n/use ","\n/castsequence [nomounted] reset=5 Demonic Circle, ,Demonic Circle: Teleport"))
+					EditMacro("WSxGenH",nil,nil,"#show Demonic Circle: Teleport\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end"..b("Soulburn","\n/use ","\n/castsequence [nomounted] reset=5 Demonic Circle,Demonic Circle: Teleport"))
 					EditMacro("WSxCGen+J",nil,nil,"#show\n/use "..invisPot)
 					EditMacro("WSxGenZ",nil,nil,"/use "..b("Demonic Gateway","[mod:alt,@cursor]",";")..b("Dark Pact","[mod:shift]",";").."Unending Resolve")
 					EditMacro("WSxGenX",nil,nil,"/use [mod:alt,group]Create Soulwell;[mod:alt]Create Healthstone;[mod:shift]Demonic Circle: Teleport;[mod,harm,nodead]Subjugate Demon;[mod,group]Ritual of Summoning;[mod]Unstable Portal Emitter;"..b("Burning Rush","!",";")..b("Dark Pact","[]",";").."Demonic Circle: Teleport")
-					EditMacro("WSxGenC",nil,nil,"/use "..b("Soul Tap","[mod:shift]",";").."[mod,@mouseover,harm,nodead][mod]Fear;[nopet]Summon Voidwalker;Ring of Broken Promises\n/use Smolderheart\n/use Health Funnel\n/cancelaura Ring of Broken Promises\n/cancelaura X-Ray Specs")
+					EditMacro("WSxGenC",nil,nil,"/use [mod,@mouseover,harm,nodead][mod]Fear;[nopet]Summon Voidwalker;Ring of Broken Promises\n/use Smolderheart\n/use Health Funnel\n/cancelaura X-Ray Specs\n/ping [mod:ctrl,@mouseover,harm,nodead][mod:ctrl,harm,nodead]onmyway")
 					EditMacro("WSxAGen+C",nil,nil,"#show\n/use Spire of Spite\n/run PetDismiss();\n/cry")
 					EditMacro("WSxGenV",nil,nil,"#show "..b("Banish","[mod]",";")..b("Curse of Tongues","","").."\n/use "..b("Curse of Tongues","[@mouseover,harm,nodead][]","").."\n/use [nomod]Panflute of Pandaria\n/use Haw'li's Hot & Spicy Chili\n/cancelaura Rhan'ka's Escape Plan\n/use Void Totem\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";[@focus,harm,nodead,mod:alt][@mouseover,harm,nodead][harm,nodead]Banish;[@mouseover,help,nodead][]Unending Breath\n/use [mod:alt]Stylish Black Parasol")
@@ -3036,47 +3110,48 @@ local function eventHandler(self, event)
 					EditMacro("WSxGen1",nil,nil,"#show\n/use [nocombat,noexists]Mrgrglhjorn\n/use [@mouseover,exists,nodead][]Expel Harm\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+1",nil,nil,"/use "..b("Soothing Mist","[mod:ctrl,@party2,nodead,nochanneling:Soothing Mist][@focus,help,nodead,nochanneling:Soothing Mist][@party1,nodead,nochanneling:Soothing Mist]",";").."[mod:ctrl,@party2,nodead][@focus,help,nodead][@party1,nodead]Vivify;Honorary Brewmaster Keg")
 					EditMacro("WSxGen2",nil,nil,"#show\n/use [channeling,@mouseover,help,nodead][channeling:Soothing Mist]Vivify;[nocombat,noexists]Brewfest Keg Pony;Tiger Palm\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxSGen+2",nil,nil,"#show\n/use "..b("Soothing Mist","[mod:alt,@party3,nodead,nochanneling:Soothing Mist][nochanneling:Soothing Mist,@mouseover,help,nodead][nochanneling:Soothing Mist]",";").."[@party3,nodead,mod:alt][@mouseover,help,nodead][]Vivify\n/use [nochanneling]Gnomish X-Ray Specs")
+					EditMacro("WSxSGen+2",nil,nil,"#show\n/use "..b("Soothing Mist","[mod:alt,@party3,nodead,nochanneling:Soothing Mist]",";").."[@party3,nodead,mod:alt][@mouseover,help,nodead][]Vivify\n/use [nochanneling]Gnomish X-Ray Specs")
 					EditMacro("WSxGen3",nil,nil,"/use [@mouseover,harm,nodead][]Touch of Death\n/use [nocombat,noexists]Mystery Keg\n/use [nocombat,noexists]Jin Warmkeg's Brew\n/targetenemy [noexists]\n/cleartarget [dead]")  
 					EditMacro("WSxSGen+3",nil,nil,"/use "..b("Rushing Jade Wind","[]",";")..b("Soothing Mist","[mod:alt,@party4,nodead,nochanneling:Soothing Mist][nochanneling:Soothing Mist,@mouseover,help,nodead][nochanneling:Soothing Mist]",";").."[@party4,nodead,mod:alt]Vivify;"..b("Enveloping Mist","[@mouseover,help,nodead][]",";").."Crackling Jade Lightning")
 					EditMacro("WSxGen4",nil,nil,"#show\n/use [nocombat,noexists]Brewfest Pony Keg;"..b("Rising Sun Kick","[]","").."\n/use Piccolo of the Flaming Fire\n/startattack\n/cleartarget [dead]\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+4",nil,nil,"#show\n/use [@focus,help,nodead,mod:alt][@party1,help,nodead,mod:alt]Renewing Mist;"..b("Chi Wave","[]",";")..b("Chi Burst","[]",";").."Tiger Palm\n/stopspelltarget\n/targetenemy [noexists]")
-					EditMacro("WSxCGen+4",nil,nil,"#show\n/use [mod:alt,@party3,help,nodead]Renewing Mist;"..b("Summon White Tiger Statue","[@cursor]",";")..b("Summon Jade Serpent Statue","[@cursor]",";").."\n/targetenemy [nocombat,noexists]")
+					EditMacro("WSxCGen+4",nil,nil,"#show\n/use [mod:alt,@party3,help,nodead]Renewing Mist;"..b("Summon White Tiger Statue","[@cursor]",";")..b("Summon Jade Serpent Statue","[@cursor]",";").."Tiger Palm\n/targetenemy [nocombat,noexists]")
 					-- ..b("Faeline Stomp","[]",";")..b("Black Ox Brew","[]",";")
-					EditMacro("WSxGen5",nil,nil,"/use "..b("Zen Meditation","[mod:ctrl]",";")..b("Thunder Focus Tea","[mod:ctrl]",";").."Blackout Kick\n/use [noexists,nocombat]Brewfest Banner\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxSGen+5",nil,nil,"/use "..b("Renewing Mist","[@party2,help,nodead,mod:alt]",";")..b("Strike of the Windlord","[]",";")..b("Energizing Elixir","[]",";")..b("Zen Pulse","[]",";")..b("Keg Smash","[]","")..b("Thunder Focus Tea","[]","").."\n/use Displacer Meditation Stone\n/targetenemy [noexists]")
-					EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use [mod,@party4,help,nodead]Renewing Mist;[nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;14\n/use Eternal Black Diamond Ring")
+					EditMacro("WSxGen5",nil,nil,"#show "..b("Zen Meditation","[mod:ctrl]",";")..b("Thunder Focus Tea","[mod:ctrl]",";").."Blackout Kick\n/use [noexists,nocombat]Brewfest Banner\n/use "..b("Zen Meditation","[mod:ctrl]",";")..b("Thunder Focus Tea","[mod:ctrl]",";").."Blackout Kick\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxSGen+5",nil,nil,"/use "..b("Renewing Mist","[@party2,help,nodead,mod:alt]",";")..b("Strike of the Windlord","[]",";")..b("Energizing Elixir","[]",";")..b("Zen Pulse","[]",";")..b("Keg Smash","[]","")..b("Thunder Focus Tea","[]",";")..b("Faeline Stomp","[]","").."\n/use Displacer Meditation Stone\n/targetenemy [noexists]")
+					EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use [mod:ctrl,@party4,help,nodead]Renewing Mist;[nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;14\n/use Eternal Black Diamond Ring")
 					EditMacro("WSxGen6",nil,nil,"#show\n/use "..b("Storm, Earth, and Fire","[mod]",";")..b("Serenity","[mod]",";")..b("Invoke Xuen, the White Tiger","[mod]",";")..b("Invoke Yu'lon, the Jade Serpent","[mod]",";")..b("Invoke Chi-Ji, the Red Crane","[mod]",";")..b("Invoke Niuzao, the Black Ox","[mod]",";").."!Spinning Crane Kick\n/use Words of Akunda")
 					EditMacro("WSxSGen+6",nil,nil,"/use [noexists,nocombat,spec:3]\"Purple Phantom\" Contender's Costume;"..b("Fists of Fury","[@mouseover,harm,nodead][]","")..b("Essence Font","[]","")..b("Breath of Fire","[]",";")..b("Black Ox Brew","[]","").."\n/targetenemy [noexists]\n/stopmacro [combat]\n/click ExtraActionButton1",1,1)
-					EditMacro("WSxGen7",nil,nil,"/use "..b("Exploding Keg","[mod:shift,@player][@cursor]",";")..b("Summon White Tiger Statue","[mod:shift,@player]",";")..b("Whirling Dragon Punch","[]",";")..b("Bonedust Brew","[mod:shift,@player][@cursor]",";")..b("Storm, Earth, and Fire","[]",";")..b("Serenity","[]",";")..b("Faeline Stomp","[]",";")..b("Summon Jade Serpent Statue","[@cursor]",";").."!Spinning Crane Kick\n/use A Collection Of Me")
+					EditMacro("WSxGen7",nil,nil,"/use "..b("Exploding Keg","[mod:shift,@player][@cursor]",";")..b("Whirling Dragon Punch","[]",";")..b("Bonedust Brew","[mod:shift,@player][@cursor]",";")..b("Summon White Tiger Statue","[mod:shift,@player]",";")..b("Storm, Earth, and Fire","[]",";")..b("Serenity","[]",";")..b("Faeline Stomp","[]",";")..b("Summon Jade Serpent Statue","[@cursor]",";").."!Spinning Crane Kick")
 					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Summon White Tiger Statue","[mod:shift,@player]",";")..b("Weapons of Order","[]",";")..b("Refreshing Jade Wind","[]",";")..b("Summon Jade Serpent Statue","[@cursor]",";")..b("Faeline Stomp","[]",";")..b("Bonedust Brew","[mod:shift,@player][@cursor]",";")..b("Thunder Focus Tea","[]",";")..b("Rushing Jade Wind","[]",";")..b("Invoke Xuen, the White Tiger","[]",";")..b("Storm, Earth, and Fire","[]",";")..b("Serenity","[]",";").."!Spinning Crane Kick")
-					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Bonedust Brew","[mod:shift,@player][@cursor]",";")..b("Invoke Xuen, the White Tiger","[]",";")..b("Storm, Earth, and Fire","[]",";")..b("Serenity","[]",";")..b("Sheilun's Gift","[]",";")..b("Revival","[]",";")..b("Weapons of Order","[]",";")..b("Invoke Niuzao, the Black Ox","[]",";"))
-					EditMacro("WSxCSGen+2",nil,nil,"/use [@focus,help,nodead][@party1,help,nodead]Detox")
-					EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,help,nodead][@party2,help,nodead]Detox\n/run if not InCombatLockdown() then local j,p,_=C_PetJournal _,p=j.FindPetIDByName(\"Alterac Brew-Pup\") if p and j.GetSummonedPetGUID()~=p then j.SummonPetByGUID(p) end end")
-					EditMacro("WSxCSGen+4",nil,nil,"/use [@focus,help,nodead,nochanneling:Soothing Mist][@party1,help,nodead,nochanneling:Soothing Mist]Soothing Mist;[@focus,help,nodead][@party1,help,nodead]Enveloping Mist\n/use [nocombat,noexists]Totem of Harmony")
-					EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,help,nodead,nochanneling:Soothing Mist][@party2,nodead,nochanneling:Soothing Mist]Soothing Mist;[@focus,help,nodead][@party2,nodead]Enveloping Mist\n/use [nocombat,noexists]Pandaren Brewpack\n/cancelaura Pandaren Brewpack")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Resuscitate;"..pwned.."\n/use [mod:ctrl]Reawaken"..brazier)
+					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Bonedust Brew","[mod:shift,@player][@cursor]",";")..b("Invoke Xuen, the White Tiger","[]",";")..b("Storm, Earth, and Fire","[]",";")..b("Serenity","[]",";")..b("Sheilun's Gift","[]",";")..b("Revival","[]",";")..b("Restoral","[]",";")..b("Weapons of Order","[]",";")..b("Invoke Niuzao, the Black Ox","[]",";"))
+					EditMacro("WSxCSGen+2",nil,nil,"/use [mod:alt,@party3,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Detox")
+					EditMacro("WSxCSGen+3",nil,nil,"/use [mod:alt,@party4,help,nodead][@party2,help,nodead]Detox\n/run if not InCombatLockdown() then local j,p,_=C_PetJournal _,p=j.FindPetIDByName(\"Alterac Brew-Pup\") if p and j.GetSummonedPetGUID()~=p then j.SummonPetByGUID(p) end end")
+					EditMacro("WSxCSGen+4",nil,nil,"/use "..b("Enveloping Mist","[mod:alt,@party3,help,nodead,nochanneling:Soothing Mist][@party1,help,nodead,nochanneling:Soothing Mist]Soothing Mist;[mod:alt,@party3,help,nodead][@party1,help,nodead]","").."\n/use [nocombat,noexists]Totem of Harmony")
+					EditMacro("WSxCSGen+5",nil,nil,"/use "..b("Enveloping Mist","[mod:alt,@party4,help,nodead,nochanneling:Soothing Mist][@party2,nodead,nochanneling:Soothing Mist]Soothing Mist;[mod:alt,@party4,help,nodead][@party2,help,nodead]","").."\n/use [nocombat,noexists]Pandaren Brewpack\n/cancelaura Pandaren Brewpack")
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Resuscitate;"..pwned.."\n/use [mod:ctrl]Reawaken"..brazier)
 					EditMacro("WSxGenQ",nil,nil,"#show\n/use "..b("Transcendence","[mod:shift]",";")..b("Spear Hand Strike","[@mouseover,harm,nodead,nomod][harm,nodead,nomod]",";")..b("Paralysis","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";").."The Golden Banana")
 					-- EditMacro("WSxGenQ",nil,nil,"#show\n/use "..b("Spear Hand Strike","[@mouseover,harm,nodead,nomod][nomod,harm,nodead]",";")..b("Transcendence","[mod:shift]",";")..b("Paralysis","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";").."The Golden Banana")
 					EditMacro("WSkillbomb",nil,nil,"#show\n/use "..b("Storm, Earth, and Fire","[]","")..b("Serenity","[]","")..b("Invoke Xuen, the White Tiger","\n/use []","")..b("Invoke Yu'lon, the Jade Serpent","[]",";")..b("Invoke Chi-Ji, the Red Crane","[]",";")..b("Invoke Niuzao, the Black Ox","[]",";")..dpsRacials[race].."\n/use Rukhmar's Sacred Memory\n/use Adopted Puppy Crate\n/use [@player]13\n/use 13\n/use Celestial Defender's Medallion\n/use Big Red Raygun")
 					EditMacro("WSxGenE",nil,nil,"#show "..b("Clash","[]",";")..b("Flying Serpent Kick","[]",";")..b("Song of Chi-Ji","[]",";")..b("Soothing Mist","[]","").."\n/use Prismatic Bauble\n/use [mod:alt]Leg Sweep;"..b("Clash","[@mouseover,harm,nodead][harm,nodead]",";")..b("Flying Serpent Kick","[]",";")..b("Soothing Mist","[@mouseover,help,nodead][]",";").."\n/targetenemy [noexists]")
-					EditMacro("WSxCGen+E",nil,nil,"#show Roll\n/use [@mouseover,help,nodead][]Vivify"..oOtas..covToys)
+					EditMacro("WSxCGen+E",nil,nil,"#show Roll\n/use "..oOtas..covToys.."\n/use A Collection Of Me")
 					EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..b("Ring of Peace","[mod:alt,@player]",";")..b("Song of Chi-Ji","[]",";")..b("Summon Black Ox Statue","\n/target Black Ox\n/use [@cursor,nomod:alt]","\n/use [help,nodead]Provoke\n/targetlasttarget"))
 					EditMacro("WSxGenR",nil,nil,"#show "..b("Ring of Peace","[]","").."\n/use "..b("Ring of Peace","[mod:shift,@cursor]",";")..b("Tiger's Lust","[mod:ctrl,@player][@mouseover,help,nodead][help,nodead]",";")..b("Disable","[]",";").."[@mouseover,harm,nodead][]Crackling Jade Lightning")
-					EditMacro("WSxGenT",nil,nil,"#show "..b("Revival","[]",";")..b("Black Ox Brew","[]",";")..b("Summon Jade Serpent Statue","[]",";")..b("Summon Black Ox Statue","[]",";").."Mystic Touch\n/use [@mouseover,harm,nodead][]Crackling Jade Lightning"..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxGenT",nil,nil,"#show "..b("Revival","[]",";")..b("Restoral","[]",";")..b("Black Ox Brew","[]",";")..b("Summon Jade Serpent Statue","[]",";")..b("Summon Black Ox Statue","[]",";").."Mystic Touch\n/use [@mouseover,harm,nodead][]Crackling Jade Lightning"..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxSGen+T",nil,nil,"#show\n/targetenemy [noexists]\n/cleartarget [dead]\n/use Provoke")
 				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use "..b("Summon Black Ox Statue","\n/target Black Ox\n/use [mod:alt,@player][@cursor]","\n/use [help,nodead]Provoke\n/targetlasttarget")..b("Summon Jade Serpent Statue","[mod:alt,@player][@cursor]",";")..b("Summon White Tiger Statue","[mod:alt,@player][@cursor]",";").."\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxGenU",nil,nil,"#show\n/use "..b("Tiger's Lust","[]",";").."Roll")
 					EditMacro("WSxGenF",nil,nil,"#show Transcendence: Transfer\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt]Farwater Conch;"..b("Spear Hand Strike","[@focus,harm,nodead]",";")..b("Paralysis","[@focus,harm,nodead]","").."\n/targetenemy [noexists]")
-					EditMacro("WSxSGen+F",nil,nil,"/use ".."[nocombat,noexists]Gastropod Shell;"..b("Dampen Harm","[]",";")..b("Diffuse Magic","[]",";")..b("Faeline Stomp","[]","").."\n/use [nocombat]Mulled Alterac Brandy\n/cancelaura [mod]Purple Phantom")
-					EditMacro("WSxCGen+F",nil,nil,"#show "..b("Touch of Karma","[]",";")..b("Mana Tea","[]",";")..b("Zen Meditation","[]","").."\n/use "..b("Touch of Karma","[]",";")..b("Revival","[]",";")..b("Zen Meditation","[]",""))
+					EditMacro("WSxSGen+F",nil,nil,"/use [help,nocombat,mod:alt]B. B. F. Fist;[nocombat,noexists,mod:alt]Gastropod Shell;"..b("Dampen Harm","[]",";")..b("Diffuse Magic","[]",";")..b("Faeline Stomp","[]","").."\n/use [nocombat]Mulled Alterac Brandy\n/cancelaura [mod]Purple Phantom")
+					EditMacro("WSxCGen+F",nil,nil,"#show "..b("Touch of Karma","[]",";")..b("Mana Tea","[]",";")..b("Zen Meditation","[]","").."\n/use "..b("Touch of Karma","[]",";")..b("Revival","[]",";")..b("Restoral","[]",";")..b("Zen Meditation","[]",""))
 					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Leg Sweep","[combat][exists,nodead]",";").."Silversage Incense\n/targetfriendplayer\n/use [help,nodead]Tiger's Lust;Silversage Incense\n/targetlasttarget")
-					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt]Nimble Brew;"..b("Detox","[@mouseover,help,nodead][]",""))
+					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt,nomounted,nocombat,noexists]Darkmoon Gazer;[mod:alt]Nimble Brew;"..b("Detox","[@mouseover,help,nodead][]",""))
+					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..b("Diffuse Magic","[]",";")..b("Dampen Harm","[]",";").."Pandaren Scarecrow\n/use [noexists,nocombat]Flaming Hoop")
 				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Summon White Tiger Statue","[mod:alt,@player][@cursor]",";")..b("Summon Black Ox Statue","\n/target Black Ox\n/use [mod:alt,@player][@cursor]","\n/use [help,nodead]Provoke\n/targetlasttarget")..b("Summon Jade Serpent Statue","[mod:alt,@player][@cursor]",";").."\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxCSGen+G",nil,nil,"#show Transcendence\n/use [@focus,help,nodead]Detox")
-					EditMacro("WSxSGen+H",nil,nil,"#show [nocombat,noexists]Darkmoon Gazer"..b("Paralysis",";","").."\n/use [nomounted]Darkmoon Gazer\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
+					EditMacro("WSxCSGen+G",nil,nil,"#show Transcendence\n/use [@focus,help,nodead]Detox\n/cancelaura Blessing of Protection")
+					EditMacro("WSxGenH",nil,nil,"#show "..b("Paralysis","","").."\n/use "..b("Life Cocoon","[mod:shift,"..tank.."]",";")..b("Healing Elixir","[]","").."\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
 					EditMacro("WSxCGen+J",nil,nil,"#show\n/use "..invisPot)
-					EditMacro("WSxGenZ",nil,nil,"#show\n/use [mod:alt]Gateway Control Shard;[mod:shift]Fortifying Brew;"..b("Healing Elixir","[]",";")..b("Diffuse Magic","[]",";")..b("Dampen Harm","[]",";").."Fortifying Brew\n/use Lao Chin's Last Mug")
+					EditMacro("WSxGenZ",nil,nil,"#show\n/use [mod:alt]Gateway Control Shard;"..b("Fortifying Brew","[mod:shift]",";")..b("Healing Elixir","[]",";")..b("Fortifying Brew","[]","").."\n/use Lao Chin's Last Mug")
 					EditMacro("WSxGenX",nil,nil,"#show\n/use [mod:alt]Tumblerun Brew;[mod:ctrl]Zen Pilgrimage;[mod:shift]Transcendence: Transfer;"..b("Celestial Brew","[]",";")..b("Touch of Karma","[]",";")..b("Life Cocoon","[@mouseover,help,nodead][nodead]",""))
 					EditMacro("WSxGenC",nil,nil,"#show\n/use "..b("Mana Tea","[mod:shift]",";")..b("Black Ox Brew","[mod:shift]",";")..b("Paralysis","[mod,@mouseover,harm,nodead][mod]",";")..b("Purifying Brew","[]",";")..b("Renewing Mist","[@mouseover,help,nodead][]",";")..b("Paralysis","[@mouseover,harm,nodead][]","").."\n/cancelaura X-Ray Specs")
 					EditMacro("WSxAGen+C",nil,nil,"#show\n/click TotemFrameTotem1 RightButton\n/run PetDismiss()\n/use [noexists,nocombat]Turnip Punching Bag")
@@ -3085,56 +3160,70 @@ local function eventHandler(self, event)
 					
 				-- Paladin, bvk, palajong
 				elseif class == "PALADIN" then
-					EditMacro("WSxGen1",nil,nil,"/use "..b("Intercession","[@mouseover,help,dead][help,dead]",";")..b("Holy Shock","[@mouseover,exists,nodead][exists,nodead]",";").."[nocombat,noexists]!Devotion Aura;"..b("Judgment","[@mouseover,harm,nodead][]","")..b("Eye of Tyr","[]",";")..b("Judgment","[@mouseover,harm,nodead][]","").."\n/use Pretty Draenor Pearl\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxSGen+1",nil,nil,"#show Blessing of Protection\n/use [mod:alt,@party3,help,nodead][mod:ctrl,@party2,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Flash of Light\n/use Vindicator's Armor Polish Kit")
-					EditMacro("WSxGen2",nil,nil,"#show\n/use "..b("Blessing of Summer","[@mouseover,help,nodead][help,nodead]",";")..b("Crusader Strike","","").."\n/targetenemy [noexists]\n/startattack\n/cleartarget [dead]\n/cancelaura X-Ray Specs")
+					EditMacro("WSxGen1",nil,nil,"/use "..b("Intercession","[@mouseover,help,dead][help,dead]",";")..b("Holy Shock","[@mouseover,exists,nodead][exists,nodead]",";").."!Devotion Aura\n/use Pretty Draenor Pearl\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxSGen+1",nil,nil,"#show "..b("Blessing of Protection","","").."\n/use [mod:alt,@party3,help,nodead][mod:ctrl,@party2,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Flash of Light\n/use Vindicator's Armor Polish Kit")
+					EditMacro("WSxGen2",nil,nil,"#show\n/use "..b("Blessing of Summer","[@mouseover,help,nodead][help,nodead]",";")..b("Crusader Strike","[known:404542,@mouseover,harm,nodead][known:404542]Judgment;","").."\n/targetenemy [noexists]\n/startattack\n/cleartarget [dead]\n/cancelaura X-Ray Specs")
 					EditMacro("WSxSGen+2",nil,nil,"#show\n/use [@party4,help,nodead,mod:alt][@mouseover,help,nodead][]Flash of Light\n/use Gnomish X-Ray Specs")
 					EditMacro("WSxGen3",nil,nil,"/use "..b("Light of the Martyr","[@mouseover,help,nodead][help,nodead]",";")..b("Hammer of Wrath","[@mouseover,harm,nodead][harm,nodead]",";").."Contemplation\n/targetenemy [noexists]\n/stopspelltarget")
-					EditMacro("WSxSGen+3",nil,nil,"/use "..b("Rule of Law","[]",";")..b("Execution Sentence","[]",";")..b("Consecration","[]","").."\n/targetenemy [noexists]\n/use Soul Evacuation Crystal")
+					EditMacro("WSxSGen+3",nil,nil,"/use "..b("Daybreak","[]",";")..b("Execution Sentence","[]",";")..b("Consecration","[]","").."\n/targetenemy [noexists]\n/use Soul Evacuation Crystal")
 					EditMacro("WSxGen4",nil,nil,"/use [spec:2,help,nodead,nocombat]Dalaran Disc;[help,nodead,nocombat]Holy Lightsphere;"..b("Avenger's Shield","[@mouseover,harm,nodead][]",";")..b("Blade of Justice","[]",";")..b("Judgment","[]","").."\n/targetenemy [noexists]\n/startattack\n/cleartarget [dead]")
-					EditMacro("WSxSGen+4",nil,nil,"#show "..b("Shield of the Righteous","[]",";").."\n/stopspelltarget\n/use "..b("Holy Shock","[@focus,help,nodead,mod:alt][@party1,nodead,mod:alt]",";")..b("Moment of Glory","[]",";")..b("Final Reckoning","[@mouseover,exists,nodead][@cursor]","")..b("Holy Prism","[@mouseover,exists,nodead][exists,nodead]","")..b("Light's Hammer","[@mouseover,exists,nodead][@cursor]","").."\n/targetenemy [noexists]"..b("Holy Prism","\n/stopmacro\n/use []",""))
-					EditMacro("WSxCGen+4",nil,nil,"#show\n/use "..b("Holy Shock","[@party3,help,nodead,mod:alt]",";")..b("Beacon of Faith","[@mouseover,help,nodead][]",";")..b("Beacon of Light","[@mouseover,help,nodead][]",";").."Devotion Aura\n/startattack [combat]")
+					EditMacro("WSxSGen+4",nil,nil,"#show\n/stopspelltarget\n/use "..b("Holy Shock","[@focus,help,nodead,mod:alt][@party1,nodead,mod:alt]",";")..b("Moment of Glory","[]",";")..b("Final Reckoning","[@mouseover,exists,nodead][@cursor]","")..b("Tyr's Deliverance","[@mouseover,help,nodead][]","").."\n/targetenemy [noexists]")
+					EditMacro("WSxCGen+4",nil,nil,"#show\n/use "..b("Holy Shock","[@party3,help,nodead,mod:alt]",";")..b("Beacon of Faith","[@mouseover,help,nodead][]",";")..b("Beacon of Light","[@mouseover,help,nodead][]",";").."!Devotion Aura\n/startattack [combat]")
 					EditMacro("WSxGen5",nil,nil,"/use "..b("Ardent Defender","[mod:ctrl]",";")..b("Aura Mastery","[mod:ctrl]",";")..b("Templar's Verdict","[]",";").."[spec:2,nocombat,noexists]Barrier Generator;[spec:2]Shield of the Righteous;"..b("Holy Light","[@mouseover,help,nodead][]","").."\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxSGen+5",nil,nil,"#show\n/use "..b("Holy Shock","[@party2,help,nodead,mod:alt][@player]",";")..b("Holy Light","[]",";")..b("Bastion of Light","[]",";")..b("Consecration","[]",";")..b("Judgment","[]","").."\n/use [nocombat,noexists]Light in the Darkness")
-					EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use [mod,@party4,help,nodead]Holy Shock;[nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;14\n/use Eternal Black Diamond Ring")
-					EditMacro("WSxGen6",nil,nil,"#show\n/use "..b("Avenging Wrath","[mod:ctrl]",";")..b("Light of Dawn","[]",";")..b("Divine Storm","[]",";")..b("Consecration","[]",";").."\n/use [mod:ctrl] 19\n/targetenemy [noexists]")
-					EditMacro("WSxSGen+6",nil,nil,"#show\n/use "..b("Final Reckoning","[@player]",";")..b("Holy Prism","[@player]",";")..b("Light's Hammer","[@player]",";")..b("Consecration","[]",""))
-					EditMacro("WSxGen7",nil,nil,"#show\n/stopspelltarget\n/use "..b("Divine Toll","[mod,@mouseover,exists,nodead][mod,exists,nodead]",";")..b("Seraphim","[]",";")..b("Wake of Ashes","[]",";")..b("Shield of the Righteous","[]",";")..b("Judgment","[]","")..b("Consecration","[]","").."\n/targetenemy [noexists]")
-					EditMacro("WSxGen8",nil,nil,"#show "..b("Bestow Faith","[]","").."\n/use Shield of the Righteous")
-					EditMacro("WSxGen9",nil,nil,"#show "..b("Divine Toll","[mod]",";")..b("Blessing of Summer","[]",";")..b("Consecration","[]","").."\n/use "..b("Blessing of Summer","[mod]",";")..b("Divine Toll","[@mouseover,exists,nodead][]",";")..b("Consecration","[]",""))
-					EditMacro("WSxCSGen+2",nil,nil,"/use [spec:1,@focus,help,nodead][spec:1,@party1,help,nodead]Cleanse;"..b("Cleanse Toxins","[@focus,help,nodead][@party1,help,nodead]",""))
-					EditMacro("WSxCSGen+3",nil,nil,"/use [spec:1,@focus,help,nodead][spec:1,@party2,help,nodead]Cleanse;"..b("Cleanse Toxins","[@focus,help,nodead][@party2,help,nodead]","").."\n/use [nocombat,noharm]Forgotten Feather")
-					EditMacro("WSxCSGen+4",nil,nil,"/use [@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Word of Glory")
-					EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,help,nodead][@party2,help,nodead]Word of Glory")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Redemption;"..pwned.."\n/use [mod:ctrl]Absolution"..brazier)
-					EditMacro("WSxGenQ",nil,nil,"/use [mod:shift]Divine Shield;"..b("Hammer of Justice","[mod:alt,@focus,harm,nodead][]",";")..b("Rebuke","[@mouseover,harm,nodead][]",""))
+					EditMacro("WSxSGen+5",nil,nil,"#show "..b("Divine Favor","[]",";")..b("Hand of Divinity","[]","").."\n/use "..b("Holy Shock","[@party2,help,nodead,mod:alt][@player]",";")..b("Holy Light","[]",";")..b("Bastion of Light","[]",";")..b("Consecration","[]",";")..b("Judgment","[]","").."\n/use [nocombat,noexists]Light in the Darkness")
+					EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use [mod:ctrl,@party4,help,nodead]Holy Shock;[nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;14\n/use Eternal Black Diamond Ring")
+					EditMacro("WSxGen6",nil,nil,"#show\n/use "..b("Avenging Wrath","[mod:ctrl]",";")..b("Divine Storm","[]",";").."Shield of the Righteous".."\n/use [mod:ctrl] 19\n/targetenemy [noexists]")
+					EditMacro("WSxSGen+6",nil,nil,"#show\n/use "..b("Final Reckoning","[@player]",";")..b("Eye of Tyr","[]",";")..b("Light of Dawn","[]",";")..b("Consecration","[]",""))
+					EditMacro("WSxGen7",nil,nil,"#show\n/stopspelltarget\n/use "..b("Divine Toll","[mod,@player]",";")..b("Seraphim","[]",";")..b("Wake of Ashes","[]",";")..b("Consecration","[]",";").."\n/targetenemy [noexists]")
+					EditMacro("WSxGen8",nil,nil,"#show "..b("Holy Prism","[]","")..b("Light's Hammer","[]","").."\n/stopspelltarget\n/use "..b("Holy Prism","[mod,@player][@mouseover,exists,nodead][exists,nodead]",";")..b("Light's Hammer","[mod,@player][@mouseover,exists,nodead][@cursor]",";").."Shield of the Righteous")
+					if covA == "Divine Toll" then
+						EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Blessing of Summer","[]",";")..b("Consecration","[]",""))
+					else
+						EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Divine Toll","[@mouseover,exists,nodead][]",";")..b("Consecration","[]",""))
+					end
+					EditMacro("WSxCSGen+2",nil,nil,"/use [mod:alt,spec:1,@party3,help,nodead][spec:1,@party1,help,nodead][spec:1,@targettarget,help,nodead]Cleanse;"..b("Cleanse Toxins","[mod:alt,@party3,help,nodead][@party1,help,nodead][@targettarget,help,nodead]",""))
+					EditMacro("WSxCSGen+3",nil,nil,"/use [mod:alt,spec:1,@party4,help,nodead][spec:1,@party2,help,nodead]Cleanse;"..b("Cleanse Toxins","[mod:alt,@party4,help,nodead][@party2,help,nodead]","").."\n/use [nocombat,noharm]Forgotten Feather")
+					EditMacro("WSxCSGen+4",nil,nil,"/use [mod:alt,@party3,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Word of Glory")
+					EditMacro("WSxCSGen+5",nil,nil,"/use [mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]Word of Glory")
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Redemption;"..pwned.."\n/use [mod:ctrl]Absolution"..brazier)
+					EditMacro("WSxGenQ",nil,nil,"/use "..b("Repentance","[mod:alt,@focus,harm,nodead]",";").."[mod:shift]Divine Shield;"..b("Rebuke","[@mouseover,harm,nodead][]",";")..b("Hammer of Justice","[@mouseover,harm,nodead][]",";"))
 					EditMacro("WSkillbomb",nil,nil,"#show\n/use "..b("Avenging Wrath","[]","").."\n/use [@player]13\n/use 13\n/use Sha'tari Defender's Medallion"..dpsRacials[race].."\n/use Gnawed Thumb Ring\n/use Echoes of Rezan")
-					EditMacro("WSxGenE",nil,nil,"#show\n/use "..b("Divine Favor","[mod:alt]",";").."[@mouseover,help,nodead][]Word of Glory")
+					EditMacro("WSxGenE",nil,nil,"#show\n/use "..b("Divine Favor","[mod:alt]",";")..b("Hand of Divinity","[mod:alt]",";").."[@mouseover,help,nodead][]Word of Glory")
 					EditMacro("WSxCGen+E",nil,nil,"#show\n/use [@mouseover,help,nodead][]Lay on Hands\n/use [help,nodead]Apexis Focusing Shard\n/stopspelltarget"..oOtas..covToys)
 					EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..b("Repentance","[mod:alt,@focus,harm,nodead][]",";")..b("Blinding Light","[]",";").."Hammer of Justice")
 					EditMacro("WSxGenR",nil,nil,"/use "..b("Divine Steed","[mod:ctrl]",";")..b("Blessing of Freedom","[@mouseover,help,nodead][help,nodead]",";")..b("Avenger's Shield","[@mouseover,harm,nodead][harm,nodead]",";").."Judgment\n/use [mod:ctrl]Prismatic Bauble")
-					EditMacro("WSxGenT",nil,nil,"#show "..b("Turn Evil","[]","").."\n/use Titanium Seal of Dalaran\n/use "..b("Blessing of Summer","[]","")..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat]Wayfarer's Bonfire")
+					EditMacro("WSxGenT",nil,nil,"/use "..b("Turn Evil","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]","").."\n/use Titanium Seal of Dalaran"..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat]Wayfarer's Bonfire")
 					EditMacro("WSxSGen+T",nil,nil,"#show\n/use Hand of Reckoning")
 				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use "..b("Bestow Faith","[mod:alt,@party2,nodead]",";").."[@party4,help,nodead]Word of Glory")
 					EditMacro("WSxGenU",nil,nil,"#show\n/use "..b("Repentance","[]",";")..b("Blinding Light","[]",";").."Hammer of Justice")
 					EditMacro("WSxGenF",nil,nil,"#show "..b("Blessing of Freedom","","").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use "..b("Repentance","[mod:alt,@focus,harm,nodead]",";").."[mod:alt]Farwater Conch;"..b("Rebuke","[@focus,harm,nodead]",";").."[exists,nodead]Apexis Focusing Shard")
-					EditMacro("WSxSGen+F",nil,nil,"#show "..b("Divine Favor","[]","").."\n/use [spec:2,@focus,harm,nodead]Avenger's Shield;[nocombat,noexists]Gastropod Shell")
-					EditMacro("WSxCGen+F",nil,nil,"#show "..b("Beacon of Virtue","[]",";").."Sense Undead\n/use "..b("Divine Favor","[]",""))
+					EditMacro("WSxSGen+F",nil,nil,"#show [nocombat,noexists,mod:alt]Gastropod Shell;[help,nocombat]B. F. F. Necklace;"..b("Divine Favor","[nomod:alt]",";")..b("Hand of Divinity","[nomod:alt]",";")..b("Avenger's Shield","[nomod:alt]",";").."B. F. F. Necklace\n/use "..b("Divine Favor","[nomod:alt]",";")..b("Hand of Divinity","[nomod:alt]",";")..b("Avenger's Shield","[nomod:alt,@focus,harm,nodead]",";").."[help,nocombat,mod:alt]B. F. F. Necklace;[nocombat,noexists,mod:alt]Gastropod Shell")
+					EditMacro("WSxCGen+F",nil,nil,"#show "..b("Beacon of Virtue","[]",";").."Sense Undead\n/use Sense Undead")
 					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Aura Mastery","[combat][exists]",";")..b("Turn Evil","[combat]",";").."Contemplation\n/use Contemplation")
+					if playerName == "Blackvampkid" then
+						EditMacro("WSxCAGen+F",nil,nil,"#show [spec:1,combat,exists]Aura Mastery;[combat]Turn Evil;Sun-Lute of the Phoenix King\n/stopmacro [combat,exists]\n/run local _,d,_=GetItemCooldown(44924) if d==0 then EquipItemByName(44924) else "..noPants.." end\n/use 16")
+					end
 					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt]Darkmoon Gazer;[spec:1,@mouseover,help,nodead][spec:1]Cleanse;"..b("Cleanse Toxins","[@mouseover,help,nodead][]",""))
-				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Bestow Faith","[mod:alt,@party1,nodead]",";").."[@party3,help,nodead]Word of Glory;")
+				    EditMacro("WSxSGen+G",nil,nil,"#show\n/use [mod:alt,@focus,harm,nodead][]Hammer of Justice\n/use [noexists,nocombat]Flaming Hoop\n/targetenemy [noexists]")
+					EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Bestow Faith","[mod:alt,@party1,nodead]",";").."[@party3,help,nodead]Word of Glory;")
 					EditMacro("WSxCSGen+G",nil,nil,"#show Divine Shield\n/use [@focus,help,nodead]Cleanse\n/cancelaura Divine Shield\n/cancelaura Blessing of Protection")
-					EditMacro("WSxSGen+H",nil,nil,"#show Intercession\n/use [nomounted]Darkmoon Gazer\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
+					EditMacro("WSxGenH",nil,nil,"#show Intercession\n/use [nomounted]Darkmoon Gazer\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
 					EditMacro("WSxCGen+J",nil,nil,"#show\n/use "..invisPot)
 					EditMacro("WSxGenZ",nil,nil,"/use [mod:alt]!Devotion Aura;"..b("Blessing of Protection","[@mouseover,help,nodead,mod:shift][mod:shift]",";")..b("Blessing of Sacrifice","[@mouseover,help,nodead][help,nodead]",";")..b("Divine Protection","[]",";")..b("Guardian of Ancient Kings","[]",";").."Divine Shield\n/use [mod:alt]Gateway Control Shard")
-					EditMacro("WSxGenX",nil,nil,"#show\n/use [mod:alt]!Retribution Aura;"..b("Blessing of Freedom","[mod:shift]",";")..b("Barrier of Faith","[@mouseover,help,nodead][]",";")..b("Ardent Defender","[spec:2]",";")..b("Shield of Vengeance","[]",";")..b("Lay on Hands","[@mouseover,help,nodead][]",""))
-					EditMacro("WSxGenC",nil,nil,"/use "..b("Repentance","[mod]",";")..b("Blessing of Spellwarding","[@mouseover,help,nodead][]",";")..b("Justicar's Vengeance","[]",";")..b("Eye for an Eye","[]",";")..b("Bestow Faith","[@mouseover,help,nodead][]",";")..b("Light's Hammer","[@cursor]",";").."[@mouseover,help,nodead][]Word of Glory")
-					EditMacro("WSxAGen+C",nil,nil,"#show [mod]Sylvanas' Music Box;Lay on Hands\n/use "..b("Light's Hammer","[mod:shift,@player]",";").."!Concentration Aura\n/use Sylvanas' Music Box")
+					EditMacro("WSxGenX",nil,nil,"#show\n/use "..b("Retribution Aura","[mod:alt]!",";").."[mod:alt]!Concentration Aura;"..b("Blessing of Freedom","[mod:shift]",";")..b("Barrier of Faith","[@mouseover,help,nodead][]",";")..b("Divine Favor","[]",";")..b("Hand of Divinity","[]",";")..b("Ardent Defender","[]",";")..b("Shield of Vengeance","[]",";")..b("Lay on Hands","[@mouseover,help,nodead][]",""))
+					if playerSpec == 1 then
+						EditMacro("WSxGenC",nil,nil,"/use "..b("Repentance","[mod:ctrl,@mouseover,harm,nodead][mod:ctrl]",";").."\n/use "..b("Blessing of Summer","[mod:shift,known:Blessing of Spring][mod:shift,known:Blessing of Winter][mod:shift,known:Blessing of Winter,@player][mod:shift,known:Blessing of Spring,"..tank.."]",";")..b("Blessing of Sacrifice","["..tank.."][]"))
+					elseif playerSpec == 2 then
+						EditMacro("WSxGenC",nil,nil,"/use "..b("Repentance","[mod:ctrl,@mouseover,harm,nodead][mod:ctrl]",";").."\n/use "..b("Blessing of Spellwarding","[mod:shift,"..healer.."][@mouseover,help,nodead][]",";")..b("Blessing of Protection","[mod:shift,"..healer.."][@mouseover,help,nodead][]",";")..b("Blessing of Sacrifice","["..healer.."][]"))
+					elseif playerSpec == 3 then
+						EditMacro("WSxGenC",nil,nil,"/use "..b("Repentance","[mod:ctrl,@mouseover,harm,nodead][mod:ctrl]",";").."\n/use "..b("Blessing of Protection","[mod:shift,"..healer.."][@mouseover,help,nodead][]",";")..b("Blessing of Sacrifice","["..tank.."][]"))
+					end
+					EditMacro("WSxAGen+C",nil,nil,"#show [mod]Sylvanas' Music Box;Lay on Hands\n/use !Concentration Aura\n/use Sylvanas' Music Box")
 					EditMacro("WSxGenV",nil,nil,"#show "..b("Divine Steed","","").."\n/use "..b("Divine Steed","[nospec:1]",";")..b("Beacon of Light","[@mouseover,help,nodead][]","").."\n/use [nomod]Panflute of Pandaria\n/cancelaura Rhan'ka's Escape Plan\n/use [nospec:1]Prismatic Bauble")
 					EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";"..b("Turn Evil","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";").."[swimming]Barnacle-Encrusted Gem\n/use [nomod:alt]Seafarer's Slidewhistle\n/use [mod:alt]Weathered Purple Parasol")
-					if UnitName("player") == "Blackvampkid" then
-						EditMacro("WSxCAGen+F",nil,nil,"#show [spec:1,combat][spec:1,exists]Aura Mastery;[combat]Turn Evil;Sun-Lute of the Phoenix King\n/stopmacro [combat,exists]\n/use 16\n/equipset "..EQS[playerspec].."\n/run local _,d,_=GetItemCooldown(44924) if d==0 then EquipItemByName(44924) end")
-					end
+					EditMacro("WSxCAGen+B",nil,nil,"/run if not InCombatLockdown()then local B=UnitName(\"target\") EditMacro(\"WSxCGen+G\",nil,nil,\"/use [@\"..B..\",known:Blessing of Summer]Blessing of Summer\\n/stopspelltarget\", nil)print(\"BoS set to : \"..B)else print(\"Nope!\")end")
+					EditMacro("WSxCAGen+N",nil,nil,"/run if not InCombatLockdown()then local N=UnitName(\"target\") EditMacro(\"WSxCGen+T\",nil,nil,\"/use [@\"..N..\",known:Blessing of Autumn]Blessing of Summer\\n/stopspelltarget\", nil)print(\"BoA set to : \"..N)else print(\"Nööp!\")end")
+					
 									
 				-- Hunter, hanter 
 				elseif class == "HUNTER" then
@@ -3149,88 +3238,91 @@ local function eventHandler(self, event)
 					EditMacro("WSxGen2",nil,nil,"/use "..b("Barbed Shot","[@mouseover,harm,nodead][harm,nodead]",";")..b("Rapid Fire","[@mouseover,harm,nodead][harm,nodead]",";")..b("Serpent Sting","[@mouseover,harm,nodead][harm,nodead]",";")..b("Barrage","[@mouseover,harm,nodead][harm,nodead]",";")..b("Explosive Shot","[@mouseover,harm,nodead][harm,nodead]",";").."[harm,dead]Fetch;Corbyn's Beacon\n/targetlasttarget [noharm,nodead,nocombat]\n/targetenemy [noharm]")
 					EditMacro("WSxSGen+2",nil,nil,"#show\n/use [spec:1,pet,nopet:Spirit Beast][spec:3,pet]Dismiss Pet;[nopet]Call Pet 2;[@mouseover,help,nodead,pet:Spirit Beast][pet:Spirit Beast,help,nodead][pet:Spirit Beast,@player]Spirit Mend;[spec:3]Arcane Shot;Dismiss Pet\n/use Totem of Spirits")
 					EditMacro("WSxGen3",nil,nil,MSK.."\n/use "..b("Kill Shot","[@mouseover,harm,nodead][harm,nodead]",";").."Imaginary Gun\n/use Zanj'ir Weapon Rack\n/targetenemy [noharm]\n/cleartarget [dead]\n/stopspelltarget\n/equipset [noequipped:Two-Hand,spec:3]Menkify!\n/use [spec:2]Dark Ranger's Spare Cowl")
-					EditMacro("WSxSGen+3",nil,nil,"/startattack\n/use "..b("Wildfire Bomb","[@mouseover,harm,nodead,nomod:alt][nomod:alt]Wildfire Bomb\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]","\n/targetlasttarget")..b("A Murder of Crows","[]",";")..b("Bloodshed","[]",";")..b("Serpent Sting","[]",";")..b("Barrage","[]",";")..b("Explosive Shot","[]",";")..b("Dire Beast","[]",";")..b("Wailing Arrow","[]",""))
+					EditMacro("WSxSGen+3",nil,nil,"/startattack\n/use "..b("Wildfire Bomb","[@mouseover,harm,nodead,nomod:alt][nomod:alt]Wildfire Bomb\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]","\n/targetlasttarget")..b("A Murder of Crows","[]",";")..b("Bloodshed","[]",";")..b("Serpent Sting","[]",";")..b("Stampede","[]",";")..b("Death Chakram","[]",";")..b("Dire Beast","[]",";")..b("Wailing Arrow","[]",""))
 					EditMacro("WSxGen4",nil,nil,"#show\n/use [help,nodead]Dalaran Disc;"..b("Aimed Shot","[harm,nodead]",";")..b("Kill Command","[@mouseover,harm,nodead][harm,nodead]",";").."Puntable Marmot\n/target Puntable Marmot\n/targetenemy [noexists]\n/startattack [harm,combat]\n/cleartarget [dead]\n/use Squeaky Bat")
 					EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noharm]\n/cleartarget [dead]\n/use "..b("Steel Trap","[@cursor,nomod:alt]",";")..b("Flanking Strike","[nomod:alt]",";")..b("Wailing Arrow","[]",";")..b("Chimaera Shot","[]",";")..b("Serpent Sting","[nomod:alt]",";")..b("Misdirection","[nomod:alt]",";")..b("Kill Command","[nomod:alt]Kill Command\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]","\n/targetlasttarget"))
-					EditMacro("WSxCGen+4",nil,nil,"/cast "..b("Call of the Wild","[]",";")..b("Volley","[@cursor]",";")..b("Fury of the Eagle","[]",";")..b("Spearhead","[]",";")..b("Chakrams","[]",";")..b("Stampede","[]",";")..b("Barrage","[]",";").."Eyes of the Beast")
+					EditMacro("WSxCGen+4",nil,nil,"/cast "..b("Call of the Wild","[]",";")..b("Salvo","[]",";")..b("Fury of the Eagle","[]",";")..b("Spearhead","[]",";")..b("Chakrams","[]",";")..b("Stampede","[]",";")..b("Barrage","[]",";").."Eyes of the Beast")
 					EditMacro("WSxGen5",nil,nil,"/use [mod]Exhilaration;[help,nodead]Silver-Plated Turkey Shooter;"..b("Raptor Strike","[equipped:Two-Hand]",";").."[spec:1]Steady Shot;Arcane Shot\n/use [mod]Skoller's Bag of Squirrel Treats\n/cleartarget [dead]\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+5",nil,nil,"#show\n/use [nocombat,noexists,mod:alt]Pandaren Scarecrow;"..b("Binding Shot","[mod:alt,@player]",";")..b("Dire Beast","[]",";")..b("Spearhead","[]",";")..b("Flanking Strike","[]",";")..b("A Murder of Crows","[]",";")..b("Bloodshed","[]",";")..b("Wailing Arrow","[]",";").."Hunter's Mark")
 					EditMacro("WSxGen6",nil,nil,"/use "..b("Bestial Wrath","[mod]",";")..b("Trueshot","[mod]",";")..b("Coordinated Assault","[mod]",";").."[nocombat,noexists]Twiddle Twirler: Sentinel's Glaive;"..b("Carve","[]",";")..b("Butchery","[]",";")..b("Multi-Shot","[@mouseover,harm,nodead][]","").."\n/startattack\n/equipset [noequipped:Two-Hand,spec:3]Menkify!")
 					EditMacro("WSxSGen+6",nil,nil,"#show "..b("Steel Trap","[]",";")..b("Aspect of the Wild","[]",";")..b("Aspect of the Eagle","[]",";")..b("Stampede","[]",";")..b("Death Chakram","[]",";")..b("A Murder of Crows","[]",";")..b("Bloodshed","[]",";")..b("Rapid Fire","[]",";")..b("Carve","[]","")..b("Butchery","[]","").."\n/use [nocombat,noexists]Laser Pointer\n/use "..b("Steel Trap","[@player]",";")..b("Aspect of the Wild","[]",";")..b("Aspect of the Eagle","[]",";")..b("Stampede","[]",";")..b("Death Chakram","[]",";")..b("A Murder of Crows","[]",";")..b("Bloodshed","[]",";")..b("Rapid Fire","[]",";")..b("Carve","[]","")..b("Butchery","[]",""))
-					EditMacro("WSxGen7",nil,nil,"/use "..b("Aspect of the Wild","[]",";")..b("Aspect of the Eagle","[]",";")..b("Volley","[mod:shift,@player]",";")..b("Barrage","[]",";")..b("Explosive Shot","[]",";")..b("Stampede","[]",";")..b("Death Chakram","[]",";")..b("Rapid Fire","[]",""))
-					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Stampede","[]",";")..b("Death Chakram","[]",";")..b("Aspect of the Eagle","[]","")..b("Wailing Arrow","[]",""))
+					EditMacro("WSxGen7",nil,nil,"/use "..b("Aspect of the Wild","[]",";")..b("Aspect of the Eagle","[]",";")..b("Volley","[mod:shift,@player]",";")..b("Barrage","[]",";")..b("Explosive Shot","[]",";")..b("Stampede","[]",";")..b("Death Chakram","[]",";")..b("Rapid Fire","[]","").."\n/use Champion's Salute\n/use Words of Akunda\n/use Chasing Storm")
+					EditMacro("WSxGen8",nil,nil,"#show\n/stopspelltarget\n/use "..b("Aspect of the Eagle","[]",";")..b("Volley","[@mouseover,exists,nodead][@cursor]",";")..b("Wailing Arrow","[]",";")..b("Stampede","[]","")..b("Death Chakram","[]",""))
 					EditMacro("WSxGen9",nil,nil,"#show\n/use [mod:shift]Command Pet;"..b("Sentinel Owl","[]",";")..b("Aspect of the Wild","[]",";")..b("Kill Command","[]",""))
-					EditMacro("WSxCSGen+2",nil,nil,"/use [@focus,help,nodead][@party1,help,nodead]Misdirection")
-					EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,help,nodead][@party2,help,nodead]Misdirection;[nocombat,noharm]Cranky Crab")
-					EditMacro("WSxCSGen+4",nil,nil,"#show Play Dead\n/target [pet,pet:Crab]pet\n/run C_Minimap.SetTracking(9,true);\n/use [nomounted]Gnomish X-Ray Specs\n/use [nopet]Call Pet 3;[pet:Crab,help,pet]Crab Shank;[nocombat,noexists]Gastropod Shell\n/targetlasttarget [help,nodead,pet,pet:Crab]")
-					EditMacro("WSxCSGen+5",nil,nil,"/run for i = 3,11 do C_Minimap.SetTracking(i,true) end\n/use Overtuned Corgi Goggles")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
-					EditMacro("WSxGenQ",nil,nil,"/use [mod:shift]!Aspect of the Turtle;[nocombat,noexists]The Golden Banana;"..b("Muzzle","[@mouseover,harm,nodead][]","")..b("Counter Shot","[@mouseover,harm,nodead][]","").."\n/use Angler's Fishing Spear")
+					EditMacro("WSxCSGen+2",nil,nil,"/use [mod:alt,@party3,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Misdirection")
+					EditMacro("WSxCSGen+3",nil,nil,"/use [mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]Misdirection;[nocombat,noharm]Cranky Crab")
+					EditMacro("WSxCSGen+4",nil,nil,"/use [nospec:3,nomounted]Safari Hat;[nomounted]Gnomish X-Ray Specs\n/run ZigiHunterTrack(not IsAltKeyDown())")
+					EditMacro("WSxCSGen+5",nil,nil,"/run local c,arr = C_Minimap,{12,11,10,9,8,6,5,4,7,1} for _,v in pairs(arr) do local name, _, active = c.GetTrackingInfo(v) if (name and active ~= true) then active = true c.SetTracking(v,true) return active end end\n/use Overtuned Corgi Goggles")
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
+					EditMacro("WSxGenQ",nil,nil,"/use [mod:alt,@player]Freezing Trap;[mod:shift]!Aspect of the Turtle;[nocombat,noexists]The Golden Banana;"..b("Muzzle","[@mouseover,harm,nodead][]","")..b("Counter Shot","[@mouseover,harm,nodead][]","").."\n/use Angler's Fishing Spear")
 					EditMacro("WSkillbomb",nil,nil,"#show\n/use "..b("Bestial Wrath","[]",";")..b("Trueshot","[]",";")..b("Coordinated Assault","[]","").."\n/use Will of Northrend"..dpsRacials[race].."\n/use [@player]13\n/use 13\n/use Adopted Puppy Crate\n/use Pendant of the Scarab Storm\n/use Big Red Raygun\n/use Echoes of Rezan")
 					EditMacro("WSxGenE",nil,nil,"/targetenemy [noharm]\n/stopspelltarget\n/use [mod:alt,@cursor]Flare;"..b("Bursting Shot","[]",";")..b("Harpoon","[@mouseover,harm,nodead][harm,nodead]",";")..b("Intimidation","[@mouseover,harm,nodead][harm,nodead]","").."\n/use [nocombat,noexists]Party Totem\n/cleartarget [dead]\n/equipset [noequipped:Two-Hand,spec:3,nomod]Menkify!")
-					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Binding Shot","[mod:alt,@player]","")..b("Scatter Shot","[mod:alt,@focus,harm,nodead]","")..b("Misdirection",";[@mouseover,help,nodead][help,nodead][@focus,help,nodead][pet,@pet]","")..oOtas..covToys)
-					EditMacro("WSxSGen+E",nil,nil,"/use "..b("Tar Trap","[mod:alt,@player]",";")..b("Binding Shot","[@cursor]","")..b("Scatter Shot","[@mouseover,harm,nodead][]","").."\n/use [nocombat,noexists]Goblin Fishing Bomb\n/use Bloodmane Charm") 
+					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Binding Shot","[mod:alt,@player]",";")..b("Scatter Shot","[mod:alt,@focus,harm,nodead]",";")..b("Misdirection","[@mouseover,help,nodead][help,nodead][@focus,help,nodead][pet,@pet]","")..oOtas..covToys)
+					EditMacro("WSxSGen+E",nil,nil,"/use "..b("Tar Trap","[mod:alt,@player]",";")..b("Binding Shot","[@cursor]",";")..b("Scatter Shot","[@mouseover,harm,nodead][]",";").."[@player]Flare\n/use [nocombat,noexists]Goblin Fishing Bomb\n/use Bloodmane Charm") 
 					EditMacro("WSxGenR",nil,nil,"/use "..b("Tar Trap","[mod:shift,@cursor]",";").."[mod:ctrl,@player][@mouseover,help,nodead,nomod][help,nodead,nomod]Master's Call;[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]Wing Clip\n/targetenemy [noharm]")
-					EditMacro("WSxGenT",nil,nil,"#show "..b("Survival of the Fittest","[]",";").."\n/use [mod:alt]Hunter's Mark;"..b("Kill Command","[@mouseover,harm,nodead][harm,nodead]",";").."Hunter's Call"..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]\n/petattack [@mouseover,harm,nodead][harm,nodead]")
+					EditMacro("WSxGenT",nil,nil,"#show "..b("Survival of the Fittest","[]",";").."\n/use [@mouseover,harm,nodead][harm,nodead]Hunter's Mark;Hunter's Call"..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]\n/petattack [@mouseover,harm,nodead][harm,nodead]")
 					EditMacro("WSxSGen+T",nil,nil,"/use "..b("Intimidation","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]","")..b("High Explosive Trap","[mod:alt,@player][@cursor]",""))
-				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use "..b("Sentinel Owl","[mod:alt,@player][@cursor]",";").."\n/use Everlasting Darkmoon Firework\n/use Power Converter\n/use Pandaren Firework Launcher\n/use Azerite Firework Launcher\n/use "..factionFireworks)
+				    EditMacro("WSxCGen+T",nil,nil,"/stopspelltarget\n/use "..b("Sentinel Owl","[mod:alt,@player][@mouseover,exists,nodead][@cursor]",";").."\n/use Everlasting Darkmoon Firework\n/use Pandaren Firework Launcher\n/use Azerite Firework Launcher\n/use "..factionFireworks)
 					EditMacro("WSxGenU",nil,nil,"#show\n/use "..b("Binding Shot","[]","")..b("Scatter Shot","[]",""))
 					EditMacro("WSxGenF",nil,nil,"#show Tar Trap\n/focus [@mouseover,exists]mouseover\n/stopmacro [@mouseover,exists]\n/use [@cursor,mod]!Eagle Eye;[spec:3,@focus,harm,nodead]Muzzle;[@focus,harm,nodead]Counter Shot;[@mouseover,harm,nodead][]Hunter's Mark\n/targetenemy [noharm][dead]")
-					EditMacro("WSxSGen+F",nil,nil,"#show Freezing Trap\n/targetenemy [noexists]\n/use [@mouseover,harm,nodead,nomod][harm,nodead,nomod]Hunter's Mark;Robo-Gnomebulator\n/use \n/stopmacro [mod:ctrl]\n/petautocasttoggle Growl\n/petautocasttoggle [mod:alt]Spirit Walk")
-					EditMacro("WSxCGen+F",nil,nil,"#show Flare\n/run for i = 3,11 do C_Minimap.SetTracking(i,false) end;\n/cancelaura X-Ray Specs")
+					EditMacro("WSxSGen+F",nil,nil,"#show Freezing Trap\n/targetenemy [noexists]Robo-Gnomebulator\n/use [nocombat,noexists]Gastropod Shell\n/use \n/stopmacro [mod:ctrl]\n/petautocasttoggle Growl\n/petautocasttoggle [mod:alt]Spirit Walk")
+					EditMacro("WSxCGen+F",nil,nil,"#show Flare\n/run for i = 4,12 do C_Minimap.SetTracking(i,false) end C_Minimap.SetTracking(1,false);\n/cancelaura [nospec:3]Safari Hat;X-Ray Specs")
 					EditMacro("WSxCAGen+F",nil,nil,"#show Exhilaration\n/run if not InCombatLockdown() then if GetSpellCooldown(5384)==0 then "..tpPants.." else "..noPants.." end end")
+					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..b("Tranquilizing Shot","[@mouseover,harm,nodead][]","").."\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
 				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Survival of the Fittest","[]",""))
-					EditMacro("WSxCSGen+G",nil,nil,"#show "..b("Camouflage","[]",";")..b("Scare Beast","[]","").."\n/cancelaura Whole-Body Shrinka'\n/cancelaura Growing Pains\n/cancelaura Aspect of the Turtle\n/use Choofa's Call")
+					EditMacro("WSxCSGen+G",nil,nil,"#show "..b("Camouflage","[]",";")..b("Scare Beast","[]","").."\n/cancelaura Whole-Body Shrinka'\n/cancelaura Growing Pains\n/cancelaura Aspect of the Turtle\n/use Choofa's Call\n/cancelaura Chasing Storm\n/cancelaura Enthralling")
 					EditMacro("WSxCGen+J",nil,nil,"#show [spec:3]Command Pet;[spec:1,talent:1/3]Dire Beast;[spec:1]Aspect of the Wild;[spec:2]Bursting Shot\n/use "..invisPot)
-					EditMacro("WSxGenZ",nil,nil,"#show [mod]Play Dead;Feign Death\n/use [mod:alt]Hunter's Call;[mod]Play Dead;Personal Hologram\n/use [nomod]Feign Death\n/cancelaura Will of the Taunka\n/cancelaura Will of the Vrykul\n/cancelaura Will of the Iron Dwarves\n/use [mod:alt]Gateway Control Shard")
+					EditMacro("WSxGenZ",nil,nil,"#show [mod,pet,@pet,nodead]Play Dead;[mod]Revive Pet;Feign Death\n/use [mod,pet,@pet,nodead]Play Dead;[mod]Revive Pet;Personal Hologram\n/use [nomod]Feign Death\n/use [mod:alt]Gateway Control Shard")
 					EditMacro("WSxGenX",nil,nil,"#show\n/use [mod:alt,exists]Beast Lore;[mod:ctrl,exists,nodead]Tame Beast;[mod]Aspect of the Cheetah;!Aspect of the Turtle\n/use Super Simian Sphere\n/use Angry Beehive\n/use Xan'tish's Flute")
-					EditMacro("WSxGenC",nil,nil,"/use [mod:ctrl,@cursor]Freezing Trap;[mod,@player]Flare;Revive Pet\n/stopmacro [mod]\n/cancelaura X-Ray Specs\n/cancelaura Safari Hat\n/use [spec:1]Safari Hat\n/use Poison Extraction Totem\n/use Totem of Spirits\n/use Desert Flute")
+					EditMacro("WSxGenC",nil,nil,"/target [@pet,pet:Crab]\n/stopspelltarget\n/use [mod,@mouseover,exists,nodead][mod,@cursor]Freezing Trap;[nopet]Call Pet 3;[pet:Crab,help,pet,nocombat]Crab Shank;[pet,nodead]Mend Pet\n/use Totem of Spirits\n/targetlasttarget [help,nodead,pet,pet:Crab]")
 					EditMacro("WSxAGen+C",nil,nil,"#show [mod]Hunter's Mark;Play Dead\n/use [mod:ctrl,@player]Freezing Trap;Dismiss Pet\n/stopmacro [mod:ctrl]\n/click TotemFrameTotem1 RightButton\n/use Crashin' Thrashin' Robot")
-					EditMacro("WSxGenV",nil,nil,"#show\n/use Disengage\n/stopcasting\n/use Crashin' Thrashin' Robot\n/use [nomod]Panflute of Pandaria\n/cancelaura Rhan'ka's Escape Plan\n/use Ruthers' Harness\n/use Bom'bay's Color-Seein' Sauce\n/use Prismatic Bauble")
+					EditMacro("WSxGenV",nil,nil,"#show\n/use Disengage\n/stopcasting\n/use Crashin' Thrashin' Robot\n/use [nomod]Panflute of Pandaria\n/cancelaura Rhan'ka's Escape Plan\n/use Ruthers' Harness\n/use Bom'bay's Color-Seein' Sauce\n/use Prismatic Bauble\n/use Desert Flute")
 					EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";[@mouseover,harm,nodead][harm,nodead]Scare Beast;[nopet]Call Pet 1;[swimming]Barnacle-Encrusted Gem\n/use [mod:alt]Weathered Purple Parasol")
 					EditMacro("WSxCAGen+B",nil,nil,"")
 					EditMacro("WSxCAGen+N",nil,nil,"")	
-
+					
 				-- Rogue, rogge, rouge, raxicil
 				elseif class == "ROGUE" then
 					EditMacro("WSxGen1",nil,nil,"/use [nocombat,nostealth]Xan'tish's Flute\n/use "..b("Tricks of the Trade","[@mouseover,help,nodead][help,nodead]",";").."[stance:0,nocombat]Stealth;"..b("Echoing Reprimand","[]",";")..b("Pistol Shot","[]",";")..b("Garrote","[@mouseover,harm,nodead][]","").."\n/targetenemy [noexists]\n/startattack [combat]")
-					EditMacro("WSxSGen+1",nil,nil,"#show "..b("Shadow Dance","[]",";")..b("Tricks of the Trade","[]","").."\n/use "..b("Shadowstep","[mod:ctrl,@party2,help,nodead][@focus,help,nodead][@party1,help,nodead][]",";")..b("Tricks of the Trade","[]","").."\n/targetexact Lucian Trias")
+					EditMacro("WSxSGen+1",nil,nil,"#show "..b("Shadow Dance","[]",";")..b("Tricks of the Trade","[]","").."[spec:1]Shiv\n/use "..b("Shadowstep","[mod:ctrl,@party2,help,nodead][@focus,help,nodead][@party1,help,nodead][]",";")..b("Tricks of the Trade","[]","").."\n/targetexact Lucian Trias")
 					EditMacro("WSxGen2",nil,nil,"/targetenemy [noexists]\n/use [stealth,nostance:3,nodead]Pick Pocket;Sinister Strike\n/use !Stealth\n/cleartarget [exists,dead]\n/stopspelltarget")
 					EditMacro("WSxSGen+2",nil,nil,"#show\n/cast Crimson Vial\n/use [nostealth] Totem of Spirits\n/use [nostealth]Hourglass of Eternity\n/use [nocombat,nostealth,spec:2]Don Carlos' Famous Hat;[nocombat,nostealth]Dark Ranger's Spare Cowl")
-					EditMacro("WSxGen3",nil,nil,"/use [stance:0,nocombat]Stealth;"..b("Shadow Dance","[spec:3,harm,nodead]Symbols of Death\n/use [stance:0,combat]",";").."[@mouseover,harm,nodead][]Ambush\n/targetenemy [noexists]")
+					EditMacro("WSxGen3",nil,nil,"/use [stance:0,nocombat]Stealth;"..b("Shadow Dance","[spec:3,harm,nodead]Symbols of Death\n/use [stance:0,combat]",";[@mouseover,harm,nodead][]Ambush;")..b("Kingsbane","[]",";").."[spec:1]Shiv\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+3",nil,nil,"#show\n/use [@mouseover,harm,nodead,nospec:2][nospec:2]Rupture;[spec:2]Between the Eyes\n/targetenemy [noexists]\n/use [spec:2,nocombat]Ghostly Iron Buccaneer's Hat;[nospec:2]Ravenbear Disguise")
 					EditMacro("WSxGen4",nil,nil,"/use [nocombat,noexists,spec:2,nostealth]Dead Ringer\n/use [@mouseover,harm,nodead][]Ambush\n/use !Stealth\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxSGen+4",nil,nil,"/use [nocombat,noexists,nostealth]Barrel of Eyepatches\n/use "..b("Marked for Death","[]",";")..b("Cold Blood","[]",";")..b("Thistle Tea","[]",";")..b("Garrote","[@mouseover,harm,nodead][]",";")..b("Pistol Shot","[]",";").."Feint\n/use [nostealth,nospec:2]Hozen Beach Ball;[nostealth]Titanium Seal of Dalaran\n/targetenemy [noexists]\n/startattack [combat]\n/cleartarget [dead]")
-					EditMacro("WSxCGen+4",nil,nil,"#show\n/use "..b("Killing Spree","[]",";")..b("Dreadblades","[]",";")..b("Keep It Rolling","[]",";")..b("Kingsbane","[]",";")..b("Indiscriminate Carnage","[]",";")..b("Shuriken Tornado","[]",";")..b("Cold Blood","[]",";")..b("Thistle Tea","[]",";")..b("Shadow Dance","[stance:0,combat]",";")..b("Deathmark","[]","")..b("Adrenaline Rush","[]",";")..b("Shadow Blades","[]","").."\n/targetenemy [noexists,nocombat]\n/use [nocombat,noexists]Gastropod Shell")
+					EditMacro("WSxSGen+4",nil,nil,"/use [nocombat,noexists,nostealth]Barrel of Eyepatches\n/use "..b("Marked for Death","[]",";")..b("Cold Blood","[]",";")..b("Garrote","[@mouseover,harm,nodead][]",";")..b("Pistol Shot","[]",";").."Feint\n/use [nostealth,nospec:2]Hozen Beach Ball;[nostealth]Titanium Seal of Dalaran\n/targetenemy [noexists]\n/startattack [combat]\n/cleartarget [dead]")
+					EditMacro("WSxCGen+4",nil,nil,"#show\n/use "..b("Killing Spree","[]",";")..b("Dreadblades","[]",";")..b("Keep It Rolling","[]",";")..b("Shuriken Tornado","[]",";")..b("Cold Blood","[]",";")..b("Thistle Tea","[]",";")..b("Shadow Dance","[stance:0,combat]",";")..b("Deathmark","[]",";")..b("Adrenaline Rush","[]",";")..b("Shadow Blades","[]","").."\n/targetenemy [noexists,nocombat]\n/use [nocombat,noexists]Gastropod Shell")
 					EditMacro("WSxGen5",nil,nil,"#show\n/use [combat,mod:ctrl]Vanish;Eviscerate\n/use !Stealth\n/targetenemy [noexists]\n/stopmacro [nomod:ctrl]\n/use [spec:2]Mr. Smite's Brass Compass;Shadescale\n/roar")
 					EditMacro("WSxSGen+5",nil,nil,"/use [nocombat,noexists,nostealth]Barrel of Bandanas\n/use Slice and Dice\n/use [nocombat,noexists,nostealth] Worn Troll Dice")
 					EditMacro("WSxGen6",nil,nil,"#show\n/use "..b("Deathmark","[mod:ctrl]",";")..b("Adrenaline Rush","[mod:ctrl]",";")..b("Shadow Blades","[mod:ctrl]",";")..b("Fan of Knives","[]",";")..b("Blade Flurry","[]",";")..b("Shuriken Storm","[]",""))
 					EditMacro("WSxSGen+6",nil,nil,"/use "..b("Crimson Tempest","[]",";")..b("Secret Technique","[]",";")..b("Shuriken Tornado","[]",";")..b("Black Powder","[]",";")..b("Roll the Bones","[]",";")..b("Blade Flurry","[]","").."\n/use !Stealth")
 					EditMacro("WSxGen7",nil,nil,"#show\n/use [nocombat,help]Corbyn's Beacon;"..b("Shuriken Tornado","[mod:shift]",";")..b("Black Powder","[]",";")..b("Blade Rush","[]",";")..b("Garrote","[@mouseover,harm,nodead][]",";")..b("Ghostly Strike","[]",";")..b("Pistol Shot","[]",";")..b("Cold Blood","[]",";").."\n/use Autographed Hearthstone Card\n/use !Stealth")
-					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Exsanguinate","[]",";")..b("Sepsis","[]",";")..b("Ghostly Strike","[]",";")..b("Shuriken Tornado","[]",";")..b("Cold Blood","[]",";")..b("Numbing Poison","[]",";").."Sprint")
-					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Flagellation","[]",";")..b("Serrated Bone Spike","[]",";")..b("Sepsis","[]",";")..b("Ghostly Strike","[]",";")..b("Shadow Dance","[]",";")..b("Thistle Tea","[]",";")..b("Echoing Reprimand","[]",";").."Evasion")
-					EditMacro("WSxCSGen+2",nil,nil,"/use [@focus,help,nodead][@party1,help,nodead]Tricks of the Trade;")
-					EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,help,nodead][@party2,help,nodead]Tricks of the Trade")
-					EditMacro("WSxCSGen+4",nil,nil,"/use [@focus,help,nodead][@party3,help,nodead]Tricks of the Trade;[nocombat,noexists]Crashin' Thrashin' Cannon Controller")
-					EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,help,nodead][@party4,help,nodead]Tricks of the Trade")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
+					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Exsanguinate","[]",";")..b("Sepsis","[]",";")..b("Ghostly Strike","[]",";")..b("Shuriken Tornado","[]",";")..b("Cold Blood","[]",";")..b("Thistle Tea","[]",";").."Sprint")
+					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Flagellation","[]",";")..b("Serrated Bone Spike","[]",";")..b("Sepsis","[]",";")..b("Ghostly Strike","[]",";")..b("Shadow Dance","[]",";")..b("Numbing Poison","[]",";")..b("Echoing Reprimand","[]",";").."Evasion")
+					EditMacro("WSxCSGen+2",nil,nil,"/use [@party1,help,nodead][@targettarget,help,nodead]Tricks of the Trade")
+					EditMacro("WSxCSGen+3",nil,nil,"/use [@party2,help,nodead]Tricks of the Trade")
+					EditMacro("WSxCSGen+4",nil,nil,"/use [mod:alt,@party3,help,nodead][@focus,help,nodead][@party1,help,nodead]Tricks of the Trade;[nocombat,noexists]Crashin' Thrashin' Cannon Controller")
+					EditMacro("WSxCSGen+5",nil,nil,"/use [mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]Tricks of the Trade")
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
 					EditMacro("WSxGenQ",nil,nil,"#show\n/use "..b("Blind","[mod:alt,@focus,harm,nodead]",";")..b("Cloak of Shadows","[mod:shift]",";").."[@mouseover,harm,nodead][harm,nodead]Kick;The Golden Banana\n/use [spec:2]Rime of the Time-Lost Mariner;Sira's Extra Cloak\n/use Poison Extraction Totem")
 					EditMacro("WSkillbomb",nil,nil,"/use "..b("Deathmark","[]",";")..b("Adrenaline Rush","[]",";")..b("Shadow Blades","[]",";").."\n/stopmacro [stealth]\n/use Will of Northrend"..dpsRacials[race].."\n/use Rukhmar's Sacred Memory\n/use [@player]13\n/use 13"..hasHE.."\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")
 					EditMacro("WSxGenE",nil,nil,"/use "..b("Cheap Shot","[mod:alt,@focus,harm,nodead,nostance:0][nostance:0]",";")..b("Shadow Dance","[stance:0,combat]",";")..b("Vanish","[stance:0,combat]",";").."\n/use !Stealth\n/use [nostealth,spec:2,nocombat]Iron Buccaneer's Hat")
 					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Tricks of the Trade","[@focus,help,nodead][@mouseover,help,nodead][help,nodead][@party1,help,nodead]","").."\n/use Seafarer's Slidewhistle"..oOtas..covToys)
 					EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..b("Garrote","[mod:alt,@focus,harm,nodead,nostance:0][nostance:0]",";")..b("Cheap Shot","[mod:alt,@focus,harm,nodead,nostance:0][nostance:0]",";")..b("Shadow Dance","[stance:0,combat]",";")..b("Vanish","[stance:0,combat]",";").."\n/use !Stealth\n/use [nostealth]Hourglass of Eternity")
 					EditMacro("WSxGenR",nil,nil,"#show\n/use "..b("Shadowstep","[@mouseover,help,nodead,nomod:alt][help,nodead,nomod:alt]",";")..b("Poisoned Knife","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";")..b("Pistol Shot","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";")..b("Shuriken Toss","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";").."Horse Head Costume\n/targetenemy [noexists]")
-					EditMacro("WSxGenT",nil,nil,nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]\n/stopspelltarget\n/use "..b("Gouge","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]",";").."[@mouseover,exists,nodead][@cursor]Distract\n/use !Stealth")
-					EditMacro("WSxSGen+T",nil,nil,"#show "..b("Tricks of the Trade","[]",";")..b("Shadowstep","[]","").."\n/use "..b("Shadowstep","[@mouseover,exists,nodead][]","").."\n/targetenemy [noexists]")
+					EditMacro("WSxGenT",nil,nil,nPepe.."\n/use [help,nocombat]Swapblaster\n/stopattack\n/targetenemy [noexists]\n/cleartarget [dead]\n/stopspelltarget\n/use "..b("Gouge","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]",";").."[@mouseover,exists,nodead][@cursor]Distract\n/use !Stealth")
+					EditMacro("WSxSGen+T",nil,nil,"#show "..b("Tricks of the Trade","[]",";")..b("Shadowstep","[]","").."\n/use "..b("Shadowstep","[@mouseover,exists,nodead][]","").."\n/targetenemy [noexists]\n/use Titanium Seal of Dalaran")
 				    EditMacro("WSxCGen+T",nil,nil,"#show\n/stopspelltarget\n/use [mod:alt,@player][@mouseover,exists,nodead][@cursor]Distract")
 					EditMacro("WSxGenU",nil,nil,"#show\n/use Sprint")
 					EditMacro("WSxGenF",nil,nil,"#show\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt]Farwater Conch;[@focus,harm,nodead]Kick;[exists,nodead,spec:1]Detoxified Blight Grenade;Detection")
-					EditMacro("WSxSGen+F",nil,nil,"#show "..b("Gouge","[]",";").."Kick\n/use "..b("Shadowstep","[@focus,harm,nodead]","\n/use [@focus,harm,nodead]Kick"))
+					EditMacro("WSxSGen+F",nil,nil,"#show "..b("Shadowstep","[]",";")..b("Gouge","[]",";").."Kick\n/use "..b("Shadowstep","[@focus,harm,nodead]","\n/use [@focus,harm,nodead]Kick"))
 					EditMacro("WSxCGen+F",nil,nil,"#show "..b("Cloak of Shadows","[]","").."\n/use "..b("Garrote","[nostance:0]",";")..b("Cheap Shot","[nostance:0]",";")..b("Vanish","[stance:0,combat]",";").."\n/use !Stealth")
 					EditMacro("WSxCAGen+F",nil,nil,"#show [stealth]Shroud of Concealment;[nocombat,noexists]Twelve-String Guitar;Cloak of Shadows\n/targetfriend [nohelp,nodead]\n/use [help,nodead]Shadowstep;[nocombat,noexists]Twelve-String Guitar\n/targetlasttarget")
+					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt,nocombat,noexists]Darkmoon Gazer;[@focus,harm,nodead,stance:1/2/3];[@mouseover,harm,nodead][harm,nodead]Shiv;Pick Lock")
+					EditMacro("WSxSGen+G",nil,nil,"#show\n/targetenemy [noexists]\n/use [stance:0,nocombat]Stealth;[mod:alt,@focus,exists,nodead][]Kidney Shot\n/use [nocombat,noexists,stance:0]Flaming Hoop")
 				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Cheap Shot","[mod:alt,@focus,harm,nodead,nostance:0][nostance:0]",";")..b("Vanish","[stance:0,combat]",";").."\n/use !Stealth")
 					EditMacro("WSxCSGen+G",nil,nil,"#show Blind\n/use Totem of Spirits\n/use [@focus,harm,nodead]Gouge")	
-					EditMacro("WSxSGen+H",nil,nil,"#show\n/use [nomounted,nocombat,noexists]Burgy Blackheart's Handsome Hat;Shiv\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
+					EditMacro("WSxGenH",nil,nil,"#show\n/use [nomounted,nocombat,noexists]Burgy Blackheart's Handsome Hat;Shiv\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
 					EditMacro("WSxCGen+J",nil,nil,"#show Wound Poison\n/use "..invisPot)
 					EditMacro("WSxGenZ",nil,nil,"/use "..b("Wound Poison","[mod:alt]",";")..b("Deadly Poison","[mod,spec:1]",";")..b("Instant Poison","[mod]",";")..b("Evasion","[combat]",";").."[stance:1]Shroud of Concealment\n/use !Stealth\n/use [mod:alt]Gateway Control Shard\n/use [spec:2,mod]Slightly-Chewed Insult Book;[mod]Shadowy Disguise")
 					EditMacro("WSxGenX",nil,nil,"/use [mod:alt]Crippling Poison;[mod:ctrl]Scroll of Teleport: Ravenholdt;[mod:shift]Sprint;"..b("Feint","[]","").."\n/use [nostealth,mod:shift]Thistleleaf Branch\n/cancelaura Thistleleaf Disguise")
@@ -3243,49 +3335,50 @@ local function eventHandler(self, event)
 								
 				-- Priest, Prist
 				elseif class == "PRIEST" then
-					EditMacro("WSxGen1",nil,nil,"/use [help,nodead,nocombat]The Heartbreaker;"..b("Power Infusion","[@mouseover,help,nodead][help,nodead]",";").."[@mouseover,harm,nodead,spec:2][spec:2]Mind Blast;"..b("Schism","[]",";")..b("Power Word: Solace","[]",";")..b("Mind Spike","[]",";")..b("Void Torrent","[]",";")..b("Damnation","[@mouseover,harm,nodead][]",";").."[@mouseover,harm,nodead][]Shadow Word: Pain\n/startattack\n/use Xan'tish's Flute")
+					EditMacro("WSxGen1",nil,nil,"/use [help,nodead,nocombat]The Heartbreaker;"..b("Power Infusion","[@mouseover,help,nodead][help,nodead]",";").."[@mouseover,harm,nodead,spec:2][spec:2]Mind Blast;"..b("Schism","[]",";")..b("Power Word: Solace","[]",";")..b("Void Torrent","[]",";").."[@mouseover,harm,nodead][]Shadow Word: Pain\n/startattack\n/use Xan'tish's Flute")
 					EditMacro("WSxSGen+1",nil,nil,"#show "..b("Power Infusion","[]",";").."Shadow Word: Pain\n/use [mod:alt,@party3,nodead][mod:ctrl,@party2,exists][@focus,help][@party1,exists][@targettarget,exists]Flash Heal;Kaldorei Light Globe")
-					EditMacro("WSxGen2",nil,nil,"#show\n/cancelaura Fling Rings\n/use [nospec:3,help,nodead]Holy Lightsphere;[help,nodead]Corbyn's Beacon\n/use [@mouseover,harm,nodead][]Smite\n/use [nocombat]Darkmoon Ring-Flinger\n/use Haunting Memento\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxGen2",nil,nil,"/cancelaura Fling Rings\n/use [nospec:3,help,nodead,nocombat]Holy Lightsphere;[help,nodead,nocombat]Corbyn's Beacon\n/use "..b("Power Word: Life","[@mouseover,help,nodead][help,nodead]",";").."[@mouseover,harm,nodead][]Smite\n/use [nocombat]Darkmoon Ring-Flinger\n/use Haunting Memento\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxSGen+2",nil,nil,"#show\n/use [mod:alt,@party4,nodead][@mouseover,help,nodead][]Flash Heal\n/use Gnomish X-Ray Specs\n/cancelaura Don Carlos' Famous Hat\n/cancelaura X-Ray Specs")
-					EditMacro("WSxGen3",nil,nil,"/targetenemy [noexists]\n/cleartarget [dead]\n/use "..b("Shadow Word: Death","[@mouseover,harm,nodead][harm,nodead]","").."\n/use Scarlet Confessional Book\n/petattack\n/use Ivory Feather\n/use [nocombat,noexists,spec:3]Twitching Eyeball")
+					EditMacro("WSxGen3",nil,nil,"/targetenemy [noexists]\n/cleartarget [dead]\n/use "..b("Shadow Word: Death","[@mouseover,harm,nodead][harm,nodead]",";")..b("Power Word: Life","[@mouseover,help,nodead,combat][help,nodead,combat]","").."\n/use Scarlet Confessional Book\n/petattack\n/use [nocombat,noexists,spec:3]Twitching Eyeball")
 					EditMacro("WSxSGen+3",nil,nil,"/targetenemy [noexists]\n/stopspelltarget\n/cleartarget [dead]\n/use "..b("Shadow Word: Pain","[@mouseover,harm,nodead,nomod:alt][nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Shadow Word: Pain\n/targetlasttarget").."\n/use Totem of Spirits")
 					EditMacro("WSxGen4",nil,nil,"#showtooltip\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat,noexists,nochanneling]Pretty Draenor Pearl\n/use "..b("Holy Word: Serenity","[@mouseover,help,nodead][]",";")..b("Penance","[@mouseover,exists,nodead][]",";")..b("Mind Blast","[]",""))
-					EditMacro("WSxSGen+4",nil,nil,"/stopspelltarget\n/targetenemy [noexists]\n/use "..b("Penance","[@focus,help,nodead,mod:alt][@party1,help,nodead,mod:alt]",";")..b("Prayer of Mending","[mod:alt,@focus,help,nodead][mod:alt,@party1,help,nodead]",";")..b("Divine Star","[nospec:3]",";")..b("Halo","[nospec:3]",";")..b("Schism","[]",";")..b("Prayer of Healing","[@mouseover,help,nodead][]",";")..b("Shadowform","[noform]",";")..b("Vampiric Touch","[@mouseover,harm,nodead,nomod:alt][nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Vampiric Touch\n/targetlasttarget"))
-					EditMacro("WSxCGen+4",nil,nil,"#show\n/cast "..b("Power Word: Shield","[mod:alt,@party3,help,nodead]",";")..b("Light's Wrath","[@mouseover,help,nodead][]",";")..b("Shadow Covenant","[@mouseover,help,nodead][]",";")..b("Rapture","[]",";")..b("Lightwell","[@cursor]",";")..b("Divine Word","[]",";")..b("Apotheosis","[]",";")..b("Holy Word: Salvation","[]",";")..b("Dark Void","[]",";")..b("Void Torrent","[]",";")..b("Damnation","[@mouseover,harm,nodead][]",";")..b("Mindgames","[]",";")..b("Power Infusion","[]",";")..b("Empyreal Blaze","[]","").."\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxGen5",nil,nil,"/use "..b("Power Word: Barrier","[mod:ctrl,@cursor]",";")..b("Symbol of Hope","[mod:ctrl]",";")..b("Desperate Prayer","[mod:ctrl]",";")..b("Void Eruption","[@mouseover,harm,nodead][]",";")..b("Heal","[@mouseover,help,nodead][]",";")..b("Mind Blast","[@mouseover,harm,nodead][]","").."\n/use [help,nodead]Apexis Focusing Shard\n/targetenemy [noexists]\n/use [nocombat]Thaumaturgist's Orb\n/use [spec:3]Shadowy Disguise")
+					EditMacro("WSxSGen+4",nil,nil,"/stopspelltarget\n/targetenemy [noexists]\n/use "..b("Penance","[@focus,help,nodead,mod:alt][@party1,help,nodead,mod:alt]",";")..b("Prayer of Mending","[mod:alt,@focus,help,nodead][mod:alt,@party1,help,nodead]",";")..b("Divine Star","[nospec:3]",";")..b("Halo","[nospec:3]",";")..b("Schism","[]",";")..b("Prayer of Healing","[@mouseover,help,nodead][]",";")..b("Shadowform","[noform]",";")..b("Vampiric Touch","[@mouseover,harm,nodead,nomod:alt][nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Vampiric Touch\n/targetlasttarget")..b("Mindgames","\n/use []",""))
+					EditMacro("WSxCGen+4",nil,nil,"#show\n/cast "..b("Power Word: Shield","[mod:alt,@party3,help,nodead]",";")..b("Ultimate Penitence","[@mouseover,help,nodead][]",";")..b("Shadow Covenant","[@mouseover,help,nodead][]",";")..b("Rapture","[]",";")..b("Lightwell","[@cursor]",";")..b("Divine Word","[]",";")..b("Apotheosis","[]",";")..b("Holy Word: Salvation","[]",";")..b("Dark Void","[]",";")..b("Void Torrent","[]",";")..b("Mindgames","[]",";")..b("Power Infusion","[]",";")..b("Empyreal Blaze","[]","").."\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxGen5",nil,nil,"/use "..b("Power Word: Barrier","[mod:ctrl,@cursor]",";")..b("Symbol of Hope","[mod:ctrl]",";")..b("Desperate Prayer","[mod:ctrl]",";")..b("Void Eruption","[@mouseover,harm,nodead][]",";")..b("Dark Ascension","[]",";")..b("Heal","[@mouseover,help,nodead][]",";")..b("Mind Blast","[@mouseover,harm,nodead][]","").."\n/use [help,nodead]Apexis Focusing Shard\n/targetenemy [noexists]\n/use [nocombat]Thaumaturgist's Orb\n/use [spec:3]Shadowy Disguise")
 					EditMacro("WSxSGen+5",nil,nil,"/use "..b("Devouring Plague","[@mouseover,harm,nodead,nomod:alt][harm,nodead,nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Devouring Plague\n/targetlasttarget")..b("Penance","[@party2,help,nodead,mod:alt][@player]",";")..b("Prayer of Mending","[@party2,help,nodead,mod:alt]",";")..b("Circle of Healing","[@mouseover,help,nodead][]","").."\n/targetenemy [noharm]\n/cleartarget [dead]")
-					EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use [mod,@party4,help,nodead]Power Word: Shield;[nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;14\n/use Eternal Black Diamond Ring")
-					EditMacro("WSxGen6",nil,nil,"#show\n/use "..b("Divine Hymn","[mod:ctrl]",";")..b("Shadowfiend","[mod:ctrl]",";")..b("Mind Sear","[@mouseover,exists,nodead][]",";")..b("Holy Nova","[]",";")..b("Divine Star","[nospec:3]",";")..b("Halo","[nospec:3]",";").."\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxSGen+6",nil,nil,"/use "..b("Prayer of Healing","[@mouseover,help,nodead][]",";")..b("Power Word: Radiance","[@mouseover,help,nodead][]",";")..b("Divine Star","[]",";")..b("Halo","[]",";")..b("Mind Sear","[@mouseover,harm,nodead][]","").."\n/use Cursed Feather of Ikzan\n/use [nocombat]Dead Ringer\n/targetenemy [noexists]")
+					EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use [mod:ctrl,@party4,help,nodead]Power Word: Shield;[nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;14\n/use Eternal Black Diamond Ring")
+					EditMacro("WSxGen6",nil,nil,"#show\n/stopspelltarget\n/use "..b("Divine Hymn","[mod:ctrl]",";")..b("Shadowfiend","[mod:ctrl]",";")..b("Holy Nova","[]",";")..b("Divine Star","[]",";")..b("Halo","[]",";").."Shadow Word: Pain\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxSGen+6",nil,nil,"/use "..b("Prayer of Healing","[@mouseover,help,nodead][]",";")..b("Power Word: Radiance","[@mouseover,help,nodead][]",";")..b("Divine Star","[]",";")..b("Halo","[]",";").."\n/use Cursed Feather of Ikzan\n/use [nocombat]Dead Ringer\n/targetenemy [noexists]")
 					EditMacro("WSxGen7",nil,nil,"#show "..b("Holy Word: Sanctify","[]",";")..b("Shadow Crash","[]",";")..b("Empyreal Blaze","[]","")..b("Power Word: Solace","[]",";")..b("Power Word: Life","[]",";")..b("Schism","[]",";")..b("Mind Sear","[]",";").."\n/use [spec:3]Shadescale\n/stopspelltarget\n/use "..b("Holy Word: Sanctify","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Shadow Crash","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Empyreal Blaze","[]","")..b("Power Word: Solace","[]",";")..b("Power Word: Life","[@mouseover,help,nodead][]",";")..b("Schism","[]",";")..b("Shadow Covenant","[]",";")..b("Mind Sear","[@mouseover,exists,nodead][]",";").."\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Evangelism","[mod:shift]",";")..b("Lightwell","[@player,mod:shift]",";")..b("Power Infusion","[mod:shift,@focus,help,nodead][mod:shift,@mouseover,help,nodead][mod:shift]",";")..b("Void Torrent","[]",";")..b("Damnation","[@mouseover,harm,nodead][]",";")..b("Rapture","[]",";")..b("Mindgames","[@mouseover,harm,nodead][]",";")..b("Shadowfiend","[]",""))
-					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Power Infusion","[mod:shift,@focus,help,nodead][mod:shift,@mouseover,help,nodead][mod:shift]",";")..b("Mindgames","[@mouseover,harm,nodead][]",";")..b("Vampiric Embrace","[]",";")..b("Evangelism","[]",";")..b("Rapture","[]",";")..b("Shadow Covenant","[@mouseover,help,nodead][]",";")..b("Empyreal Blaze","[]",";")..b("Apotheosis","[]",";")..b("Holy Word: Salvation","[]",";")..b("Void Torrent","[]",";")..b("Damnation","[@mouseover,harm,nodead][]","")..b("Power Infusion","[]",""))
-					EditMacro("WSxCSGen+2",nil,nil,"/use [@focus,help,nodead,nospec:3][@party1,help,nodead,nospec:3]Purify;[@focus,help,nodead][@party1,help,nodead]Purify Disease\n/use [@party1,mod]Apexis Focusing Shard\n/use Brynja's Beacon")
-					EditMacro("WSxCSGen+3",nil,nil,"/use [nospec:2,@focus,harm,nodead]Shadow Word: Pain;[@party2,help,nodead,nospec:3]Purify;[@party2,help,nodead]Purify Disease\n/use [nocombat,noharm]Forgotten Feather\n/stopspelltarget\n/use [@party2,mod]Apexis Focusing Shard")
-					EditMacro("WSxCSGen+4",nil,nil,"/use [spec:3,@focus,harm,nodead]Vampiric Touch;[@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Power Word: Shield;[nocombat]Romantic Picnic Basket\n/use [@party1]Apexis Focusing Shard")
-					EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,spec:3,harm,nodead]Devouring Plague;[@focus,help,nodead][@party2,help,nodead]Power Word: Shield\n/use Battle Standard of Coordination\n/use [@party2]Apexis Focusing Shard")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Resurrection;"..pwned.."\n/use [mod:ctrl]Mass Resurrection"..brazier)
-					EditMacro("WSxGenQ",nil,nil,"#show\n/use "..b("Mind Control","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead,nospec:3][nospec:3]",";")..b("Dominate Mind","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead,nospec:3][nospec:3]",";")..b("Silence","[@mouseover,harm,nodead][]",""))
+					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Evangelism","[mod:shift]",";")..b("Lightwell","[@player,mod:shift]",";")..b("Power Infusion","[mod:shift,@focus,help,nodead][mod:shift,@mouseover,help,nodead][mod:shift]",";")..b("Void Torrent","[]",";")..b("Rapture","[]",";")..b("Mindgames","[@mouseover,harm,nodead][]",";")..b("Shadowfiend","[]",""))
+					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Power Infusion","[mod:shift,@focus,help,nodead][mod:shift,@mouseover,help,nodead][mod:shift]",";")..b("Mindgames","[@mouseover,harm,nodead][]",";")..b("Vampiric Embrace","[]",";")..b("Evangelism","[]",";")..b("Power Word: Barrier","[]",";")..b("Rapture","[]",";")..b("Shadow Covenant","[@mouseover,help,nodead][]",";")..b("Empyreal Blaze","[]",";")..b("Apotheosis","[]",";")..b("Holy Word: Salvation","[]",";")..b("Void Torrent","[]",";")..b("Power Infusion","[]",""))
+					EditMacro("WSxCSGen+2",nil,nil,"/use [mod:alt,@party3,help,nodead,nospec:3][@party1,help,nodead,nospec:3][@targettarget,help,nodead,nospec:3]Purify;[mod:alt,@party3,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Purify Disease\n/use Brynja's Beacon")
+					EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,harm,nodead]Shadow Word: Pain;[mod:alt,@party4,help,nodead,nospec:3][@party2,help,nodead,nospec:3]Purify;[mod:alt,@party4,help,nodead][@party2,help,nodead]Purify Disease\n/use [nocombat,noharm]Forgotten Feather")
+					EditMacro("WSxCSGen+4",nil,nil,"/use [spec:3,@focus,harm,nodead]Vampiric Touch;[mod:alt,@party3,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Power Word: Shield;[nocombat]Romantic Picnic Basket\n/use [@party1]Apexis Focusing Shard")
+					EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,spec:3,harm,nodead]Devouring Plague;[mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]Power Word: Shield\n/use Battle Standard of Coordination\n/use [@party2]Apexis Focusing Shard")
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Resurrection;"..pwned.."\n/use [mod:ctrl]Mass Resurrection"..brazier)
+					EditMacro("WSxGenQ",nil,nil,"#show\n/use "..b("Mind Control","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead,nospec:3][nospec:3]",";")..b("Dominate Mind","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead,nospec:3][nospec:3]",";")..b("Silence","[@mouseover,harm,nodead][]",";")..b("Void Shift","[]",""))
 					EditMacro("WSkillbomb",nil,nil,"/use "..b("Shadowfiend","[]","")..dpsRacials[race].."\n/use Rukhmar's Sacred Memory\n/use [@player]13\n/use 13\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")
 					EditMacro("WSxGenE",nil,nil,"#show "..b("Psychic Scream","[]","").."\n/stopspelltarget\n/use "..b("Mass Dispel","[mod:alt,@mouseover,exists,nodead][mod:alt,@cursor]",";").."[noexists,nocombat,nomod]Party Totem\n/use "..b("Holy Nova","[nomod]",";")..b("Psychic Scream","[nomod]",""))
 					EditMacro("WSxCGen+E",nil,nil,"#show\n/use Desperate Prayer\n/use A Collection Of Me"..oOtas..covToys)
 					EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..b("Mass Dispel","[mod:alt,@player]",";")..b("Psychic Scream","[@mouseover,harm,nodead][]","").."\n/use Thistleleaf Branch\n/cancelaura Thistleleaf Disguise")
 					EditMacro("WSxGenR",nil,nil,"/use "..b("Void Tendrils","[mod:shift]",";")..b("Angelic Feather","[mod:ctrl,@player][@cursor]",";")..b("Power Word: Shield","[mod:ctrl,@player][@mouseover,help,nodead][]","").."\n/stopspelltarget")
-					EditMacro("WSxGenT",nil,nil,"#show "..b("Holy Word: Chastise","[]","")..b("Psychic Horror","[]","")..b("Power Word: Barrier","[]",";")..b("Evangelism","[]","")..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists][dead]..\n/stopspelltarget"..b("Mind Soothe","\n/use [@mouseover,exists,nodead,nocombat][@cursor,nocombat]",";"))
+					EditMacro("WSxGenT",nil,nil,"#show "..b("Holy Word: Chastise","[]","")..b("Psychic Horror","[]","")..b("Power Word: Barrier","[]",";")..b("Evangelism","[]","")..nPepe.."\n/use [help,nocombat]Swapblaster\n/stopspelltarget"..b("Mind Soothe","\n/use [@mouseover,exists,nodead][@cursor]",";"))
 					EditMacro("WSxSGen+T",nil,nil,"#show "..b("Void Tendrils","[]",";")..b("Leap of Faith","[]","").."\n/use "..b("Psychic Horror","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";")..b("Holy Word: Chastise","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";")..b("Leap of Faith","[mod:alt,@focus,help,nodead][@mouseover,help,nodead][exists,nodead]",";"))
 				    EditMacro("WSxCGen+T",nil,nil,"")
 					EditMacro("WSxGenU",nil,nil,"#show Desperate Prayer\n/use "..b("Empyreal Blaze","[]",""))
-					EditMacro("WSxGenF",nil,nil,"#show "..b("Void Shift","[]",";")..b("Power Word: Life","[]","").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod,exists,nodead]Mind Vision;[mod]Farwater Conch;"..b("Silence","[@focus,harm,nodead]",";").."[help,nodead]True Love Prism;Doomsayer's Robes")
+					EditMacro("WSxGenF",nil,nil,"#show "..b("Void Shift","[]",";")..b("Power Word: Life","[]","").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod,exists,nodead]Mind Vision;[mod]Farwater Conch;"..b("Pain Suppression","["..tank.."]",";")..b("Guardian Spirit","["..tank.."]",";")..b("Silence","[@focus,harm,nodead]",";").."[help,nodead]True Love Prism;Doomsayer's Robes")
 					EditMacro("WSxSGen+F",nil,nil,"#show "..b("Empyreal Blaze","[]",";")..b("Shackle Undead","[]","").."\n/use "..b("Shackle Undead","[@focus,harm,nodead]",";").."[help,nocombat,mod:alt]B. F. F. Necklace;[nocombat,noexists,mod:alt]Gastropod Shell;Mind Vision\n/use [nocombat,noexists]Tickle Totem\n/cancelaura [mod:alt]Shadowform")
 					EditMacro("WSxCGen+F",nil,nil,"#show "..b("Symbol of Hope","[]",";")..b("Rapture","[]",";")..b("Psychic Scream","[]","").."\n/use [nocombat,noexists]Piccolo of the Flaming Fire;"..b("Vampiric Embrace","[]",";")..b("Rapture","[]","").."\n/cancelaura Twice-Cursed Arakkoa Feather\n/cancelaura Spirit Shell\n/use Xan'tish's Flute\n/use Leather Love Seat")
 					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Vampiric Embrace","","").."\n/targetfriendplayer\n/use [help,nodead]Power Infusion;Starlight Beacon\n/targetlasttarget")
 					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt]Darkmoon Gazer;"..b("Dispel Magic","[@mouseover,harm,nodead]",";").."[nospec:3,@mouseover,help,nodead][nospec:3]Purify"..b("Purify Disease","[@mouseover,help,nodead][]",""))
+					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..b("Dispel Magic","[@mouseover,harm,nodead][harm,nodead]",";").."Personal Spotlight\n/use [noexists,nocombat] Flaming Hoop\n/targetenemy [noexists]")
 				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Void Shift","[@mouseover,help,nodead][]",";")..b("Power Word: Life","[@mouseover,help,nodead][]",";").."\n/use Panflute of Pandaria\n/use Puzzle Box of Yogg-Saron\n/use Spectral Visage")
 					EditMacro("WSxCSGen+G",nil,nil,"#show Fade\n/use [@focus,harm,nodead]Dispel Magic;[nospec:3,@focus,help,nodead][nospec:3]Purify;[@focus,help,nodead][]Purify Disease\n/cancelaura Dispersion\n/cancelaura Spirit of Redemption\n/use Tickle Totem")
-					EditMacro("WSxSGen+H",nil,nil,"#show "..b("Evangelism","[]",";").."Leap of Faith\n/use [nocombat,noexists]Don Carlos' Famous Hat"..b("Evangelism","[]",";")..b("Power Word: Life",";[@mouseover,help,nodead][]","").."\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")	    
+					EditMacro("WSxGenH",nil,nil,"#show "..b("Evangelism","[]",";").."Leap of Faith\n/use [nocombat,noexists]Don Carlos' Famous Hat"..b("Evangelism","[]",";")..b("Power Word: Life",";[@mouseover,help,nodead][]","").."\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")	    
 					EditMacro("WSxCGen+J",nil,nil,"#show [spec:1,talent:1/3]Schism;Power Word: Fortitude\n/use "..invisPot)
 					EditMacro("WSxGenZ",nil,nil,"#show\n/use [mod:alt]Gateway Control Shard;"..b("Power Word: Barrier","[mod,@player]",";")..b("Pain Suppression","[@mouseover,help,nodead][]",";")..b("Guardian Spirit","[@mouseover,help,nodead][]",";")..b("Dispersion","!","").."\n/use [nochanneling:Penance]Soul Evacuation Crystal")
-					EditMacro("WSxGenX",nil,nil,"/use [mod:alt]Mind Soothe;[mod:shift]Fade;"..b("Mind Control","[mod:ctrl,harm,nodead]",";")..b("Dominate Mind","[mod:ctrl,harm,nodead]",";").."[mod:ctrl]Unstable Portal Emitter;"..b("Power Word: Shield","[@mouseover,help,nodead][]","").."\n/use [nocombat]Bubble Wand\n/use Void Totem\n/cancelaura Bubble Wand")
+					EditMacro("WSxGenX",nil,nil,"/use [mod:shift]Fade;"..b("Mind Control","[mod:ctrl,harm,nodead]",";")..b("Dominate Mind","[mod:ctrl,harm,nodead]",";").."[mod:ctrl]Unstable Portal Emitter;"..b("Power Word: Shield","[@mouseover,help,nodead][]","").."\n/use [nocombat]Bubble Wand\n/use Void Totem\n/cancelaura Bubble Wand")
 					EditMacro("WSxGenC",nil,nil,"/use "..b("Shackle Undead","[@mouseover,harm,nodead,mod:ctrl][mod:ctrl]",";")..b("Rapture","[mod:shift]",";")..b("Symbol of Hope","[mod:shift]",";")..b("Prayer of Mending","[@mouseover,help,nodead][]",";")..b("Renew","[@mouseover,help,nodead][]",";")..b("Shadowfiend","[]",""))
 					EditMacro("WSxAGen+C",nil,nil,"#show\n/use [nocombat,noexists]Sturdy Love Fool\n/run PetDismiss();\n/cry")
 					EditMacro("WSxGenV",nil,nil,"#show [nocombat]Mind Soothe"..b("Renew",";[]","").."\n/use "..b("Renew","[@mouseover,help,nodead][]",";").."Mind Soothe\n/cancelaura Rhan'ka's Escape Plan")
@@ -3297,47 +3390,55 @@ local function eventHandler(self, event)
 				elseif class == "DEATHKNIGHT" then
 					EditMacro("WSxGen1",nil,nil,"#show\n/cast [@mouseover,help,dead][help,dead]Raise Ally;"..b("Frostwyrm's Fury","[]",";")..b("Apocalypse","[]",";")..b("Consumption","[]",";")..b("Blooddrinker","[@mouseover,harm,nodead][]",";")..b("Tombstone","[]",";")..b("Breath of Sindragosa","[]!",";").."Death Strike\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+1",nil,nil,"#show Raise Ally\n/use [@mouseover,exists][]Raise Ally\n/use Stolen Breath")
-					EditMacro("WSxGen2",nil,nil,"/targetlasttarget [noexists,nocombat]\n/use [harm,dead,nocombat]Corpse Exploder;"..b("Heart Strike","[]",";")..b("Howling Blast","[@mouseover,harm,nodead][]",";")..b("Scourge Strike","[@mouseover,harm,nodead][]","").."\n/startattack")
+					EditMacro("WSxGen2",nil,nil,"/targetlasttarget [noexists,nocombat]\n/use [harm,dead,nocombat]Corpse Exploder"..b("Heart Strike",";[]",";")..b("Howling Blast",";[@mouseover,harm,nodead][]",";")..b("Scourge Strike",";[@mouseover,harm,nodead][]","").."\n/startattack")
 					EditMacro("WSxSGen+2",nil,nil,"#show\n/use Death Strike\n/use Gnomish X-Ray Specs\n/cancelaura X-Ray Specs")
 					EditMacro("WSxGen3",nil,nil,"#show\n/use [nocombat,noexists]Sack of Spectral Spiders;"..b("Soul Reaper","[]",";")..b("Empower Rune Weapon","[]",";")..b("Abomination Limb","[]",";")..b("Scourge Strike","[]",";")..b("Breath of Sindragosa","[]!",";")..b("Obliterate","[]",";")..b("Marrowrend","[]","").."\n/startattack")
 					EditMacro("WSxSGen+3",nil,nil,"/use "..b("Glacial Advance","[]",";")..b("Outbreak","[@mouseover,harm,nodead][]",";")..b("Death's Caress","[@mouseover,harm,nodead][]",";")..b("Howling Blast","[]","").."\n/startattack\n/stopspelltarget")
 					EditMacro("WSxGen4",nil,nil,"#show\n/use [spec:2,noexists]Vrykul Drinking Horn;"..b("Festering Strike","[]","")..b("Obliterate","[]","")..b("Marrowrend","[]","").."\n/startattack\n/cancelaura Vrykul Drinking Horn")
-					EditMacro("WSxSGen+4",nil,nil,"#show Death and Decay\n/stopspelltarget\n/use [@focus,mod:alt]Death Coil;[@mouseover,exists,nodead][@cursor]Death and Decay\n/use [spec:1]Krastinov's Bag of Horrors\n/targetenemy [noexists]")
-					EditMacro("WSxCGen+4",nil,nil,"#show\n/cast "..b("Bonestorm","[]",";")..b("Unholy Assault","[]",";")..b("Summon Gargoyle","[]",";")..b("Apocalypse","[]",";")..b("Empower Rune Weapon","[]","").."\n/use [spec:1,nocombat]For da Blood God!;[nospec:1,nocombat]Will of Northrend\n/startattack")
+					EditMacro("WSxSGen+4",nil,nil,"#show Death and Decay\n/stopspelltarget\n/use [spec:1,nocombat,noexists]Krastinov's Bag of Horrors\n/use [@focus,mod:alt]Death Coil;[@mouseover,exists,nodead][@cursor]Death and Decay\n/targetenemy [noexists]")
+					EditMacro("WSxCGen+4",nil,nil,"#show\n/cast "..b("Bonestorm","[]",";")..b("Unholy Assault","[]",";")..b("Summon Gargoyle","[]",";")..b("Apocalypse","[]",";")..b("Breath of Sindragosa","[]!",";")..b("Empower Rune Weapon","[]","").."\n/use [spec:1,nocombat]For da Blood God!;[nospec:1,nocombat]Will of Northrend\n/startattack")
 					EditMacro("WSxGen5",nil,nil,"/use "..b("Anti-Magic Zone","[mod:ctrl,@cursor]",";")..b("Frost Strike","[]",";").."[@mouseover,exists,nodead][]Death Coil\n/startattack\n/cleartarget [dead]\n/use [nospec:2]Aqir Egg Cluster")
-					EditMacro("WSxSGen+5",nil,nil,"#show\n/use [@player,mod:alt]Death Coil;"..b("Mark of Blood","[]",";")..b("Tombstone","[]",";")..b("Unholy Blight","[]",";").."[@mouseover,exists,nodead][exists,nodead]Death Coil\n/use Angry Beehive\n/startattack\n/use [mod:alt]Lichborne")
+					EditMacro("WSxSGen+5",nil,nil,"#show\n/use "..b("Mark of Blood","[]",";")..b("Tombstone","[]",";")..b("Unholy Blight","[]",";").."[@mouseover,exists,nodead][exists,nodead]Death Coil\n/use Angry Beehive\n/startattack")
 					EditMacro("WSxGen6",nil,nil,"#show\n/use "..b("Dancing Rune Weapon","[mod:ctrl]",";")..b("Pillar of Frost","[mod:ctrl]",";")..b("Army of the Dead","[mod:ctrl,@player]",";")..b("Heart Strike","[]",";")..b("Epidemic","[]",";")..b("Remorseless Winter","[]",";").."\n/use [mod:ctrl]Angry Beehive")
 					EditMacro("WSxSGen+6",nil,nil,"#show "..b("Vile Contagion","[]",";")..b("Sacrificial Pact","[]","").."\n/use [@player]Death and Decay\n/use [noexists,nocombat,spec:1] Vial of Red Goo\n/stopspelltarget\n/cancelaura Secret of the Ooze")
-					EditMacro("WSxGen7",nil,nil,"#show "..b("Vile Contagion","[mod:shift]",";")..b("Blood Boil","[]",";")..b("Frostscythe","[]",";")..b("Sacrificial Pact","[pet]",";")..b("Raise Dead","[nopet]",";").."\n/use "..b("Vile Contagion","[mod:shift]",";")..b("Blood Boil","[]",";")..b("Frostscythe","[]",";")..b("Dark Transformation","[pet]",";").."\n/use "..b("Raise Dead","[nopet]",";").."\n/use [nocombat]Champion's Salute")
-					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Chill Streak","[@mouseover,harm,nodead,nomod][nomod]",";")..b("Summon Gargoyle","[nomod]",";")..b("Sacrificial Pact","[mod:shift][nomod]",""))
-					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Army of the Dead","[]",";")..b("Anti-Magic Zone","[mod:alt,@player][]",""))
+					EditMacro("WSxGen7",nil,nil,"#show "..b("Vile Contagion","[mod:shift]",";")..b("Blood Boil","[]",";")..b("Frostscythe","[]",";")..b("Army of the Dead","[]",";")..b("Dark Transformation","[pet]",";")..b("Raise Dead","[nopet]",";").."\n/use "..b("Vile Contagion","[mod:shift]",";")..b("Blood Boil","[]",";")..b("Frostscythe","[]",";")..b("Dark Transformation","[pet]",";")..b("Raise Dead","[spec:3,nopet]",";").."\n/use [nocombat]Champion's Salute")
+					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Sacrificial Pact","[mod:shift]",";")..b("Chill Streak","[@mouseover,harm,nodead][]",";")..b("Summon Gargoyle","[]",";")..b("Sacrificial Pact","[]",";")..b("Empower Rune Weapon","[]",";")..b("Death's Caress","[]",""))
+					if covA == "Abomination Limb" then
+						EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Empower Rune Weapon","[]",";")..b("Sacrificial Pact","[]",";")..b("Army of the Dead","[]",";")..b("Breath of Sindragosa","[]!",";")..b("Bone Storm","[]",";")..b("Anti-Magic Zone","[]",""))
+					else
+						EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Abomination Limb","[]",";")..b("Empower Rune Weapon","[]",";")..b("Army of the Dead","[]",";")..b("Breath of Sindragosa","[]!",";")..b("Bone Storm","[]",";")..b("Anti-Magic Zone","[]",""))
+					end
 					EditMacro("WSxCSGen+2",nil,nil,"")
 					EditMacro("WSxCSGen+3",nil,nil,"/use [nocombat,noharm]Spirit Wand;[@focus,exists,harm,nodead,spec:3]Outbreak;[@focus,exists,harm,nodead,spec:2]Howling Blast\n/stopspelltarget")
-					EditMacro("WSxCSGen+4",nil,nil,"/use \n/use [@pet,pet,nodead]Death Coil\n/use [nocombat]Lilian's Warning Sign")
+					EditMacro("WSxCSGen+4",nil,nil,"/use [nocombat]Lilian's Warning Sign")
 					EditMacro("WSxCSGen+5",nil,nil,"/clearfocus [dead]\n/use Permanent Frost Essence\n/use Stolen Breath")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
 					EditMacro("WSxGenQ",nil,nil,"/use "..b("Asphyxiate","[mod:alt,@focus,harm,nodead]",";").."[mod:shift]Lichborne;"..b("Mind Freeze","[@mouseover,harm,nodead][]",""))
 					EditMacro("WSkillbomb",nil,nil,"#show\n/cast "..b("Dancing Rune Weapon","[]",";")..b("Pillar of Frost","[]",";")..b("Raise Dead","[nopet]",";")..b("Dark Transformation","[]","")..dpsRacials[race].."\n/use [@player]13\n/use 13\n/use Raise Dead\n/use Pendant of the Scarab Storm\n/use Adopted Puppy Crate\n/use Big Red Raygun")
-					EditMacro("WSxGenE",nil,nil,"#show\n/use "..b("Blinding Sleet","[mod:alt]",";").."[@focus,mod:alt,harm,nodead,pet]Gnaw;[@mouseover,harm,nodead][]Death Grip\n/startattack\n/petattack [mod:alt,@focus,exists,nodead]")
+					EditMacro("WSxGenE",nil,nil,"#show\n/use [mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]Death Grip\n/startattack\n/cleartarget [dead]\n/targetenemy [noharm]")
 					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Horn of Winter","[]",";")..b("Blood Tap","[]","")..oOtas..covToys)
 					EditMacro("WSxSGen+E",nil,nil,"#show "..b("Asphyxiate","[]",";")..b("Blinding Sleet","[]",";")..b("Blood Tap","[]",";")..b("Raise Ally","[]","").."\n/use "..b("Gorefiend's Grasp","[mod:alt,@player]",";")..b("Blinding Sleet","[]",";")..b("Asphyxiate","[nospec:1]",";")..b("Rune Tap","[]",""))
-					EditMacro("WSxGenR",nil,nil,"#show\n/use "..b("Wraith Walk","[mod:ctrl]!",";")..b("Gorefiend's Grasp","[@mouseover,exists,nodead,mod:shift][mod:shift]",";")..b("Chains of Ice","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]","").."\n/targetenemy [noexists]")
-					EditMacro("WSxGenT",nil,nil,"#show Dark Command\n/use "..b("Blood Tap","[]",";")..b("Sacrificial Pact","[spec:2]","")..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]\n/petattack [@mouseover,exists,nodead][]")
-					EditMacro("WSxSGen+T",nil,nil,"#show Lichborne\n/use "..b("Gorefiend's Grasp","[mod:alt,@player]",";").."Dark Command\n/use Blight Boar Microphone")
+					EditMacro("WSxGenR",nil,nil,"#show\n/use "..b("Gorefiend's Grasp","[@player,mod:ctrl][@mouseover,exists,nodead,mod:shift][mod:shift]",";")..b("Wraith Walk","[mod:ctrl]!",";")..b("Chains of Ice","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]","").."\n/targetenemy [noexists]")
+					EditMacro("WSxGenT",nil,nil,"/use [spec:3,nopet]Raise Dead;[@focus,harm,nodead,spec:3][@mouseover,harm,nodead,spec:3][spec:3,pet]Leap;"..b("Blood Tap","[]",";")..b("Horn of Winter","[]",";")..b("Gorefiend's Grasp","[]",";").."Death Grip"..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]\n/petattack [@mouseover,exists,nodead][]")
+					EditMacro("WSxSGen+T",nil,nil,"#show\n/use Dark Command\n/use Blight Boar Microphone")
 				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use "..b("Raise Dead","[nopet]",";")..b("Sacrificial Pact","[]",""))
-					EditMacro("WSxGenU",nil,nil,"#show\n/use "..b("Rune Tap","[]",";")..b("Blinding Sleet","[]",""))
-					EditMacro("WSxGenF",nil,nil,"#show "..b("Death Pact","[]",";")..b("Raise Dead","[]","").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt,@focus,harm,nodead]Death Grip;[mod:alt]Legion Communication Orb;[@focus,harm,nodead]Mind Freeze\n/petattack [mod:alt,@focus,harm,nodead]")
-					EditMacro("WSxSGen+F",nil,nil,"#show\n/petautocasttoggle [mod:alt]Claw\n/use "..b("Blood Tap","[]",";")..b("Raise Dead","[nopet,spec:3]",";")..b("Dark Transformation","[pet,@focus,harm,nodead][pet,harm,nodead]","").."\n/use [pet,@focus,harm,nodead][pet,harm,nodead]!Leap;Gastropod Shell")
+					EditMacro("WSxGenU",nil,nil,"#show\n/use "..b("Horn of Winter","[]",";")..b("Wraith Walk","[]",";")..b("Rune Tap","[]",";")..b("Blinding Sleet","[]",""))
+					EditMacro("WSxGenF",nil,nil,"#show Corpse Exploder\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt]Legion Communication Orb;[@focus,harm,nodead]Mind Freeze")
+					EditMacro("WSxSGen+F",nil,nil,"#show "..b("Death Pact","","").."\n/petautocasttoggle [mod:alt]Claw\n/use "..b("Blood Tap","[]",";")..b("Raise Dead","[nopet,spec:3]",";")..b("Dark Transformation","[pet,@focus,harm,nodead][pet,harm,nodead]","").."\n/use [pet,@focus,harm,nodead][pet,harm,nodead]!Leap;Gastropod Shell\n/petattack [@focus,harm,nodead]")
 					EditMacro("WSxCGen+F",nil,nil,"#show\n/use "..b("Horn of Winter","[]",";")..b("Vampiric Blood","[]",";").."[pet]Huddle")
-					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Path of Frost","[mod:shift]",";")..b("Gorefiend's Grasp","[spec:1]",";").."[spec:3,pet]!Gnaw;Stolen Breath\n/use 16\n/equipset "..EQS[playerspec].."\n/run local _,d,_=GetItemCooldown(151255) if d==0 then EquipItemByName(151255) end")
-					EditMacro("WSxGenG",nil,nil,"#show "..b("Anti-Magic Zone","[]",";")..b("Rune Tap","[]",";").."\n/use [mod:alt]S.F.E. Interceptor;[spec:3,nopet]Raise Dead;[@mouseover,harm,nodead,spec:3][spec:3,pet]Leap;"..b("Rune Tap","[]",";").."Death Grip")
+					EditMacro("WSxCAGen+F",nil,nil,"#show Lichborne")
+					if playerName == "Disasterpie" then
+						EditMacro("WSxCAGen+F",nil,nil,"#show Lichborne\n/run local _,d,_=GetItemCooldown(151255) if d==0 then EquipItemByName(151255) else "..noPants.." end\n/use 16")
+					end
+					EditMacro("WSxGenG",nil,nil,"#show\n/use [spec:3,nopet]Raise Dead;[@focus,harm,nodead,spec:3][@mouseover,harm,nodead,spec:3][spec:3,pet]Gnaw;[mod:alt]S.F.E. Interceptor;"..b("Rune Tap","[]",";").."Death Grip")
+					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..b("Asphyxiate","[@mouseover,harm,nodead][]",";")..b("Raise Dead","[spec:3,nopet]",";[spec:3,pet]!Gnaw;")..b("Blinding Sleet","[]",";").."\n/use [noexists,nocombat] Flaming Hoop\n/petattack [harm,nodead]")				
 				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Death Pact","[]",""))
-					EditMacro("WSxCSGen+G",nil,nil,"#show "..b("Control Undead","","").."\n/cancelaura Lichborne")
-					EditMacro("WSxSGen+H",nil,nil,"#show\n/use [nocombat,noexists]Death Gate;[spec:3,nopet]Raise Dead;[@mouseover,harm,nodead,spec:3][spec:3,pet]Gnaw;[nomounted]Death Gate\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
+					EditMacro("WSxCSGen+G",nil,nil,"#show "..b("Control Undead","[]",";")..b("Anti-Magic Zone","[]","").."\n/cancelaura Lichborne\n/cancelaura Blessing of Protection")
+					EditMacro("WSxGenH",nil,nil,"#show\n/use [nocombat,noexists]Death Gate;[spec:3,nopet]Raise Dead;[@mouseover,harm,nodead,spec:3][spec:3,pet]Gnaw;[nomounted]Death Gate\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
 					EditMacro("WSxCGen+J",nil,nil,"#show\n/use "..invisPot)
 					EditMacro("WSxGenZ",nil,nil,"#show\n/use [mod:alt]Gateway Control Shard;"..b("Anti-Magic Zone","[@player,mod:shift]",";")..b("Icebound Fortitude","[]",""))
-					EditMacro("WSxGenX",nil,nil,"#show\n/use [mod:alt]Runeforging;"..b("Control Undead","[mod:ctrl,harm,nodead]",";").."[mod:ctrl]Death Gate;"..b("Anti-Magic Shell","[]",""))
-					EditMacro("WSxGenC",nil,nil,"/use "..b("Raise Dead","[mod]","").."\n/use "..b("Sacrificial Pact","[nospec:1,mod]",";").."[spec:3,pet]Leap;"..b("Death Pact","[mod]",";")..b("Blinding Sleet","[]",";")..b("Horn of Winter","[]",";")..b("Asphyxiate","[]",";")..b("Death Grip","[]",""))
+					EditMacro("WSxGenX",nil,nil,"#show\n/use [mod:alt]Runeforging;"..b("Control Undead","[mod:ctrl,harm,nodead]",";").."[mod:ctrl]Death Gate;"..b("Wraith Walk","[mod:shift]",";")..b("Anti-Magic Shell","[]",""))
+					EditMacro("WSxGenC",nil,nil,"#show "..b("Horn of Winter","[]",";")..b("Death Pact","[]",";")..b("Blinding Sleet","[]",";")..b("Asphyxiate","[]",";")..b("Death Grip","[]","").."\n/use "..b("Control Undead","[mod:ctrl]",";").."[mod:shift]Lichborne\n/use [@player,mod:shift][@pet,pet,nodead]Death Coil;"..b("Horn of Winter","[]",";")..b("Death Pact","[]",";")..b("Blinding Sleet","[]",";")..b("Asphyxiate","[]",";")..b("Death Grip","[]",""))
 					EditMacro("WSxAGen+C",nil,nil,"#show\n/use Sylvanas' Music Box\n/run PetDismiss();\n/cry")
 					EditMacro("WSxGenV",nil,nil,"#show\n/use !Death's Advance\n/use Ancient Elethium Coin\n/use [nomod]Panflute of Pandaria\n/cancelaura Rhan'ka's Escape Plan\n/use Prismatic Bauble")
 					EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";[nomod:alt]Path of Frost\n/use [swimming]Barnacle-Encrusted Gem\n/use [mod:alt]Weathered Purple Parasol")
@@ -3370,30 +3471,30 @@ local function eventHandler(self, event)
 					    end
 					end
 					local swap =  (OffHands["Menkify!"] and ("\n/equipslot [noequipped:Shields,mod,nospec:1] 17 " .. OffHands["Menkify!"]) or "")
-					if playerspec == 1 then
+					if playerSpec == 1 then
 						swap = "\n/equipset [noequipped:shields,mod]Menkify!"
 					end
 					EditMacro("WSxGen1",nil,nil,"#show\n/use [nocombat,help]Corbyn's Beacon;"..b("Colossus Smash","[]",";")..b("Rampage","[]",";").."Shield Block\n/targetenemy [noexists]\n/startattack\n/use Chalice of Secrets" .. (OffHands["DoubleGate"] and ("\n/equipslot [equipped:Shields,spec:2] 17 " .. OffHands["DoubleGate"]) or ""))
 					EditMacro("WSxSGen+1",nil,nil,"/use "..b("Ignore Pain","[]",";")..b("Bitter Immunity","[]",";").."\n/use Chalice of Secrets\n/targetexact Aerylia")
-					EditMacro("WSxGen2",nil,nil,"/use [nocombat,noexists]Vrykul Drinking Horn;"..b("Mortal Strike","[]",";")..b("Bloodthirst","[]",";")..b("Devastate","[]","").."\n/targetenemy [noexists]\n/cleartarget [noharm]\n/startattack\n/cancelaura Vrykul Drinking Horn\n/equipset [equipped:Shields,spec:1]Noon!")
+					EditMacro("WSxGen2",nil,nil,"/use [nocombat,noexists]Vrykul Drinking Horn;"..b("Mortal Strike","[]",";")..b("Bloodthirst","[]",";")..b("Devastate","[known:Devastator,@mouseover,harm,nodead][known:Devastator]Heroic Throw;","").."\n/targetenemy [noexists]\n/cleartarget [noharm]\n/startattack\n/cancelaura Vrykul Drinking Horn\n/equipset [equipped:Shields,spec:1]Noon!")
 					EditMacro("WSxSGen+2",nil,nil,"#show\n/use Victory Rush\n/use [noexists,nocombat,nochanneling]Gnomish X-Ray Specs\n/targetenemy [noharm]\n/startattack")
 					EditMacro("WSxGen3",nil,nil,"#show\n/use Execute\n/startattack\n/cleartarget [dead]\n/targetenemy [noexists]\n/use Banner of the Burning Blade")
 					EditMacro("WSxSGen+3",nil,nil,"/use "..b("Rend","[]",";")..b("Thunderous Roar","[]",";")..b("Bladestorm","[]",";")..b("Thunder Clap","[]",";").."Whirlwind\n/startattack")
 					EditMacro("WSxGen4",nil,nil,"#show\n/use "..b("Overpower","[]",";").."[spec:3][equipped:Shields,spec:2]Shield Slam;"..b("Raging Blow","[]",";").."Slam\n/targetenemy [noexists]\n/startattack\n/cleartarget [dead]")
-					EditMacro("WSxSGen+4",nil,nil,"#show\n/use "..b("Ravager","[@cursor]",";")..b("Skullsplitter","[]",";")..b("Siegebreaker","[]","").."\n/use Muradin's Favor\n/startattack")
+					EditMacro("WSxSGen+4",nil,nil,"#show\n/stopspelltarget\n/use "..b("Ravager","[@mouseover,exists,nodead][@cursor]",";")..b("Skullsplitter","[]",";")..b("Siegebreaker","[]","").."\n/use Muradin's Favor\n/startattack")
 					EditMacro("WSxCGen+4",nil,nil,"#show\n/use "..b("Odyn's Fury","[]",";")..b("Bladestorm","[]",";")..b("Shield Charge","[]",";")..b("Thunderous Roar","[]",";")..b("Avatar","[]",";")..b("Recklessness","[]","").."\n/startattack\n/cleartarget [dead]\n/use [nocombat,noexists]Tosselwrench's Mega-Accurate Simulation Viewfinder")
 					EditMacro("WSxGen5",nil,nil,"/use "..b("Rallying Cry","[mod]",";")..b("Onslaught","[]",";")..b("Revenge","[]",";").."[equipped:Shields,nospec:3]Shield Slam;Slam\n/startattack\n/cleartarget [dead]\n/stopmacro [nomod]\n/use [mod]Gamon's Braid\n/roar")
 					EditMacro("WSxSGen+5",nil,nil,"#show\n/use "..b("Shockwave","[]",";")..b("Thunderous Roar","[]",";")..b("Avatar","[]",";")..b("Bladestorm","[]",";").."[spec:2]Slam;Whirlwind\n/startattack")
 					EditMacro("WSxGen6",nil,nil,"#show\n/use "..b("Bladestorm","[mod:ctrl]",";")..b("Recklessness","[mod:ctrl]",";")..b("Avatar","[mod:ctrl]",";")..b("Thunder Clap","[spec:3]",";").."Whirlwind\n/startattack\n/use Words of Akunda")
 					EditMacro("WSxSGen+6",nil,nil,"#show Shield Block\n/use "..b("Ravager","[@player]",";")..b("Rampage","[]",";").."[spec:3]Shield Block"..b("Sweeping Strikes","[]","").."\n/targetenemy [noexists]\n/startattack")
 					EditMacro("WSxGen7",nil,nil,"/use [mod]Shield Block;"..b("Thunder Clap","[nospec:3]",";")..b("Bladestorm","[]",";")..b("Sweeping Strikes","[]",";").."[spec:3]Whirlwind;Slam\n/startattack"..swap)
-					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Spear of Bastion","[@player,mod][@cursor]",";")..b("Cleave","[]",";").."Slam")
+					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Spear of Bastion","[@player,mod][@cursor]",";")..b("Cleave","[]",";")..b("Sweeping Strikes","[]",";").."Slam")
 					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Recklessness","[]",";")..b("Sweeping Strikes","[]",";")..b("Cleave","[]",";")..b("Challenging Shout","[]",""))
 					EditMacro("WSxCSGen+2",nil,nil,"")
 					EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,harm,nodead]Rend;Vrykul Toy Boat\n/use [nocombat]Vrykul Toy Boat Kit")
-					EditMacro("WSxCSGen+4",nil,nil,"/use [@party1,help,nodead][@targettarget,help,nodead]Intervene")
-					EditMacro("WSxCSGen+5",nil,nil,"//use [@party2,help,nodead][@targettarget,help,nodead]Intervene")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
+					EditMacro("WSxCSGen+4",nil,nil,"/use [mod:alt,@party3,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Intervene")
+					EditMacro("WSxCSGen+5",nil,nil,"//use [mod:alt,@party4,help,nodead][@party2,help,nodead][@targettarget,help,nodead]Intervene")
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
 					EditMacro("WSxGenQ",nil,nil,"#show Pummel\n/use "..b("Storm Bolt","[mod:alt,@focus,harm,nodead]",";")..b("Berserker Rage","[mod:shift]",";").."[@mouseover,harm,nodead,nomod]Charge\n/use [@mouseover,harm,nodead,nomod][nomod]Pummel\n/use Mote of Light\n/use World Shrinker")
 					EditMacro("WSkillbomb",nil,nil,"#show "..b("Avatar","\n/use []","")..b("Recklessness","\n/use ","").."\n/use Flippable Table"..dpsRacials[race]..hasHE.."\n/use Will of Northrend\n/use [@player]13\n/use 13"..b("Thunderous Roar","\n/use []","")..b("Bladestorm","\n/use []","")..b("Ravager","\n/use [@player]","").."\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")
 					EditMacro("WSxGenE",nil,nil,"#show\n/use [@mouseover,harm,nodead][]Charge\n/use [noexists,nocombat]Arena Master's War Horn\n/startattack\n/cleartarget [dead][help]\n/targetenemy [noharm]\n/use Prismatic Bauble")
@@ -3404,18 +3505,22 @@ local function eventHandler(self, event)
 					EditMacro("WSxSGen+T",nil,nil,"#show Taunt\n/use [nocombat,noexists]Blight Boar Microphone;Taunt\n/targetenemy [noexists]")
 				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use "..b("Challenging Shout","[]",""))
 					EditMacro("WSxGenU",nil,nil,"#show\n/use "..b("Intervene","[]",""))
-					EditMacro("WSxGenF",nil,nil,"#show "..b("Berserker Rage","[]","").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt]Farwater Conch;[@focus,harm,nodead]Pummel;Survey;")
-					EditMacro("WSxSGen+F",nil,nil,"#show "..b("Spell Block","[]","").."\n/use [@focus,harm,nodead]Charge\n/use [@focus,harm,nodead]Pummel\n/use [nocombat,noexists,mod:alt]Gastropod Shell;Faintly Glowing Flagon of Mead")
+					EditMacro("WSxGenF",nil,nil,"#show "..b("Berserker Rage","[]","").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt]Farwater Conch;[@focus,harm,nodead]Pummel")
+					EditMacro("WSxSGen+F",nil,nil,"#show "..b("Spell Block","[]","").."\n/use [@focus,harm,nodead]Charge\n/use [@focus,harm,nodead]Pummel\n/use [help,nocombat,mod:alt]B.B.F. Fist;[nocombat,noexists,mod:alt]Gastropod Shell;Faintly Glowing Flagon of Mead")
 					EditMacro("WSxCGen+F",nil,nil,"#show\n/use "..b("Demoralizing Shout","[]",";").."Battle Shout")
-					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Rallying Cry","[]","").."\n/use [nocombat]Throbbing Blood Orb\n/stopmacro [combat,exists]\n/run local _,d=GetItemCooldown(39769) if d==0 then EquipItemByName(39769) else C_EquipmentSet.UseEquipmentSet(C_EquipmentSet.GetEquipmentSetID(\""..EQS[playerspec].."\")) end\n/use 16")
-					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt]S.F.E. Interceptor;"..b("Shattering Throw","[@mouseover,harm,nodead][]",";")..b("Wrecking Throw","[@mouseover,harm,nodead][]","").."\n/targetenemy [noharm]")
+					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Rallying Cry","[]","").."\n/use [nocombat]Throbbing Blood Orb")
+					if playerName == "Kree" then
+						EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Rallying Cry","[]","").."\n/use [nocombat]Throbbing Blood Orb\n/stopmacro [combat,exists]\n/run local _,d=GetItemCooldown(39769) if d==0 then EquipItemByName(39769) else "..noPants.." end\n/use 16")
+					end
+					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt]S.F.E. Interceptor;"..b("Shattering Throw","[@mouseover,harm,nodead][harm,nodead]",";")..b("Wrecking Throw","[@mouseover,harm,nodead][harm,nodead]",";").."B.B.F. Fist\n/targetenemy [combat,noharm]")
+					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..b("Storm Bolt","[]",";").."Victory Rush\n/use [noexists,nocombat]Flaming Hoop")
 				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Spell Block","[]",";"))
-					EditMacro("WSxCSGen+G",nil,nil,"#show\n/use "..b("Bitter Immunity","[]",";"))
-					EditMacro("WSxSGen+H",nil,nil,"#show Battle Shout\n/use [nomounted]Darkmoon Gazer\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
+					EditMacro("WSxCSGen+G",nil,nil,"#show\n/use [nocombat,noexists]Hraxian's Unbreakable Will"..b("Bitter Immunity","[]","").."\n/cancelaura Blessing of Protection")
+					EditMacro("WSxGenH",nil,nil,"#show Battle Shout\n/use [nomounted]Darkmoon Gazer\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
 					EditMacro("WSxCGen+J",nil,nil,"#show\n/use "..invisPot)
-					EditMacro("WSxGenZ",nil,nil,"#show\n/use "..b("Defensive Stance","[mod]!",";")..b("Die by the Sword","[]",";")..b("Enraged Regeneration","[]",";")..b("Shield Wall","[]","").."\n/use Stormforged Vrykul Horn\n/use [mod:alt]Gateway Control Shard")
-					EditMacro("WSxGenX",nil,nil,"#show\n/use "..b("Battle Stance","[mod:alt]!",";")..b("Berserker Stance","[mod:alt]!",";")..b("Last Stand","[nomod]",";")..b("Spell Reflection","[nomod]","").."\n/targetfriend [mod:shift,nohelp]\n/use [mod:shift,help,nodead]Intervene\n/targetlasttarget [mod:shift]")
-					EditMacro("WSxGenC",nil,nil,"#show "..b("Intimidating Shout","[]",";")..b("Spell Reflection","[]","").."\n/use "..b("Intimidating Shout","[mod:ctrl]",";")..b("Spell Reflection","[]","").."\n/use Thistleleaf Branch\n/cancelaura Thistleleaf Disguise")
+					EditMacro("WSxGenZ",nil,nil,"#show\n/use "..b("Defensive Stance","[mod:alt,nostance:1]!",";")..b("Battle Stance","[mod:alt]!",";")..b("Berserker Stance","[mod:alt]!",";")..b("Die by the Sword","[]",";")..b("Enraged Regeneration","[]",";")..b("Shield Wall","[]","").."\n/use Stormforged Vrykul Horn\n/use [mod:alt]Gateway Control Shard")
+					EditMacro("WSxGenX",nil,nil,"#show\n/use "..b("Defensive Stance","[mod:alt,nostance:1]!",";")..b("Battle Stance","[mod:alt]!",";")..b("Berserker Stance","[mod:alt]!",";")..b("Last Stand","[nomod]",";")..b("Spell Reflection","[nomod]","").."\n/targetfriend [mod:shift,nohelp]\n/use [mod:shift,help,nodead]Intervene\n/targetlasttarget [mod:shift]")
+					EditMacro("WSxGenC",nil,nil,"#show "..b("Intimidating Shout","[]",";")..b("Spell Reflection","[]","").."\n/use "..b("Intimidating Shout","[mod:ctrl]",";")..b("Intervene","[mod:shift,"..healer.."]",";")..b("Spell Reflection","[]","").."\n/use Thistleleaf Branch\n/cancelaura Thistleleaf Disguise")
 					EditMacro("WSxAGen+C",nil,nil,"#show\n/use Sylvanas' Music Box\n/run PetDismiss();\n/cry")
 					EditMacro("WSxGenV",nil,nil,"/use "..b("Heroic Leap","[@cursor]","").."\n/use [nomod]Panflute of Pandaria\n/cancelaura Rhan'ka's Escape Plan\n/use Prismatic Bauble")
 					EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";[nomod:alt]Heroic Leap\n/use [swimming]Barnacle-Encrusted Gem\n/use [mod:alt]Weathered Purple Parasol")
@@ -3427,46 +3532,48 @@ local function eventHandler(self, event)
 					if IsSpellKnown(193753) == true then
 						dOH = "Dreamwalk"
 					end
-
-					-- Block for Healer-Innervate secure pre-parser
-					local healer = "help,nodead" 
-					for i = 1, 5 do 
-						if UnitGroupRolesAssigned("party"..i) == "HEALER" then 
-							healer = "@".."party"..i 
-							-- print(healer)
-						end 
-					end
 					
 					EditMacro("WSxGen1",nil,nil,"/use [@mouseover,help,dead][help,dead]Rebirth;"..b("Innervate","[@mouseover,help,nodead][help,nodead]",";").."[@mouseover,harm,nodead][harm,nodead]Moonfire;Druid and Priest Statue Set\n/use [nocombat,noform:1/4]!Prowl\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+1",nil,nil,"#show "..b("Sunfire","[]",";")..b("Tranquility","[]",";").."Mark of the Wild\n/use [mod:alt,@party3,nodead][mod:ctrl,@party2,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Regrowth;Kalytha's Haunted Locket")
 					EditMacro("WSxGen2",nil,nil,"/use [form:2]Shred;[form:1]Mangle;"..b("Sunfire","[@mouseover,harm,nodead][harm,nodead]",";")..b("Invigorate","[@mouseover,help,nodead][help,nodead]",";").."Moonfeather Statue\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxSGen+2",nil,nil,"#show\n/cancelaura X-Ray Specs\n/use [mod:alt,@party4,nodead][@mouseover,help,nodead][]Regrowth\n/use Gnomish X-Ray Specs")
-					EditMacro("WSxGen3",nil,nil,"#show\n/use "..b("Starsurge","[]","").."\n/targetenemy [noexists]\n/use Desert Flute")
-					EditMacro("WSxSGen+3",nil,nil,"#show "..b("Rake","","")..b("Rake","\n/use [noform:2]Cat Form;[form:2]","\n/use !Prowl")..b("Lifebloom","\n/use [@mouseover,help,nodead][]","")..b("Thrash","\n/use [form:1/2]","\n/use [noform:1]Bear Form;[form:1]",""))
-					EditMacro("WSxGen4",nil,nil,"/use "..b("Rip","[form:2]",";")..b("Pulverize","[form:1]",";").."[form:2]Shred;[form:1]Mangle;"..b("Starfire","[@mouseover,harm,nodead][]","").."\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat,nostealth,noform:1]!Prowl")
-					EditMacro("WSxSGen+4",nil,nil,"/use "..b("Rejuvenation","[@focus,help,nodead,mod:alt][@party1,help,nodead,mod:alt]",";")..b("Lifebloom","[@mouseover,help,nodead][]",";")..b("Bristling Fur","[noform:1]Bear Form;[form:1]",";")..b("Tiger's Fury","[noform:2]Cat Form;[form:2]",";")..b("Moonkin Form","[noform:4]",";")..b("Stellar Flare","[@mouseover,harm,nodead][]",";")..b("New Moon","[]",";")..b("Fury of Elune","[]",";").."Charm Woodland Creature\n/targetenemy [noexists]")
-					EditMacro("WSxCGen+4",nil,nil,"#show\n/use "..b("Rejuvenation","[@party3,help,nodead,mod:alt]",";")..b("Heart of the Wild","[]",""))	
-					EditMacro("WSxGen5",nil,nil,"#show\n/use "..b("Renewal","[mod:ctrl]",";")..b("Nourish","[@mouseover,help,nodead][help,nodead]",";").."[form:2]Ferocious Bite;"..b("Maul","[form:1]",";").."[form:1]Mangle;[harm,nodead]Wrath;Hunter's Call\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxSGen+5",nil,nil,"#show\n/use "..b("Rejuvenation","[@party2,help,nodead,mod:alt]",";").."[nocombat,help,nodead]Corbyn's Beacon;"..b("Lunar Beam","[]",";")..b("Flourish","[]",";")..b("Feral Frenzy","[noform:2]Cat Form;[form:2]",";")..b("Tiger's Fury","[noform:2]Cat Form;[form:2]",";")..b("Nourish","[@mouseover,help,nodead][]",";")..b("Warrior of Elune","[]","")..b("Force of Nature","[@cursor]","")..b("Cenarion Ward","[@mouseover,help,nodead][]","").."\n/use [spec:2/3]Bloodmane Charm")
-					EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use [mod,@party4,help,nodead]Rejuvenation;[nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;14\n/use Eternal Black Diamond Ring")
-					EditMacro("WSxGen6",nil,nil,"#show\n/use "..b("Celestial Alignment","[mod,@cursor]",";")..b("Incarnation: Chosen of Elune","[mod]!",";")..b("Incarnation: Avatar of Ashamane","[mod]!",";")..b("Incarnation: Guardian of Ursoc","[mod]!",";")..b("Berserk","[mod]",";")..b("Tranquility","[mod]",";")..b("Thrash","[form:1/2]",";[spec:2,noform:1/2]Cat Form;")..b("Starfall","[]",";")..b("Sunfire","[@mouseover,harm,nodead][harm,nodead]","")..b("Tranquility","\n/stopmacro\n/use ",""))
-					EditMacro("WSxSGen+6",nil,nil,"#show\n/use "..b("Primal Wrath","[form:2]",";")..b("Wild Growth","[@mouseover,help,nodead][]","").."\n/use Kaldorei Wind Chimes")
-					EditMacro("WSxGen7",nil,nil,"/use "..b("Efflorescence","[mod,@player][@cursor,noform:1/2]",";")..b("Wild Mushroom","[mod,@player,noform:1/2][noform:1/2]",";")..b("Starfall","[noform:1/2]",";")..b("Swipe","[noform:1/2]Cat Form;[form:1/2]",""))
+					EditMacro("WSxGen3",nil,nil,"#show\n/use "..b("Rake","[form:2]",";")..b("Starsurge","[]","")..b("Ironfur","[form:1]",";").."\n/targetenemy [noexists]\n/use Desert Flute")
+					EditMacro("WSxSGen+3",nil,nil,"#show "..b("Rake","[]",";").."Moonfire"..b("Rake","\n/use [noform:2]Cat Form;[form:2]","\n/use !Prowl")..b("Lifebloom","\n/use [@mouseover,help,nodead][]","")..b("Thrash","\n/use [form:1/2]","\n/use [noform:1]Bear Form;[form:1]",""))
+					EditMacro("WSxGen4",nil,nil,"/use "..b("Rip","[form:2]",";")..b("Pulverize","[form:1]",";").."[form:2]Shred;[form:1]Mangle;"..b("Starfire","[@mouseover,harm,nodead][]","").."\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat,nostealth,noform:1/4]!Prowl")
+					local sgenf = b("Stellar Flare","[@mouseover,harm,nodead,nomod:alt][nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Stellar Flare\n/targetlasttarget") or b("New Moon") or b("Fury of Elune")
+					local rejuv = ""
+					if playerSpec == 4 then 
+						rejuv = b("Rejuvenation","[@focus,help,nodead,mod:alt][@party1,help,nodead,mod:alt,spec:4]",";")
+					else
+						rejuv = b("Rejuvenation","[@focus,help,nodead,mod:alt]",";")
+					end
+					EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists,nomod]\n/use "..rejuv..b("Lifebloom","[@mouseover,help,nodead][]",";").."[spec:2,noform:2]!Cat Form;[spec:3,noform:1]!Bear Form;"..b("Moonkin Form","[noform:4,spec:1]",";")..sgenf..b("Bristling Fur","[form:1]",";")..b("Tiger's Fury","[form:2]",";")..b("Sunfire","[noform:1/2]",";").."\n/use Bushel of Mysterious Fruit")
+					EditMacro("WSxCGen+4",nil,nil,"#show\n/use "..b("Rejuvenation","[@party3,help,nodead,mod:alt]",";")..b("Heart of the Wild","[]",";")..b("Convoke the Spirits","[@mouseover,exists,nodead][]",""))	
+					EditMacro("WSxGen5",nil,nil,"#show\n/use "..b("Renewal","[mod:ctrl]",";")..b("Nourish","[@mouseover,help,nodead][help,nodead]",";")..b("Grove Guardians","[@mouseover,help,nodead][help,nodead]",";").."[form:2,harm,nodead]Ferocious Bite;"..b("Maul","[noform:1]Bear Form;[form:1,harm,nodead]",";").."[form:1,harm,nodead]Mangle;[harm,nodead]Wrath;Hunter's Call\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxSGen+5",nil,nil,"#show\n/use "..b("Rejuvenation","[@party2,help,nodead,mod:alt,spec:4]",";").."[nocombat,help,nodead]Corbyn's Beacon;"..b("Lunar Beam","[]",";")..b("Flourish","[]",";")..b("Feral Frenzy","[noform:2]Cat Form;[form:2]",";")..b("Tiger's Fury","[noform:2]Cat Form;[form:2]",";")..b("Nourish","[@mouseover,help,nodead][]",";")..b("Warrior of Elune","[]","")..b("Force of Nature","[@cursor]","")..b("Cenarion Ward","[@mouseover,help,nodead][]","").."\n/use [spec:2/3]Bloodmane Charm")
+					EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use [mod:ctrl,@party4,help,nodead]Rejuvenation;[nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;14\n/use Eternal Black Diamond Ring")
+					EditMacro("WSxGen6",nil,nil,"#show\n/use "..b("Celestial Alignment","[mod,@cursor]",";")..b("Incarnation: Chosen of Elune","[mod]!",";")..b("Incarnation: Avatar of Ashamane","[mod]!",";")..b("Incarnation: Guardian of Ursoc","[mod]!",";")..b("Berserk","[mod]",";")..b("Tranquility","[mod]",";")..b("Thrash","[form:1/2]",";[spec:2,noform:1/2]Cat Form;[spec:3,noform:1/2]Bear Form;")..b("Starfall","[]",";")..b("Sunfire","[@mouseover,harm,nodead][harm,nodead]","")..b("Nature's Swiftness","[]","")..b("Tranquility","\n/stopmacro\n/use ",""))
+					EditMacro("WSxSGen+6",nil,nil,"#show\n/use "..b("Primal Wrath","[form:2]",";")..b("Wild Growth","[@mouseover,help,nodead][]","").."\n/use Kaldorei Wind Chimes\n/use [nocombat,noexists]Friendsurge Defenders")
+					EditMacro("WSxGen7",nil,nil,"/stopspelltarget\n/use "..b("Efflorescence","[mod,@player][@mouseover,exists,nodead,noform:1/2][@cursor,noform:1/2]",";")..b("Wild Mushroom","[mod,@player,noform:1/2][noform:1/2]",";")..b("Fury of Elune","[@mouseover,harm,nodead][]",";")..b("Starfall","[noform:1/2]",";")..b("Swipe","[noform:1/2]Cat Form;[form:1/2]",""))
 					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Fury of Elune","[]",";")..b("New Moon","[]",";")..b("Incarnation: Tree of Life","[]!",";")..b("Convoke the Spirits","[]","(Shadowlands);")..b("Adaptive Swarm","[@mouseover,exists,nodead][]",";")..b("Invigorate","[@mouseover,help,nodead,mod][mod]",";")..b("Cenarion Ward","[]",";")..b("Overgrowth","[@mouseover,help,nodead][]",";")..b("Ironfur","[]",""))
 					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Rage of the Sleeper","[noform:1]Bear Form;[form:1]",";")..b("Adaptive Swarm","[@mouseover,exists,nodead][]",";")..b("Incarnation: Tree of Life","[]!",";")..b("Convoke the Spirits","[]","(Shadowlands);")..b("Astral Communion","[]",";")..b("Tiger's Fury","[]",";")..b("Bristling Fur","[]",";")..b("Cyclone","[]",""))
-					EditMacro("WSxCSGen+2",nil,nil,"/use [spec:4,@focus,help,nodead][spec:4,@party1,help,nodead]Nature's Cure;[@focus,help,nodead][@party1,help,nodead]Remove Corruption\n/use [nocombat]Spirit of Bashiok")
-					EditMacro("WSxCSGen+3",nil,nil,"/use [spec:4,@party2,help,nodead]Nature's Cure;[@party2,help,nodead]Remove Corruption")
-					EditMacro("WSxCSGen+4",nil,nil,"/use [@focus,spec:4,help,nodead][@party1,help,nodead,spec:4]Lifebloom;[noform:2]!Cat Form\n/stopmacro [noform:2]") 
-					EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,spec:4,help,nodead][@party2,help,nodead,spec:4]Lifebloom;[noform:2]!Cat Form\n/use Battle Standard of Coordination")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/cancelaura Flap\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Revive;"..pwned.."\n/use [mod:ctrl]Revitalize"..brazier)
+					EditMacro("WSxCSGen+2",nil,nil,"/use [mod:alt,spec:4,@party3,help,nodead][spec:4,@party1,help,nodead][spec:4,@targettarget,help,nodead]Nature's Cure;[mod:alt,@party3,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Remove Corruption\n/use [nocombat]Spirit of Bashiok")
+					EditMacro("WSxCSGen+3",nil,nil,"/use [mod:alt,spec:4,@party4,help,nodead][spec:4,@party2,help,nodead]Nature's Cure;[mod:alt,@party4,help,nodead][@party2,help,nodead]Remove Corruption")
+					EditMacro("WSxCSGen+4",nil,nil,"/use "..b("Stellar Flare","[spec:1,@focus,harm,nodead]",";").."[mod:alt,@party3,help,nodead,spec:4][@focus,spec:4,help,nodead][@party1,help,nodead,spec:4]Lifebloom;[mod:alt,@party3,help,nodead][@focus,help,nodead][@party1,help,nodead]Rejuvenation") 
+					EditMacro("WSxCSGen+5",nil,nil,"/use [mod:alt,@party4,help,nodead,spec:4][@focus,spec:4,help,nodead][@party2,help,nodead,spec:4][@targettarget,help,nodead,spec:4]Lifebloom;[mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead][@targettarget,help,nodead]Rejuvenation")
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/cancelaura Flap\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Revive;"..pwned.."\n/use [mod:ctrl]Revitalize"..brazier)
 					EditMacro("WSxGenQ",nil,nil,"/use "..b("Cyclone","[mod:alt,@focus,harm,nodead]",";")..b("Skull Bash","[@mouseover,harm,nodead,form:1/2][form:1/2]",";[noform:1/2]Cat Form;")..b("Solar Beam","[@mouseover,harm,nodead][]",""))
 					EditMacro("WSkillbomb",nil,nil,"#show "..b("Celestial Alignment","\n/use [@cursor]","")..b("Incarnation: Chosen of Elune","\n/use !","")..b("Incarnation: Avatar of Ashamane","\n/use !","")..b("Incarnation: Guardian of Ursoc","\n/use !","")..b("Berserk","\n/use ","")..b("Incarnation: Tree of Life","\n/use !","")..b("Nature's Vigil","\n/use ","")..b("Force of Nature","\n/use [@player]","")..dpsRacials[race].."\n/use [spec:1/4]Rukhmar's Sacred Memory;Will of Northrend\n/use [@player]13\n/use 13\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")
-					EditMacro("WSxGenE",nil,nil,"#show "..b("Incapacitating Roar","[]",";")..b("Mighty Bash","[]",";")..b("Ursol's Vortex","[]",";")..b("Mass Entanglement","[]","").."\n/use "..b("Heart of the Wild","[mod:alt]",";")..b("Wild Charge","[help,nodead,noform][form:1/2]","").."\n/use [noform:1]!Prowl\n/use [combat,noform:1/2]Bear Form(Shapeshift)\n/targetenemy [noexists]\n/cancelform [help,nodead]\n/use [nostealth]Prismatic Bauble")
-					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Solar Beam","[mod:alt,@focus,harm,nodead]",";")..b("Nature's Swiftness","[]",";")..b("Renewal","[]",";").."\n/use [nocombat]Mylune's Call"..oOtas..covToys)
+					EditMacro("WSxGenE",nil,nil,"#show "..b("Incapacitating Roar","[]",";")..b("Mighty Bash","[]",";")..b("Ursol's Vortex","[]",";")..b("Mass Entanglement","[]","").."\n/use "..b("Frenzied Regeneration","[noform:1,mod:alt]Bear Form;[form:1,mod:alt]",";")..b("Wild Charge","[help,nodead,noform][form:1/2]","").."\n/use [noform:1]!Prowl\n/use [combat,noform:1/2]Bear Form(Shapeshift)\n/targetenemy [noexists]\n/cancelform [help,nodead]\n/use [nostealth]Prismatic Bauble")
+					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Solar Beam","[mod:alt,@focus,harm,nodead]",";")..b("Nature's Swiftness","[]",";")..b("Renewal","[]",";")..b("Frenzied Regeneration","[noform:1]Bear Form;[form:1]",";").."\n/use [nocombat]Mylune's Call"..oOtas..covToys)
 					EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..b("Ursol's Vortex","[mod:alt,@player]",";")..b("Solar Beam","[mod:alt,@focus,harm,nodead]",";")..b("Incapacitating Roar","[]",";")..b("Mighty Bash","[]",";")..b("Solar Beam","[@mouseover,harm,nodead][]",";").."\n/use [nomod]!Prowl")
 					EditMacro("WSxGenR",nil,nil,b("Wild Charge","/cancelform [form,@mouseover,help,nodead,nomod]\n/use [@mouseover,help,nodead,nomod]","\n").."/use "..b("Stampeding Roar","[mod:ctrl]",";")..b("Typhoon","[nomod:shift]",";")..b("Ursol's Vortex","[@cursor,mod:shift][nomod,@cursor]",";")..b("Mass Entanglement","[mod:shift][nomod]",";").."Entangling Roots")
-					EditMacro("WSxGenT",nil,nil,"#show "..b("Frenzied Regeneration","[]",";").."Entangling Roots\n/use [mod,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]Entangling Roots;"..b("Invigorate","[@mouseover,help,nodead][help,nodead]",";")..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]")
-					EditMacro("WSxSGen+T",nil,nil,"#show Growl\n/use "..b("Frenzied Regeneration","[noform:1,mod:alt]Bear Form;[form:1,mod:alt]",";").."[noform:1]Bear form(Shapeshift);Growl\n/use [spec:3]Highmountain War Harness\n/cancelaura [noform:1]Highmountain War Harness")
+					if b("Frenzied Regeneration") == "Frenzied Regeneration" then
+						EditMacro("WSxGenT",nil,nil,"#show "..b("Frenzied Regeneration","","").."\n/use [mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]Entangling Roots;"..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]")
+					else 
+						EditMacro("WSxGenT",nil,nil,"#show Entangling Roots\n/use [mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]Entangling Roots;"..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]")
+					end
+					EditMacro("WSxSGen+T",nil,nil,"#show [nocombat,noform:1]Prowl;Growl\n/use [noform:1]Bear form(Shapeshift);Growl\n/use [spec:3]Highmountain War Harness\n/cancelaura [noform:1]Highmountain War Harness")
 				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use "..b("Cenarion Ward","[@party2,help,nodead,mod:alt][@mouseover,help,nodead][help,nodead][@party1,help,nodead][]",";")..b("Invigorate","[@party2,help,nodead,mod:alt][@mouseover,help,nodead][help,nodead][@party1,help,nodead][]",";"))
 					EditMacro("WSxGenU",nil,nil,"#show "..b("Renewal","[]",";").."[resting]Treant Form;Prowl\n/use Treant Form")
 					EditMacro("WSxGenF",nil,nil,"#show Barkskin\n/focus [@mouseover,exists]mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt]Farwater Conch;"..b("Skull Bash","[@focus,harm,nodead,form:1/2]",";[@focus,harm,nodead,noform:1/2]Bear Form;")..b("Solar Beam","[@focus,harm,nodead]",";").."Charm Woodland Creature")
@@ -3474,115 +3581,126 @@ local function eventHandler(self, event)
 					EditMacro("WSxCGen+F",nil,nil,"#show\n/use [nocombat,noexists]Mushroom Chair\n/use "..b("Nature's Vigil","[]",";")..b("Heart of the Wild","[]",""))
 					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Innervate","[]",";")..b("Renewal","[]",";").."\n/use [nocombat,noexists]Tear of the Green Aspect\n/targetfriend [nohelp,nodead]\n/cancelform [help,nodead]\n/use [help,nodead]Wild Charge\n/targetlasttarget\n/use Prismatic Bauble")
 					EditMacro("WSxGenG",nil,nil,"/use [nocombat,noexists,mod]Darkmoon Gazer;"..b("Stampeding Roar","[mod]",";")..b("Soothe","[@mouseover,harm,nodead]",";")..b("Nature's Cure","[@mouseover,help,nodead][]",";")..b("Remove Corruption","[@mouseover,help,nodead][]","").."\n/use Poison Extraction Totem")
+					EditMacro("WSxSGen+G",nil,nil,"#show\n/use "..b("Maim","[form:2]",";")..b("Soothe","[]","").."\n/use [noexists,nocombat]Flaming Hoop\n/targetenemy [noexists]") 
 				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Overgrowth","[@party2,help,nodead,mod:alt][@mouseover,help,nodead][help,nodead][@party1,help,nodead][]",";")..b("Invigorate","[@party2,help,nodead,mod:alt][@mouseover,help,nodead][help,nodead][@party1,help,nodead][]",";"))
-					EditMacro("WSxCSGen+G",nil,nil,"#show Dash\n/use [spec:4,@focus,help,nodead]Nature's Cure;[@focus,help,nodead]Remove Corruption\n/use Choofa's Call")
-					EditMacro("WSxSGen+H",nil,nil,"/use "..b("Solar Beam","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead,nomod:alt][nomod:alt]",";")..b("Nature's Swiftness","[]",";").."\n/use Wisp Amulet\n/stopmacro [combat]\n/run if not (IsControlKeyDown()) then if IsMounted() or GetShapeshiftFormID() ~= nil then DoEmote(\"mountspecial\") end end")
+					EditMacro("WSxCSGen+G",nil,nil,"#show Dash\n/use [spec:4,@focus,help,nodead]Nature's Cure;[@focus,help,nodead]Remove Corruption\n/use Choofa's Call\n/cancelaura Blessing of Protection\n/cancelaura Enthralling")
+					EditMacro("WSxGenH",nil,nil,"#show "..b("Nature's Swiftness","[]",";")..b("Ironbark","[]","").."\n/use "..b("Solar Beam","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead,nomod:alt][nomod:alt]",";")..b("Ironbark","["..tank.."]",";")..b("Nature's Swiftness","[]",";").."\n/use Wisp Amulet\n/stopmacro [combat]\n/run if not (IsControlKeyDown()) then if IsMounted() or GetShapeshiftFormID() ~= nil then DoEmote(\"mountspecial\") end end")
 					EditMacro("WSxCGen+J",nil,nil,"#show\n/use "..invisPot)
-					EditMacro("WSxGenZ",nil,nil,"#show [mod:alt]Nature's Beacon;"..b("Ironbark","[nomod]",";")..b("Survival Instincts","[nomod]",";")..b("Frenzied Regeneration","[nomod]",";").."[mod][]Barkskin\n/use [mod:alt]Nature's Beacon;"..b("Ironbark","[@mouseover,help,nodead,nomod][nomod]",";")..b("Survival Instincts","[nomod]",";")..b("Frenzied Regeneration","[noform:1,nomod]Bear Form;[form:1,nomod]",";").."[mod][]Barkskin\n/use [mod:alt]Gateway Control Shard")
+					EditMacro("WSxGenZ",nil,nil,"#show\n/use [mod:alt,nocombat]Nature's Beacon;[mod]Barkskin;"..b("Ironbark","[@mouseover,help,nodead][]",";")..b("Survival Instincts","[]",";")..b("Frenzied Regeneration","[noform:1]Bear Form;[form:1]",";").."Barkskin\n/use [mod:alt]Gateway Control Shard")
 					EditMacro("WSxGenX",nil,nil,"/use [mod:alt]Mount Form;[noform:2,mod:shift]!Cat Form;[mod:shift]Dash;"..b("Hibernate","[mod:ctrl,harm,nodead]",";").."[mod:ctrl]"..dOH..";"..b("Ironfur","[form:1]",";")..b("Swiftmend","[@mouseover,help,nodead][]","").."\n/stopmacro [stealth]\n/use Path of Elothir\n/use Prismatic Bauble")
-				 	EditMacro("WSxGenC",nil,nil,"/use "..b("Innervate","[mod:shift,"..healer.."][mod:shift,@player]",";")..b("Cyclone","[@mouseover,harm,nodead,mod][mod]",";")..b("Frenzied Regeneration","[form:1]",";")..b("Astral Communion","[form:4]",";")..b("Rejuvenation","[@mouseover,help,nodead][noform:1]",";").."\n/use Totem of Spirits\n/cancelform [mod:shift,form:2]")
+				 	if b("Cyclone") == "Cyclone" then 
+				 		EditMacro("WSxGenC",nil,nil,"/use "..b("Innervate","[mod:shift,"..healer.."][mod:shift,@player]",";")..b("Cyclone","[@mouseover,harm,nodead,mod][mod]",";")..b("Frenzied Regeneration","[form:1]",";")..b("Astral Communion","[form:4]",";")..b("Rejuvenation","[@mouseover,help,nodead][noform:1]",";").."\n/use Totem of Spirits\n/cancelform [mod:shift,form:2]")
+				 	else
+				 		EditMacro("WSxGenC",nil,nil,"/use "..b("Innervate","[mod:shift,"..healer.."][mod:shift,@player]",";").."[@mouseover,harm,nodead,mod][mod]Entangling Roots;"..b("Frenzied Regeneration","[form:1]",";")..b("Astral Communion","[form:4]",";")..b("Rejuvenation","[@mouseover,help,nodead][noform:1]",";").."\n/use Totem of Spirits\n/cancelform [mod:shift,form:2]")
+				 	end
 					EditMacro("WSxAGen+C",nil,nil,"#show\n/run PetDismiss();\n/cry")
 					EditMacro("WSxGenV",nil,nil,"#show "..b("Wild Charge","[]","").."\n/use "..b("Moonkin Form","[noform:4]",";")..b("Wild Charge","[@mouseover,exists,nodead][]","").."\n/use Panflute of Pandaria\n/cancelaura Rhan'ka's Escape Plan\n/use Prismatic Bauble")
-			 		EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";"..b("Moonkin Form","[noform:4]",";!Flap;")..b("Wild Charge","[noform]Mount Form;[form]",";").."\n/cancelform [form:1/2]\n/cancelaura Prowl\n/use [mod:alt]Weathered Purple Parasol\n/use [nomod:alt,nostealth,form]Seafarer's Slidewhistle")				
+			 		EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";"..b("Moonkin Form","[noform:4]",";!Flap;")..b("Wild Charge","[noform]Mount Form;[form]",";").."\n/cancelform [form:1/2]\n/cancelaura Prowl\n/use [mod:alt]Weathered Purple Parasol")				
 
-				-- Demon Hunter, DH, Fannyvision, Dihy
+				-- Demon Hunter, DH, Fannyvision, Dihy 
 				elseif class == "DEMONHUNTER" then
-					EditMacro("WSxGen1",nil,nil,"#show\n/use [spec:2]Demon Spikes;[@cursor]Fel Rush\n/targetenemy [noexists]\n/startattack\n/use Prismatic Bauble")
-					EditMacro("WSxSGen+1",nil,nil,"#show [spec:2,combat]Demon Spikes;Skull of Corruption\n/use [spec:2,combat]Demon Spikes;[nocombat]Skull of Corruption")
+					EditMacro("WSxGen1",nil,nil,"#show\n/use [@cursor]Fel Rush\n/targetenemy [noexists]\n/startattack\n/use Prismatic Bauble")
+					EditMacro("WSxSGen+1",nil,nil,"#show [nocombat,noexists][spec:1]Skull of Corruption;[spec:2]Demon Spikes\n/use [nocombat,noexists]Skull of Corruption;[spec:2]Demon Spikes")
 					EditMacro("WSxGen2",nil,nil,"#show\n/use [nocombat,noexists]Verdant Throwing Sphere\n/targetlasttarget [noexists,nocombat]\n/use [harm,dead,nocombat,nomod]Soul Inhaler;[spec:1]Demon's Bite;[spec:2]Shear\n/cleartarget [dead]\n/targetenemy [noexists]\n/startattack")
 					EditMacro("WSxSGen+2",nil,nil,"#show "..b("Fel Eruption","[]",";")..b("Fel Devastation","[]",";").."Gnomish X-Ray Specs\n/use Gnomish X-Ray Specs\n/use "..b("Fel Eruption","[]",";")..b("Fel Devastation","[]",";").."\n/startattack\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxGen3",nil,nil,"#show\n/use "..b("Felblade","[]",";").."[spec:2]Demon Spikes;[@mouseover,harm,nodead][]Throw Glaive\n/startattack\n/cleartarget [dead]\n/targetenemy [noexists]\n/use Imp in a Ball")
 					EditMacro("WSxSGen+3",nil,nil,"#show\n/use [@mouseover,harm,nodead,nomod:alt][nomod:alt]Throw Glaive;[nocombat]Legion Pocket Portal\n/targetenemy [noexists]\n/startattack\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Throw Glaive\n/targetlasttarget")
 					EditMacro("WSxGen4",nil,nil,"#show\n/use [spec:2]Immolation Aura"..b("Eye Beam",";[]","").."\n/startattack\n/cleartarget [dead]\n/targetenemy [noexists]")
-					EditMacro("WSxSGen+4",nil,nil,"#show\n/stopspelltarget\n/use "..b("Spirit Bomb","[]",";")..b("Sigil of Flame","[@mouseover,exists,nodead,spec:1][@cursor,spec:1]",";")..b("Glaive Tempest","[]",";")..b("Fel Barrage","[]",";")..b("Shear","[]",";").."\n/startattack\n/cleartarget [dead]\n/targetenemy [noexists]")
+					EditMacro("WSxSGen+4",nil,nil,"#show\n/stopspelltarget\n/use "..b("Sigil of Flame","[@mouseover,exists,nodead][@cursor]",";")..b("Glaive Tempest","[]",";")..b("Fel Barrage","[]",";")..b("Shear","[]",";").."\n/startattack\n/cleartarget [dead]\n/targetenemy [noexists]")
 					EditMacro("WSxCGen+4",nil,nil,"#show\n/use "..b("The Hunt","[@mouseover,harm,nodead][]",";")..b("Bulk Extraction","[]",";")..b("Soul Barrier","[]",";")..b("Fel Barrage","[]",";")..b("Glaive Tempest","[]",";")..b("Darkness","[]",";")..b("Fiery Brand","[]","").."\n/targetenemy [noexists]\n/startattack")
 					EditMacro("WSxGen5",nil,nil,"#show\n/use "..b("Darkness","[mod:ctrl]",";").."Chaos Strike;"..b("Soul Cleave","[]","").."\n/use [mod:ctrl]Shadescale\n/startattack\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+5",nil,nil,"#show\n/use [spec:2,@player]Infernal Strike;"..b("Essence Break","[]",";")..b("Chaos Nova","[]","").."\n/targetenemy [noexists]\n/startattack")
-					EditMacro("WSxGen6",nil,nil,"#show\n/stopspelltarget\n/use [mod:ctrl,@mouseover,exists,nodead][mod:ctrl,@cursor]Metamorphosis;"..b("Sigil of Flame","[@mouseover,exists,nodead,spec:2][@cursor,spec:2]",";").."Blade Dance\n/targetenemy [noexists]")
+					EditMacro("WSxGen6",nil,nil,"#show\n/stopspelltarget\n/use [mod:ctrl,@mouseover,exists,nodead][mod:ctrl,@cursor]Metamorphosis;"..b("Soul Carver","[]",";").."Blade Dance\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+6",nil,nil,"#show\n/use "..b("Sigil of Flame","[@player]",";").."[spec:2]Demon Spikes;Immolation Aura\n/stopspelltarget")
-					EditMacro("WSxGen7",nil,nil,"#show\n/stopspelltarget\n/use "..b("Soul Carver","[]",";").."Immolation Aura\n/targetenemy [noexists]")
+					EditMacro("WSxGen7",nil,nil,"#show\n/stopspelltarget\n/use "..b("Spirit Bomb","[]",";")..b("Soul Carver","[]",";").."Immolation Aura\n/targetenemy [noexists]")
 					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Elysian Decree","[@player,mod:shift][@mouseover,exists,nodead][@cursor]",";")..b("Glaive Tempest","[]",";")..b("Fel Barrage","[]",";").."Immolation Aura")
-					EditMacro("WSxGen9",nil,nil,"#show\n/use Immolation Aura")
+					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Fel Barrage","[]",";").."Immolation Aura")
 					EditMacro("WSxCSGen+2",nil,nil,"")
 					EditMacro("WSxCSGen+3",nil,nil,"/use [nocombat,noexists]The Perfect Blossom;[@focus,harm,nodead]Throw Glaive;Fel Petal;")
 					EditMacro("WSxCSGen+4",nil,nil,"")
 					EditMacro("WSxCSGen+5",nil,nil,"/clearfocus")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/cancelaura Glide\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/cancelaura Glide\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Ultimate Gnomish Army Knife;"..pwned..""..brazier)
 					EditMacro("WSxGenQ",nil,nil,"/use "..b("Imprison","[mod:alt,@focus,harm,nodead]",";").."[@mouseover,harm,nodead][]Disrupt")
 					EditMacro("WSkillbomb",nil,nil,"/use [@player]Metamorphosis\n/use [@player]13\n/use 13"..dpsRacials[race].."\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")
-					EditMacro("WSxGenE",nil,nil,"#show\n/use "..b("Chaos Nova","[mod:alt]",";")..b("Sigil of Misery","[@cursor]",""))
+					EditMacro("WSxGenE",nil,nil,"#show\n/use "..b("Chaos Nova","[mod:alt]",";")..b("Sigil of Misery","[@cursor]",";")..b("Chaos Nova","[]",";"))
 					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Sigil of Misery","[mod:alt,@player]","")..oOtas..covToys)
 					EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..b("Sigil of Silence","[mod:alt,@player][@cursor]",";")..b("Sigil of Misery","[mod:alt,@player][@cursor]",""))
-					EditMacro("WSxGenR",nil,nil,"#show\n/use "..b("Netherwalk","[mod:ctrl]",";")..b("Sigil of Chains","[mod:ctrl,@player][mod:shift,@cursor]",";").."[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]Throw Glaive\n/startattack")
+					EditMacro("WSxGenR",nil,nil,"#show\n/use "..b("Netherwalk","[mod:ctrl]!",";")..b("Sigil of Chains","[mod:ctrl,@player][mod:shift,@cursor]",";").."[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]Throw Glaive\n/startattack")
 					EditMacro("WSxGenT",nil,nil,"#show\n/use !Spectral Sight"..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxSGen+T",nil,nil,"#show Torment\n/use "..b("Sigil of Chains","[mod:alt,@player]",";").."Torment\n/targetenemy [noexists]\n/cleartarget [dead]")
 				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use ")
 					EditMacro("WSxGenU",nil,nil,"#show\n/use "..b("Darkness","",""))
 					EditMacro("WSxGenF",nil,nil,"#show "..b("Sigil of Misery","","").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt,exists,nodead]All-Seer's Eye;[mod:alt]Legion Communication Orb;[@focus,harm,nodead]Disrupt;[nocombat,noexists]Micro-Artillery Controller")
-					EditMacro("WSxSGen+F",nil,nil,"#show "..b("Sigil of Silence","","")..b("Netherwalk","[]",";").."\n/use [nocombat,noexists]Gastropod Shell\n/cancelaura Spectral Sight")
+					EditMacro("WSxSGen+F",nil,nil,"#show "..b("Sigil of Silence","","")..b("Netherwalk","[]!",";").."\n/use [help,nocombat,mod:alt]B. F. F. Necklace;[nocombat,noexists,mod:alt]Gastropod Shell\n/cancelaura Spectral Sight")
 					EditMacro("WSxCGen+F",nil,nil,"#show Glide\n/cancelaura Wyrmtongue Disguise")
 					EditMacro("WSxCAGen+F",nil,nil,"#show "..b("Sigil of Chains","[]",";").."Fel Rush\n/run if not InCombatLockdown() then if GetSpellCharges(195072)>=1 then "..tpPants.." else "..noPants.." end end")
 					EditMacro("WSxGenG",nil,nil,"#show\n/use [mod:alt]S.F.E. Interceptor;"..b("Consume Magic","[@mouseover,harm,nodead][]",""))
+					EditMacro("WSxSGen+G",nil,nil,"/use "..b("Fel Eruption","[]",";")..b("Chaos Nova","[]",";").."Consume Magic\n/use [noexists,nocombat] Flaming Hoop")
 				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use ")
-					EditMacro("WSxCSGen+G",nil,nil,"#show\n/use "..b("Consume Magic","[@focus,harm,nodead]","").."\n/use Wisp Amulet\n/cancelaura Netherwalk\n/cancelaura Spectral Sight")
-					EditMacro("WSxSGen+H",nil,nil,"#show Spectral Sight\n/use Wisp Amulet\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
+					EditMacro("WSxCSGen+G",nil,nil,"#show\n/use "..b("Consume Magic","[@focus,harm,nodead]","").."\n/use Wisp Amulet\n/cancelaura Netherwalk\n/cancelaura Spectral Sight\n/cancelaura Blessing of Protection")
+					EditMacro("WSxGenH",nil,nil,"#show Spectral Sight\n/use Wisp Amulet\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
 					EditMacro("WSxCGen+J",nil,nil,"#show\n/use "..invisPot)
 					EditMacro("WSxGenZ",nil,nil,"#show\n/use [mod:alt]Gateway Control Shard;"..b("Fiery Brand","[]",";").."Blur")
 					EditMacro("WSxGenX",nil,nil,"#show\n/use "..b("Netherwalk","[mod:shift][]!",";")..b("Soul Barrier","[]",";")..b("Bulk Extraction","[]",";").."\n/use Shadescale")
-					EditMacro("WSxGenC",nil,nil,"#show\n/use "..b("Vengeful Retreat","[spec:2,nomod:ctrl]",";")..b("Imprison","[@mouseover,harm,nodead][]",";").."\n/cancelaura X-Ray Specs")
+					EditMacro("WSxGenC",nil,nil,"#show\n/use "..b("Imprison","[@mouseover,harm,nodead][]","").."\n/cancelaura X-Ray Specs")
 					EditMacro("WSxAGen+C",nil,nil,"#show\n/run PetDismiss();\n/cry")
-					EditMacro("WSxGenV",nil,nil,"#show\n/use [spec:2,@cursor]Infernal Strike"..b("Vengeful Retreat",";[]","").."\n/use Panflute of Pandaria\n/use Haw'li's Hot & Spicy Chili\n/cancelaura Rhan'ka's Escape Plan\n/use Prismatic Bauble")
+					EditMacro("WSxGenV",nil,nil,"#show\n/use "..b("Vengeful Retreat","[]","").."\n/use Panflute of Pandaria\n/use Haw'li's Hot & Spicy Chili\n/cancelaura Rhan'ka's Escape Plan\n/use Prismatic Bauble")
 					EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";[swimming]Barnacle-Encrusted Gem\n/use Prismatic Bauble\n/use !Glide\n/use [mod:alt]Weathered Purple Parasol\n/dismount [mounted]")
 
 					-- Evoker, Dracthyr, Debra, Dragon, draktard, dtard, lizzy
 					elseif class == "EVOKER" then
-					EditMacro("WSxGen1",nil,nil,"#show\n/use [@mouseover,harm,nodead][]Azure Strike\n/targetenemy [noexists]\n/startattack\n/use Prismatic Bauble")
+					EditMacro("WSxGen1",nil,nil,"#show\n/use "..b("Timelessness","[@mouseover,help,nodead][]",";")..b("Echo","[@mouseover,help,nodead][]",";").."Hover\n/targetenemy [noexists]\n/startattack\n/use Prismatic Bauble")
 					EditMacro("WSxSGen+1",nil,nil,"#show Blessing of the Bronze\n/use [mod:alt,@party3,help,nodead][mod:ctrl,@party2,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Living Flame")
-					EditMacro("WSxGen2",nil,nil,"#show Living Flame\n/use Gnomish X-Ray Specs\n/use [@mouseover,harm,nodead][harm,nodead]Living Flame\n/cleartarget [dead]\n/targetenemy [noexists]")
+					EditMacro("WSxGen2",nil,nil,"#show Azure Strike\n/use Gnomish X-Ray Specs\n/use [@mouseover,harm,nodead][]Azure Strike\n/cleartarget [dead]\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+2",nil,nil,"/use [mod:alt,@party4,help,nodead][@mouseover,help,nodead][help,nodead][@player]Living Flame\n/targetlasttarget [noexists,nocombat]\n/use [help,nodead]Rainbow Generator\n/use Prismatic Bauble\n/cleartarget [dead]")
-					EditMacro("WSxGen3",nil,nil,"#show\n/use "..b("Eternity Surge","[]",";")..b("Spiritbloom","[@mouseover,help,nodead][]",";").."Fire Breath(Red)\n/cleartarget [dead]\n/targetenemy [noexists]")
-					EditMacro("WSxSGen+3",nil,nil,"#show\n/use Hover\n/targetenemy [noexists]")
-					EditMacro("WSxGen4",nil,nil,"#show\n/use Disintegrate\n/cleartarget [dead]\n/targetenemy [noexists]")
-					EditMacro("WSxSGen+4",nil,nil,"#show\n/use "..b("Reversion","[@party1,help,nodead,mod:alt]",";")..b("Shattering Star","[]",";")..b("Firestorm","[@cursor]",";")..b("Pyre","[]","")..b("Temporal Anomaly","[]","").."\n/cleartarget [dead]\n/targetenemy [noexists]")
+					EditMacro("WSxGen3",nil,nil,"#show\n/use "..b("Upheaval","[@mouseover,harm,nodead][]",";")..b("Eternity Surge","[@mouseover,harm,nodead][]",";")..b("Spiritbloom","[@mouseover,help,nodead][]",";").."Fire Breath(Red)\n/cleartarget [dead]\n/targetenemy [noexists]")
+					EditMacro("WSxSGen+3",nil,nil,"#show\n/use "..b("Blistering Scales","[@mouseover,help,nodead][help,nodead][@"..tank.."][]",";")..b("Stasis","[]",";").."Hover\n/targetenemy [noexists]")
+					EditMacro("WSxGen4",nil,nil,"#show\n/use [@mouseover,harm,nodead][]Disintegrate\n/cleartarget [dead]\n/targetenemy [noexists]")
+					EditMacro("WSxSGen+4",nil,nil,"#show\n/use "..b("Prescience","[@party1,help,nodead,mod:alt]",";")..b("Reversion","[@party1,help,nodead,mod:alt]",";")..b("Ebon Might","[]",";")..b("Shattering Star","[]",";")..b("Firestorm","[@cursor]",";")..b("Pyre","[]","")..b("Temporal Anomaly","[]","").."\n/cleartarget [dead]\n/targetenemy [noexists]")
 					EditMacro("WSxCGen+4",nil,nil,"#show\n/stopspelltarget\n/use [@party3,help,nodead,mod:alt]Reversion;[@mouseover,exists,nodead][@cursor]Deep Breath\n/targetenemy [noexists]\n/startattack")
-					EditMacro("WSxGen5",nil,nil,"#show\n/use "..b("Time Spiral","[mod:ctrl]",";")..b("Zephyr","[mod:ctrl]",";")..b("Echo","[@mouseover,help,nodead][]",";").."Fire Breath(Red)\n/targetenemy [noexists]\n/use [mod:ctrl] Golden Dragon Goblet")
-					EditMacro("WSxSGen+5",nil,nil,"#show\n/use "..b("Reversion","[@party2,help,nodead,mod:alt]",";")..b("Tip the Scales","[]","").."\n/targetenemy [noexists]\n/startattack")
+					EditMacro("WSxGen5",nil,nil,"#show "..b("Zephyr","[mod:ctrl]",";").."Living Flame\n/use "..b("Zephyr","[mod:ctrl]",";").."[@mouseover,harm,nodead][harm,nodead]Living Flame\n/targetenemy [noexists]\n/use [mod:ctrl] Golden Dragon Goblet")
+					EditMacro("WSxSGen+5",nil,nil,"#show\n/use "..b("Prescience","[@party2,help,nodead,mod:alt]",";")..b("Reversion","[@party2,help,nodead,mod:alt]",";")..b("Tip the Scales","[]","").."\n/targetenemy [noexists]\n/startattack")
 					EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use [mod:ctrl,@party4,help,nodead]Reversion;[nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol;[help,dead,nocombat]Cremating Torch;14\n/use Eternal Black Diamond Ring")
-					EditMacro("WSxGen6",nil,nil,"#show\n/cast "..b("Dragonrage","[mod:ctrl]",";")..b("Emerald Communion","[mod:ctrl]!",";")..b("Pyre","[@mouseover,harm,nodead][]",";").."Fire Breath(Red)".."\n/targetenemy [noexists]")
+					EditMacro("WSxGen6",nil,nil,"#show\n/cast "..b("Time Skip","[mod:ctrl]",";")..b("Dragonrage","[mod:ctrl]",";")..b("Emerald Communion","[mod:ctrl]!",";").."Fire Breath(Red)".."\n/targetenemy [noexists]")
 					EditMacro("WSxSGen+6",nil,nil,"#show\n/cast "..b("Dream Breath","[]",";")..b("Zephyr","[]",";")..b("Rewind","[]",";")..b("Firestorm","[@player]",";").."Fire Breath(Red)")
-					EditMacro("WSxGen7",nil,nil,"#show\n/stopspelltarget\n/cast "..b("Firestorm","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Dream Flight(Green)","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Spiritbloom","[]","").."[@mouseover,harm,nodead][]Azure Strike\n/targetenemy [noexists]")
-					EditMacro("WSxGen8",nil,nil,"#show "..b("Stasis","[]",";")..b("Pyre","[]",";")..b("Spiritbloom","[]",";").."\n/use "..b("Pyre","[@mouseover,harm,nodead][]","")..b("Temporal Anomaly","",""))
-					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Obsidian Scales","",""))
-					EditMacro("WSxCSGen+2",nil,nil,"/use [@focus,help,nodead,spec:2][@party1,help,nodead,spec:2]Naturalize;[@focus,help,nodead][@party1,help,nodead]Expunge\n/use [@party1,mod]Apexis Focusing Shard\n/use Brynja's Beacon")
-					EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,harm,nodead]Living Flame;[@party2,help,nodead,spec:2]Naturalize;[@party2,help,nodead]Expunge\n/use [nocombat,noharm]Forgotten Feather\n/stopspelltarget\n/use [@party2,mod]Apexis Focusing Shard")
-					EditMacro("WSxCSGen+4",nil,nil,"/use [@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Echo\n/use [@party1]Apexis Focusing Shard")
-					EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,help,nodead][@party2,help,nodead]Echo\n/use Battle Standard of Coordination\n/use [@party2]Apexis Focusing Shard")
-					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/cancelaura Glide\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Return;"..pwned.."\n/use [mod:ctrl]Mass Return"..brazier)
+					EditMacro("WSxGen7",nil,nil,"#show\n/stopspelltarget\n/cast "..b("Firestorm","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Dream Flight(Green)","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",";")..b("Echo","[@mouseover,help,nodead][]","")..b("Pyre","[@mouseover,harm,nodead][]",";").."[@mouseover,harm,nodead][]Azure Strike\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxGen8",nil,nil,"#show\n/use "..b("Prescience","[]",";").."[@mouseover,harm,nodead][]Azure Strike\n/targetenemy [noexists]\n/cleartarget [dead]")
+					EditMacro("WSxGen9",nil,nil,"#show\n/use "..b("Spatial Paradox","[]",";")..b("Pyre","[]",";")..b("Obsidian Scales","[]",""))
+					EditMacro("WSxCSGen+2",nil,nil,"/use [mod:alt,@party3,help,nodead,spec:2][@party1,help,nodead,spec:2][@targettarget,help,nodead,spec:2]Naturalize;[mod:alt,@party3,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Expunge")
+					EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,harm,nodead]Living Flame;[mod:alt,@party4,help,nodead,spec:2][@party2,help,nodead,spec:2]Naturalize;[mod:alt,@party4,help,nodead][@party2,help,nodead]Expunge\n/use [nocombat,noharm]Forgotten Feather")
+					EditMacro("WSxCSGen+4",nil,nil,"/use "..b("Blistering Scales","[mod:alt,@party3,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]","")..b("Echo","[mod:alt,@party3,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]","").."\n/use [@party1]Apexis Focusing Shard")
+					EditMacro("WSxCSGen+5",nil,nil,"/use "..b("Blistering Scales","[mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]","\n/use ")..b("Echo","[mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]","\n/use ").."Battle Standard of Coordination\n/use [@party2]Apexis Focusing Shard")
+					EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant\n/cancelaura Glide\n/use [mod:ctrl]"..glider..";[mod]6;[nocombat]Return;"..pwned.."\n/use [mod:ctrl]Mass Return"..brazier)
 					EditMacro("WSxGenQ",nil,nil,"/use "..b("Sleep Walk","[mod:alt,@focus,harm,nodead]",";")..b("Quell","[@mouseover,harm,nodead][]",""))
-					EditMacro("WSkillbomb",nil,nil,b("Dragonrage","/use ","")..b("Emerald Communion","/use !","").."\n/use [@player]13\n/use 13"..dpsRacials[race].."\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")
+					EditMacro("WSkillbomb",nil,nil,b("Dragonrage","/use ","")..b("Emerald Communion","/use !","")..b("Time Skip","/use !","").."\n/use [@player]13\n/use 13"..dpsRacials[race].."\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")
 					EditMacro("WSxGenE",nil,nil,"#show\n/use [mod]Hover;Tail Swipe")
 					EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..b("Oppressing Roar","[]",";").."Hover"..oOtas..covToys)
 					EditMacro("WSxSGen+E",nil,nil,"#show\n/use [spec:2]Emerald Blossom"..b("Oppressing Roar",";",""))
-					EditMacro("WSxGenR",nil,nil,"#show\n/stopspelltarget\n/use [mod:ctrl]Hover;[mod:shift]Wing Buffet;"..b("Landslide","[@mouseover,exists,nodead][@cursor]","").."\n/startattack")
+					EditMacro("WSxGenR",nil,nil,"#show\n/stopspelltarget\n/use "..b("Time Spiral","[mod:ctrl]",";").."[mod:ctrl]Hover;[mod:shift]Wing Buffet;"..b("Landslide","[@mouseover,exists,nodead][@cursor]","").."\n/startattack")
 					EditMacro("WSxGenT",nil,nil,"#show Wing Buffet\n/use "..b("Verdant Embrace","[@mouseover,help,nodead][]",";")..nPepe.."\n/use [help,nocombat]Swapblaster\n/targetenemy [noexists]\n/cleartarget [dead]")
 					EditMacro("WSxSGen+T",nil,nil,"#show"..b("Rescue","\n/stopspelltarget\n/targetfriendplayer [nohelp,nodead]\n/use [@cursor]","").."\n/cleartarget [dead]")
-				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use "..b("Stasis","[]",""))
+				    EditMacro("WSxCGen+T",nil,nil,"#show\n/use "..b("Echo","[mod:alt,@party4,nodead]",";"))
 					EditMacro("WSxGenU",nil,nil,"#show "..b("Sleep Walk","[]",";")..b("Mass Return","[]",";").."Return")
 					EditMacro("WSxGenF",nil,nil,"#show "..b("Source of Magic","[]",";")..b("Quell","[]","").."\n/focus [@mouseover,exists] mouseover\n/stopmacro [@mouseover,exists]\n/use [mod:alt,exists,nodead]All-Seer's Eye;[mod:alt]Farwater Conch;"..b("Quell","[@focus,harm,nodead]",";"))
-					EditMacro("WSxSGen+F",nil,nil,"#show Soar\n/use [nocombat,noexists]Gastropod Shell\n/use Soar")
-					EditMacro("WSxCGen+F",nil,nil,"#show\n/use "..b("Rewind","[]",";")..b("Cauterizing Flame","[@mouseover,help,nodead][]","").."\n/cancelaura Red Dragon Head Costume")
+					EditMacro("WSxSGen+F",nil,nil,"#show Soar\n/use [help,nocombat,mod:alt]B. F. F. Necklace;[nocombat,noexists,mod:alt]Gastropod Shell\n/use Soar\n/use Hover")
+					EditMacro("WSxCGen+F",nil,nil,"#show\n/use "..b("Spatial Paradox","[@mouseover,help,nodead][]",";")..b("Rewind","[]",";")..b("Cauterizing Flame","[@mouseover,help,nodead][]","").."\n/cancelaura Red Dragon Head Costume")
 					EditMacro("WSxCAGen+F",nil,nil,"#show Emerald Blossom\n/use [nocombat,noexists]Tear of the Green Aspect"..b("Verdant Embrace","\n/targetfriend [nohelp,nodead]\n/use [help,nodead]","\n/targetlasttarget").."\n/use Prismatic Bauble")
 					EditMacro("WSxGenG",nil,nil,"/use [mod:alt]Darkmoon Gazer;"..b("Unravel","[@mouseover,harm,nodead]",";").."[spec:2,@mouseover,help,nodead][spec:2]Naturalize;"..b("Expunge","[@mouseover,help,nodead][]","").."\n/targetenemy [noexists]\n/use Poison Extraction Totem")
-				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Cauterizing Flame","[@mouseover,help,nodead][]",";")..b("Stasis","[]",""))
-					EditMacro("WSxCSGen+G",nil,nil,"#show "..b("Cauterizing Flame","[]","").."\n/use [@focus,help,nodead,spec:2]Naturalize;"..b("Expunge","[@focus,help,nodead]","").."\n/use Choofa's Call")
-					EditMacro("WSxSGen+H",nil,nil,"#show "..b("Verdant Embrace","","").."\n/use "..b("Cauterizing Flame","[@mouseover,help,nodead][]",";").."Wisp Amulet\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
+					EditMacro("WSxSGen+G",nil,nil,""..b("Unravel","#show ","\n").."/use "..b("Unravel","[@mouseover,harm,nodead][harm,nodead]",";").."Expunge\n/use [noexists,nocombat]Flaming Hoop")
+				    EditMacro("WSxCGen+G",nil,nil,"#show\n/use "..b("Echo","[mod:alt,@party3,nodead]",";")..b("Cauterizing Flame","[@mouseover,help,nodead][]",";"))
+					EditMacro("WSxCSGen+G",nil,nil,"#show "..b("Cauterizing Flame","[]","").."\n/use [@focus,help,nodead,spec:2]Naturalize;"..b("Expunge","[@focus,help,nodead]",";").."\n/use Choofa's Call")
+					EditMacro("WSxGenH",nil,nil,"#show "..b("Verdant Embrace","","").."\n/use "..b("Cauterizing Flame","[@mouseover,help,nodead][]",";").."Wisp Amulet\n/run if not (InCombatLockdown()) then if IsMounted() then DoEmote(\"mountspecial\") end end")
 					EditMacro("WSxCGen+J",nil,nil,"#show\n/use "..invisPot)
-					EditMacro("WSxGenZ",nil,nil,"#show\n/use [mod:alt]Gateway Control Shard;"..b("Time Dilation","[@mouseover,help,nodead,nomod][nomod]",";")..b("Obsidian Scales","[mod:shift][]","").."\n/use Golden Dragon Goblet")
-					EditMacro("WSxGenX",nil,nil,"#show\n/use \n/use "..b("Source of Magic","[mod:alt]",";").."[mod:shift]Deep Breath;"..b("Renewing Blaze","[]",";").."Emerald Blossom\n/use Shadescale")
-					EditMacro("WSxGenC",nil,nil,"#show\n/use "..b("Sleep Walk","[@mouseover,harm,nodead,mod:ctrl][mod:ctrl]",";")..b("Reversion","[@mouseover,help,nodead][]",";").."Emerald Blossom\n/cancelaura X-Ray Specs")
+					EditMacro("WSxGenZ",nil,nil,"#show\n/use "..b("Black Attunement","[mod:alt,nostance:1]!",";")..b("Bronze Attunement","[mod:alt,stance:1]!",";")..b("Time Dilation","[@mouseover,help,nodead,nomod][nomod]",";")..b("Obsidian Scales","[mod:shift][nomod]","").."\n/use [mod:alt]Gateway Control Shard")
+					EditMacro("WSxGenX",nil,nil,"#show\n/use "..b("Bestow Weyrnstone","[@mouseover,help,nodead,mod:alt][mod:alt]",";")..b("Deep Breath","[mod:shift]",";")..b("Renewing Blaze","[]",";").."Emerald Blossom\n/use Shadescale")
+					EditMacro("WSxGenC",nil,nil,"#show\n/use "..b("Sleep Walk","[@mouseover,harm,nodead,mod:ctrl][mod:ctrl]",";")..b("Source of Magic","[mod:shift][mod:shift,"..healer.."]",";")..b("Reversion","[@mouseover,help,nodead][]",";").."Emerald Blossom\n/cancelaura X-Ray Specs")
 					EditMacro("WSxAGen+C",nil,nil,"#show\n/run PetDismiss();\n/cry")
-					EditMacro("WSxGenV",nil,nil,"#show\n/use Hover\n/use [nomod]Panflute of Pandaria\n/use Haw'li's Hot & Spicy Chili\n/cancelaura Rhan'ka's Escape Plan\n/use Prismatic Bauble")
+					EditMacro("WSxGenV",nil,nil,"#show\n/use Hover\n/use [nomod]Panflute of Pandaria\n/use Haw'li's Hot & Spicy Chili\n/cancelaura Rhan'ka's Escape Plan\n/use Prismatic Bauble\n/use Whelps on Strings")
 					EditMacro("WSxCGen+V",nil,nil,"#show "..sigA.."\n/use [mod:alt,nocombat]"..passengerMount..";[swimming]Barnacle-Encrusted Gem\n/use Prismatic Bauble\n/use !Glide\n/use [mod:alt]Weathered Purple Parasol\n/dismount [mounted]")
+					if playerSpec == 3 then
+						EditMacro("WSxCAGen+B",nil,nil,"/run if not InCombatLockdown()then local N=UnitName(\"target\") EditMacro(\"WSxCGen+G\",nil,nil,\"\\#show Prescience\\n/use [@\"..N..\"]Prescience\\n/stopspelltarget\", nil)print(\"PSci 1 : \"..N)else print(\"Combat?\")end")
+						EditMacro("WSxCAGen+N",nil,nil,"/run if not InCombatLockdown()then local N=UnitName(\"target\") EditMacro(\"WSxCGen+T\",nil,nil,\"\\#show Prescience\\n/use [@\"..N..\"]Prescience\\n/stopspelltarget\", nil)print(\"PSci 2 : \"..N)else print(\"Combat?\")end")
+					end
 				end -- avslutar class
 			end	-- avslutar racials[race]			
 		end -- events
@@ -3607,8 +3725,8 @@ local function eventHandler(self, event)
 				["PALADIN"] = "Blessed Felcrusher,Prestigious Bronze Courser,Argent Charger,Pureheart Courser",
 				["HUNTER"] = "Spawn of Horridon,Bruce,Llothien Prowler,Ironhoof Destroyer,Alabaster Hyena",
 				["ROGUE"] = "Blue Shado-Pan Riding Tiger,Broken Highland Mustang",
-				["DEATHKNIGHT"] = "Midnight,Bloodgorged Crawg,Pureheart Courser",
 				["PRIEST"] = "Trained Meadowstomper, Glorious Felcrusher, Ivory Hawkstrider, Wild Dreamrunner, Pureheart Courser",
+				["DEATHKNIGHT"] = "Midnight,Bloodgorged Crawg,Pureheart Courser",
 				["WARRIOR"] = "Vicious War Turtle,Infernal Direwolf,Bloodfang Widow,Ironhoof Destroyer",
 				["DRUID"] = "Wild Dreamrunner,Kaldorei Nightsaber,Pureheart Courser,Raven Lord",
 				["DEMONHUNTER"] = "Felsaber,Wild Dreamrunner,Lucid Nightmare,Grove Defiler,Illidari Felstalker,Llothien Prowler",
@@ -3623,6 +3741,8 @@ local function eventHandler(self, event)
 					["PALADIN"] = "Blessed Felcrusher,Prestigious Bronze Courser,Argent Charger,Pureheart Courser",
 					["HUNTER"] = "Spawn of Horridon,Bruce,Llothien Prowler,Ironhoof Destroyer,Alabaster Hyena",
 					["ROGUE"] = "Blue Shado-Pan Riding Tiger,Highland Mustang",
+					["PRIEST"] = "Trained Meadowstomper, Glorious Felcrusher, Ivory Hawkstrider, Wild Dreamrunner, Pureheart Courser",
+					["DEATHKNIGHT"] = "Midnight,Bloodgorged Crawg,Pureheart Courser",
 					["WARRIOR"] = "Vicious War Turtle,Infernal Direwolf,Bloodfang Widow,Ironhoof Destroyer",
 					["DRUID"] = "Wild Dreamrunner,Kaldorei Nightsaber,Pureheart Courser,Raven Lord",
 					["DEMONHUNTER"] = "Felsaber,Wild Dreamrunner,Lucid Nightmare,Grove Defiler,Illidari Felstalker,Llothien Prowler",
@@ -3630,10 +3750,11 @@ local function eventHandler(self, event)
 				}
 			end
 
+
 			local flyingMount = {
 				["SHAMAN"] = ",Spectral Pterrorwing,Grand Wyvern,Kua'fon",
-				["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Arcanist's Manasaber,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm",
-				["WARLOCK"] = ",Grove Defiler,Headless Horseman's Mount,Felsteel Annihilator,Antoran Gloomhound,Shackled Ur'zul",
+				["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Arcanist's Manasaber,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm,Eve's Ghastly Rider",
+				["WARLOCK"] = ",Grove Defiler,Headless Horseman's Mount,Felsteel Annihilator,Antoran Gloomhound,Shackled Ur'zul,Eve's Ghastly Rider",
 				["MONK"] = "Astral Cloud Serpent",
 				["PALADIN"] = ",Highlord's Golden Charger,Lightforged Warframe,Invincible",
 				["HUNTER"] = ",Mimiron's Head,Clutch of Ji-Kun,Armored Skyscreamer,Dread Raven,Darkmoon Dirigible,Spirit of Eche'ro,Spectral Pterrorwing",
@@ -3645,11 +3766,14 @@ local function eventHandler(self, event)
 				["DEMONHUNTER"] = ",Arcanist's Manasaber,Felfire Hawk,Corrupted Dreadwing,Azure Drake,Cloudwing Hippogryph,Leyfeather Hippogryph,Felsteel Annihilator",
 				["EVOKER"] = "",
 			}
+			-- if playerName == "Nooniverse" then 
+			-- 	flyingMount["MAGE"] = flyingMount["MAGE"]..",Tarecgosa's Visage"
+			-- end
 			if faction == "Alliance" then 
 				flyingMount = { 
 					["SHAMAN"] = ",Spirit of Eche'ro,Grand Gryphon,Honeyback Harvester",
-					["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Arcanist's Manasaber,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm,Honeyback Harvester",
-					["WARLOCK"] = ",Honeyback Harvester,Headless Horseman's Mount,Grove Defiler,Felsteel Annihilator,Shackled Ur'zul",
+					["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Arcanist's Manasaber,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm,Honeyback Harvester,Eve's Ghastly Rider",
+					["WARLOCK"] = ",Honeyback Harvester,Headless Horseman's Mount,Grove Defiler,Felsteel Annihilator,Shackled Ur'zul,Eve's Ghastly Rider",
 					["MONK"] = "Astral Cloud Serpent",
 					["PALADIN"] = ",Highlord's Golden Charger,Lightforged Warframe,Invincible,Honeyback Harvester",
 					["HUNTER"] = ",Mimiron's Head,Clutch of Ji-Kun,Armored Skyscreamer,Dread Raven,Darkmoon Dirigible,Spirit of Eche'ro,Honeyback Harvester",
@@ -3694,7 +3818,7 @@ local function eventHandler(self, event)
 				["MagharOrc"] = "Mag'har Direwolf,",
 				["Mechagnome"] = "Mechagon Mechanostrider,Mechacycle Model W,",
 				["Nightborne"] = "",
-				["NightElf"] = "",
+				["NightElf"] = "Ash'adar, Harbinger of Dawn,",
 				["Orc"] = "Frostwolf Snarler,",
 				["Pandaren"] = "",
 				["Scourge"] = "Undercity Plaguebat,",
@@ -3748,24 +3872,24 @@ local function eventHandler(self, event)
 			end
 			-- Mount class spec parser
 			if class == "SHAMAN" then
-				if playerspec == 3 then
+				if playerSpec == 3 then
 					groundMount[class] = "Snapback Scuttler"
 				end
 			elseif class == "WARLOCK" then
-				if playerspec == 2 then 
+				if playerSpec == 2 then 
 					classMount[class] = "Netherlord's Accursed Wrathsteed,Netherlord's Chaotic Wrathsteed"
-				elseif playerspec == 3 then
+				elseif playerSpec == 3 then
 					classMount[class] = "Netherlord's Brimstone Wrathsteed,Netherlord's Chaotic Wrathsteed"
 				end
 			elseif class == "MONK" then
-				if (playerspec == 1 and faction == "Alliance") then
+				if (playerSpec == 1 and faction == "Alliance") then
 					flyingMount[class] = "Honeyback Harvester"
-				elseif playerspec == 1 then 
+				elseif playerSpec == 1 then 
 					flyingMount[class] = "Lucky Yun"
-				elseif playerspec == 2 then
+				elseif playerSpec == 2 then
 					flyingMount[class] = "Yu'lei, Daughter of Jade" 
 					classMount[class] = "Shu-Zen, the Divine Sentinel"
-				elseif playerspec == 3 then
+				elseif playerSpec == 3 then
 					flyingMount[class] = "Wen Lo, the River's Edge"
 					classMount[class] = "Ban-Lu, Grandmaster's Companion"
 				end
@@ -3775,73 +3899,73 @@ local function eventHandler(self, event)
 				flyingMount[class] = "/use "..flyingMount[class]
 				
 			elseif class == "PALADIN" then
-				if playerspec == 2 then 
+				if playerSpec == 2 then 
 					classMount[class] = "Highlord's Vigilant Charger" 
 					groundMount[class] = "Avenging Felcrusher"   
-				elseif playerspec == 3 then
+				elseif playerSpec == 3 then
 					classMount[class] = "Highlord's Vengeful Charger"
 				end
 			elseif class == "HUNTER" then				
-				if playerspec == 2 then 
+				if playerSpec == 2 then 
 					classMount[class] = "Huntmaster's Dire Wolfhawk" 
 					groundMount[class] = "Spawn of Horridon,Spirit of Eche'ro,Brawler's Burly Basilisk,Llothien Prowler,Ironhoof Destroyer"
 					flyingMount[class] = ",Mimiron's Head,Armored Skyscreamer,Dread Raven,Darkmoon Dirigible"
-				elseif playerspec == 3 then
+				elseif playerSpec == 3 then
 					classMount[class] = "Huntmaster's Fierce Wolfhawk" 
 					groundMount[class] = "Highmountain Thunderhoof,Brawler's Burly Basilisk,Great Northern Elderhorn,Highmountain Elderhorn,Alabaster Hyena"
 					flyingMount[class] = ",Clutch of Ji-Kun,Dread Raven,Spirit of Eche'ro"
 				end
 			elseif class == "ROGUE" then
-				if playerspec == 2 then 
+				if playerSpec == 2 then 
 					classMount[class] = "Shadowblade's Crimson Omen"
 					groundMount[class] = "Siltwing Albatross,Ratstallion"
 					flyingMount[class] = ",Shadowblade's Murderous Omen,Infinite Timereaver,Siltwing Albatross,The Dreadwake"
-				elseif playerspec == 3 then
+				elseif playerSpec == 3 then
 					classMount[class] = "Shadowblade's Lethal Omen"	
 					groundMount[class] = "Infinite Timereaver"
 					flyingMount[class] = ",Ironbound Wraithcharger,Shadowblade's Murderous Omen"
 				end			
 			elseif class == "PRIEST" then		
-				if playerspec == 3 then
+				if playerSpec == 3 then
 					flyingMount[class] = ",Dread Raven,Riddler's Mind-Worm,The Hivemind,Uncorrupted Voidwing"	
 					groundMount[class] = "Lucid Nightmare,Ivory Hawkstrider,Ultramarine Qiraji Battle Tank,The Hivemind,Voidtalon of the Dark Star"
-				elseif playerspec == 2 then
+				elseif playerSpec == 2 then
 					groundMount[class] = "Bone-White Primal Raptor,Ivory Hawkstrider,Wild Dreamrunner,Pureheart Courser"
 				end
 			elseif class == "DEATHKNIGHT" then
-				if playerspec == 2 then
+				if playerSpec == 2 then
 					groundMount[class] = "Frostshard Infernal,Pureheart Courser,Glacial Tidestorm"
-				elseif playerspec == 3 then
+				elseif playerSpec == 3 then
 					groundMount[class] = "Winged Steed of the Ebon Blade,Pureheart Courser"
 				end
 			elseif class == "WARRIOR" then	
-				if playerspec == 2 then
+				if playerSpec == 2 then
 					groundMount[class] = "Arcadian War Turtle,Bloodfang Widow,Ironhoof Destroyer"
-				elseif playerspec == 3 then
+				elseif playerSpec == 3 then
 					groundMount[class] = "Prestigious Bronze Courser,Bloodfang Widow,Ironhoof Destroyer"
 				end
 			elseif class == "DRUID" then
-				if playerspec == 2 then 
+				if playerSpec == 2 then 
 					classMount[class] = "Swift Zulian Tiger"
-				elseif playerspec == 3 then
+				elseif playerSpec == 3 then
 					classMount[class] = "Darkmoon Dancing Bear"
-				elseif playerspec == 4 then
+				elseif playerSpec == 4 then
 					classMount[class] = "Emerald Drake"
 				end
 			elseif class == "DEMONHUNTER" then
-				if playerspec == 1 then 
+				if playerSpec == 1 then 
 					-- classMount[class] = "Swift Zulian Tiger"
-				elseif playerspec == 2 then
+				elseif playerSpec == 2 then
 					-- classMount[class] = "Darkmoon Dancing Bear"
 				end
 			elseif class == "EVOKER" then
-				if playerspec == 1 then 
+				if playerSpec == 1 then 
 					-- classMount[class] = "Swift Zulian Tiger"
-				elseif playerspec == 2 then
+				elseif playerSpec == 2 then
 					-- classMount[class] = "Darkmoon Dancing Bear"
 				end
 
-				if (UnitName("player") == "Fannylands" and playerspec == 3) then
+				if (playerName == "Fannylands" and playerSpec == 3) then
 					classMount[class] = "Grove Defiler"
 					flyingMount[class] = ",Grove Defiler"
 					pvpRaptor = ""
@@ -3860,14 +3984,37 @@ local function eventHandler(self, event)
 			if (class ~= "MONK" and slBP ~= 0) then
 				groundMount[class] = groundMount[class]..","..covGroundMounts
 				flyingMount[class] = flyingMount[class]..","..covFlyingMounts
+			-- Night Elf Huntress Mod
+			elseif faction == "Alliance" and class == "WARRIOR" then
+				groundMount[class] = "Priestess' Moonsaber"
+				classMount[class] = ""
+				prestWolf = ""
+				factionBike = ""
+				factionHog = ""
 			end
 			local mountSlash = "/userandom"
 			-- Dragon Isles
 			if dfZones[z] then 
-				local dfFlyingMounts = {"Highland Drake", "Renewed Proto-Drake"} 						
+				local dfFlyingMounts = {"Highland Drake", "Renewed Proto-Drake", "Grotto Netherwing Drake",} 						
 				flyingMount[class] = dfFlyingMounts[random(#dfFlyingMounts)]			
+				-- if class == "SHAMAN" then
+				-- elseif class == "MAGE" then 
+				-- elseif class == "WARLOCK" then
+				-- elseif class == "MONK" then 
+				-- elseif class == "PALADIN" then
+				-- elseif class == "HUNTER" then
+				-- elseif class == "ROGUE" then
+				-- elseif class == "PRIEST" then
+				-- elseif class == "DEATHKNIGHT" then
+				-- elseif class == "WARRIOR" then
+				-- elseif class == "DRUID" then
+				-- elseif class == "DEMONHUNTER" then
+				-- elseif class == "EVOKER" then
+				-- end
 				if class == "MONK" then	
 					flyingMount[class] = "/use "..dfFlyingMounts[random(#dfFlyingMounts)]
+				elseif class == "DRUID" then
+					flyingMount[class] = "Flourishing Whimsydrake"
 				end
 				mountSlash = "/use "
 				classMount[class] = ""
@@ -4094,7 +4241,7 @@ local function eventHandler(self, event)
 	
 		-- Hunter Misc pet parser
 		if class == "HUNTER" and (event == "PET_STABLE_CLOSED" or event == "PLAYER_LOGIN") then
-			local petAbilityMacro, petExoticMacro = "/use "..ptdSG.."[nopet]Call Pet 4;", "/use [mod:alt]Eyes of the Beast;[nopet]Call Pet 5;"
+			local petAbilityMacro, petExoticMacro = "/use [nopet]Call Pet 4;", "/use [mod:alt]Eyes of the Beast;[nopet]Call Pet 5;"
 			local petAbilities = {
 				["Basilisk"] = "Petrifying Gaze",
 				["Bat"] = "Sonic Blast",
@@ -4199,14 +4346,16 @@ local function eventHandler(self, event)
 			-- print(petCV)
 			petAbilityMacro = petAbilityMacro .. "\n/use Hunter's Call\n/use [nocombat,noexists,resting]Flaming Hoop" 
 			-- Call Pet 4, Shift+G
-			petExoticMacro = petExoticMacro .. "\n/use Whole-Body Shrinka'" 
+			petExoticMacro = petExoticMacro .. "\n/use Whole-Body Shrinka'\n/use Poison Extraction Totem" 
 			-- Ctrl+Shift+G --> "GG", "G"
-			EditMacro("WSxSGen+H", nil, nil, petAbilityMacro, 1, 1)
+			EditMacro("WSxGenH", nil, nil, petAbilityMacro, 1, 1)
 			EditMacro("WSxGenG", nil, nil, petExoticMacro, 1, 1)
 			local _,_, body = GetMacroInfo("WSxCGen+V")
 			-- print(body) 
-			EditMacro("WSxCGen+V",nil, nil, body..petCV)
-			DEFAULT_CHAT_FRAME:AddMessage("ZigiAllButtons: Updating Active Pets! :D",0.5,1.0,0.0)
+			if body then 	
+				EditMacro("WSxCGen+V",nil, nil, body..petCV)
+				DEFAULT_CHAT_FRAME:AddMessage("ZigiAllButtons: Updating Active Pets! :D",0.5,1.0,0.0)
+			end
 				--[[print(family)
 				print(petAbilityMacro)
 				print(petExoticAbilities)
@@ -4214,4 +4363,141 @@ local function eventHandler(self, event)
 		end -- eventHandler
 	end -- Combat Lock
 end -- Function
+-- toggle pet function
+function ZigiTogglePet()
+
+		local _,class = UnitClass("player")
+		local faction = UnitFactionGroup("player")
+		local _,race = UnitRace("player")
+		local playerSpec = GetSpecialization(false,false)
+		local covenantsEnum = {
+			1,
+			2,
+			3,
+			4,
+		}
+		local slBP = C_Covenants.GetActiveCovenantID(covenantsEnum)
+
+	local covPets = {
+    	[0] = {""},
+    	[1] = {"Ruffle","Lost Featherling","Steward Featherling","Courage","Purity","Larion Pouncer","Helpful Glimmerfly"},
+    	[2] = {"Sinheart","Burdened Soul","Dal","Dredger Butler","Will of Remornia","Char"},
+    	[3] = {"Trootie","Floofa","Gloober, as G'huun","Sir Reginald","Lavender Nibbler","Willowbreeze"},
+    	[4] = {"Jiggles","Micromancer","Minimancer","Toenail","Shy Melvin","Oonar's Arm","Sludge Feeler"},
+    }
+
+   	covPets = covPets[slBP]
+   	covPets = covPets[random(#covPets)]
+   	if slBP == 0 then 
+   		covPets = ""
+   	end
+
+   	local factionWarPet = "Lil' War Machine"
+		if faction == "Alliance" then
+			factionWarPet = "Lil' Siege Tower"
+		end
+	local factionMurloc = "Gillvanas"
+	if faction == "Alliance" then
+		factionMurloc = "Finduin"
+	end
+
+    local pets = {}
+	
+	local petTable = {
+		["SHAMAN"] = {
+			[1] = {"Snowfang","Pebble","Zephyrian Prince","Lil' Ragnaros"}, 
+			[2] = {"Frostwolf Ghostpup","Pebble","Primal Stormling"},
+			[3] = {"Snowfang","Bound Stream","Pebble","Drafty"},
+		},
+		["MAGE"] = {
+			[1] = {"Lil' Tarecgosa","Trashy","Wondrous Wisdomball"},
+			[2] = {"Phoenix Hatchling","Animated Tome","Nethaera's Light"},
+			[3] = {"Magical Crawdad","Water Waveling","Tiny Snowman"},
+		},
+		["WARLOCK"] = {
+			[1] = {"Eye of the Legion","Cross Gazer","Sister of Temptation","Nibbles"},
+			[2] = {"Rebellious Imp","Eye of the Legion","Sister of Temptation","Nibbles","Baa'l"},
+			[3] = {"Rebellious Imp","Lesser Voidcaller","Netherspace Abyssal","Eye of the Legion","Nibbles"},
+		},
+		["MONK"] = {
+			[1] = {"Zao, Calfling of Niuzao"},
+			[2] = {"Chi-Chi, Hatchling of Chi-Ji","Yu'la, Broodling of Yu'lon"},
+			[3] = {"Xu-Fu, Cub of Xuen"},
+		},
+		["PALADIN"] = {
+			[1] = {"K'ute","Uuna","Bound Lightspawn", factionMurloc},
+			[2] = {"K'ute","Uuna","Bound Lightspawn", factionMurloc},
+			[3] = {"K'ute","Uuna","Bound Lightspawn", factionMurloc},
+		},
+		["HUNTER"] = {
+			[1] = {"Rocket Chicken","Nuts","Tito","Stormwing","Son of Skum"},
+			[2] = {"Alarm-o-Bot","Tito","Stormwing","Crow"},
+			[3] = {"Teroclaw Hatchling","Nuts","Tito","Stormwing","Crow"},
+		},
+		["ROGUE"] = {
+			[1] = {"Toxic Wasteling","Sneaky Marmot","Creepy Crate"},
+			[2] = {"Pocket Cannon","Captain Nibs","Cap'n Crackers"},
+			[3] = {"Bronze Whelpling","Gilnean Raven","Sneaky Marmot"},
+		},
+		["PRIEST"] = {
+			[1] = {"Argi","K'ute","Dread Hatchling","Shadow","Uuna"},
+			[2] = {"Bound Lightspawn","K'ute","Sunborne Val'kyr","Uuna"},
+			[3] = {"K'ute","Hungering Claw","Dread Hatchling","Faceless Minion"},
+		},
+		["DEATHKNIGHT"] = {
+			[1] = {"Arfus","Boneshard","Mr. Bigglesworth","Naxxy","Bloodbrood Whelpling"},
+			[2] = {"Arfus","Boneshard","Mr. Bigglesworth","Naxxy","Frostbrood Whelpling"},
+			[3] = {"Arfus","Boneshard","Mr. Bigglesworth","Naxxy","Vilebrood Whelpling"},
+		},
+		["WARRIOR"] = {
+			[1] = {"Darkmoon Rabbit","Brul", factionWarPet, factionMurloc},
+			[2] = {"Sunborne Val'kyr", factionWarPet, factionMurloc},
+			[3] = {"Darkmoon Rabbit","Brul", factionWarPet, factionMurloc},
+		},
+		["DRUID"] = {
+			[1] = {"Stardust","Singing Sunflower","Ragepeep"},
+			[2] = {"Cinder Kitten","Singing Sunflower"},
+			[3] = {"Lil' Ursoc","Singing Sunflower"},
+			[4] = {"Blossoming Ancient","Singing Sunflower"},
+		},
+		["DEMONHUNTER"] = {
+			[1] = {"Murkidan","Emmigosa","Abyssius","Micronax","Wyrmy Tunkins","Fragment of Desire"},
+			[2] = {"Murkidan","Emmigosa","Abyssius","Micronax","Wyrmy Tunkins","Fragment of Desire"},
+		},
+		["EVOKER"] = {
+			[1] = {"Drakks","Murkastrasza","Spyragos","Viridescent Duck","Mote of Nasz'uro"},
+			[2] = {"Drakks","Murkastrasza","Spyragos","Viridescent Duck","Mote of Nasz'uro"},
+			[3] = {"Drakks","Murkastrasza","Spyragos","Viridescent Duck","Mote of Nasz'uro"},
+		},
+	}
+
+	if (class == "SHAMAN" and race == "Troll") then
+		pets = {"Sen'jin Fetish","Lashtail Hatchling","Searing Scorchling","Mojo"}
+	elseif (class == "WARRIOR" and race == "NightElf") then
+		pets = {"Sentinel's Companion"}
+	elseif (playerName == "Fannylands" and playerSpec == 3) then
+		pets = {"Nightmare Whelpling","Nightmare Lasher","Nightmare Treant"}
+	else
+		pets = petTable[class[playerSpec]]
+		for k,v in pairs(petTable) do
+			if k == class then
+				for i,j in ipairs(petTable[class]) do
+					if i == playerSpec then
+						pets = j
+					end
+				end
+			end
+		end
+
+		pets = {pets[random(#pets)],covPets}
+	end
+
+	if not InCombatLockdown() then
+		local a = pets
+		local randPet = math.random(1,#a)
+		local _,c = C_PetJournal.FindPetIDByName(a[randPet])
+			C_PetJournal.SummonPetByGUID(c) 
+		
+	end
+end
 frame:SetScript("OnEvent", eventHandler)
