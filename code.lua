@@ -1070,6 +1070,7 @@ local bfaZones = {
 	["Boralus Harbor"] = true,
 	["Tradewinds Market"] = true,
 }
+
 -- Sätta overrides för 5 = Mawsworn och 6 = Enlightened, så får vi fler customisations options på klassnivå.
 local covenantsEnum = {
 	1,
@@ -1079,6 +1080,7 @@ local covenantsEnum = {
 	5,
 	6,
 }
+
 local cov = {
 	[0] = "",
 	[1] = "Kyrian",
@@ -1377,9 +1379,31 @@ end
 
 -- bind to function, has two override subroutines for arrays and nested array types
 local function b(spellName, macroCond, semiCol)
-
 	-- Skriv om så att jag inte behöver sätta overrides innan anropen, lägg till stöd för parameter-overriding för arrays och strängar, vill kunna skicka in arrayer med spells.
 	if not InCombatLockdown() then
+		local function spellTableBuilder(tmpSpellObject)
+			spellName = tmpSpellObject[1]
+			macroCond = tmpSpellObject[2]
+			semiCol = tmpSpellObject[3]
+			for k,v in pairs(classSkillList[class]) do
+				if v == spellName then
+					if IsPlayerSpell(k) or IsSpellKnown(k) then
+						spellName = (select(1,GetSpellInfo(k)))
+						if (macroCond == "" or macroCond == nil) and (semiCol == "" or semiCol == nil) then
+							return spellName
+						else
+							if type(macroCond) == "nil" then
+								macroCond = ""
+							end
+							if type(semiCol) == "nil" then
+								semiCol = ""
+							end
+							return macroCond..spellName..semiCol
+						end
+					end
+				end
+			end
+		end
 		-- if string
 		if type(spellName) == "string" then 
 			for k,v in pairs(classSkillList[class]) do
@@ -1410,53 +1434,13 @@ local function b(spellName, macroCond, semiCol)
 					for i,str in ipairs(tbl) do
 						table.insert(tmpSpellObject,i,str)
 					end
-					spellName = tmpSpellObject[1]
-					macroCond = tmpSpellObject[2]
-					semiCol = tmpSpellObject[3]
-					for k,v in pairs(classSkillList[class]) do
-						if v == spellName then
-							if IsPlayerSpell(k) or IsSpellKnown(k) then
-								spellName = (select(1,GetSpellInfo(k)))
-								if (macroCond == "" or macroCond == nil) and (semiCol == "" or semiCol == nil) then
-									return spellName
-								else
-									if type(macroCond) == "nil" then
-										macroCond = ""
-									end
-									if type(semiCol) == "nil" then
-										semiCol = ""
-									end
-									return macroCond..spellName..semiCol
-								end
-							end
-						end
-					end
+					spellTableBuilder(tmpSpellObject)
 				end
 			else
-				for i,v in pairs(spellName) do
-					table.insert(tmpSpellObject,i,v)
+				for i,str in pairs(spellName) do
+					table.insert(tmpSpellObject,i,str)
 				end
-				spellName = tmpSpellObject[1]
-				macroCond = tmpSpellObject[2]
-				semiCol = tmpSpellObject[3]
-				for k,v in pairs(classSkillList[class]) do
-					if v == spellName then
-						if IsPlayerSpell(k) or IsSpellKnown(k) then
-							spellName = (select(1,GetSpellInfo(k)))
-							if (macroCond == "" or macroCond == nil) and (semiCol == "" or semiCol == nil) then
-								return spellName
-							else
-								if type(macroCond) == "nil" then
-									macroCond = ""
-								end
-								if type(semiCol) == "nil" then
-									semiCol = ""
-								end
-								return macroCond..spellName..semiCol
-							end
-						end
-					end
-				end
+				spellTableBuilder(tmpSpellObject)
 			end
 		end
 		return fallback or ""
@@ -2431,30 +2415,17 @@ local function eventHandler(event)
 			end
 			-- dpsRacials Implementation
 			if class == "SHAMAN" then
-				EditMacro("WSkillbomb",nil,nil,"/use "..b("Fire Elemental")..b("Storm Elemental")..b("Feral Spirit")..b("Earth Elemental","\n/use ","\n/use Tiny Box of Tiny Rocks").."\n/use Rukhmar's Sacred Memory"..b("Ascendance","\n/use ","")..""..dpsRacials.."\n/use [@player]13\n/use 13\n/use Flippable Table\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")	
+				EditMacro("WSkillbomb",nil,nil,"/use "..(b({{"Fire Elemental","",""},{"Storm Elemental","",""},{"Feral Spirit","",""},{"Earth Elemental","\n/use ","\n/use Tiny Box of Tiny Rocks"},}) or "").."\n/use Rukhmar's Sacred Memory"..b("Ascendance","\n/use ","")..dpsRacials.."\n/use [@player]13\n/use 13\n/use Flippable Table\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")	
 			elseif class == "MAGE" then
-				EditMacro("WSkillbomb",nil,nil,"#show\n/use "..b("Combustion","[]",";")..b("Icy Veins","[]",";")..b("Mirror Image").."\n/use "..b("Arcane Surge")..""..dpsRacials.."\n/use Rukhmar's Sacred Memory\n/use [@player]13\n/use 13\n/use Hearthstone Board\n/use Gleaming Arcanocrystal\n/use Big Red Raygun"..hasHE)
+				EditMacro("WSkillbomb",nil,nil,"#show\n/use "..(b({{"Combustion","",""},{"Icy Veins","",""},{"Mirror Image","",""},}) or "").."\n/use "..b("Arcane Surge")..dpsRacials.."\n/use Rukhmar's Sacred Memory\n/use [@player]13\n/use 13\n/use Hearthstone Board\n/use Gleaming Arcanocrystal\n/use Big Red Raygun"..hasHE)
 			elseif class == "WARLOCK" then
-				EditMacro("WSkillbomb",nil,nil,"#show\n/use "..b("Summon Demonic Tyrant","[]",";")..b("Nether Portal","[]",";")..b("Summon Infernal","[@player]",";")..b("Summon Darkglare","[]",";").."\n/use Jewel of Hellfire\n/use [@player]13\n/use 13"..dpsRacials.."\n/use Shadescale\n/use Adopted Puppy Crate\n/use Big Red Raygun")
+				EditMacro("WSkillbomb",nil,nil,"#show\n/use "..(b({{"Summon Demonic Tyrant","",""},{"Nether Portal","",""},{"Summon Infernal","[@player]",""},{"Summon Darkglare","",""},}) or "").."\n/use Jewel of Hellfire\n/use [@player]13\n/use 13"..dpsRacials.."\n/use Shadescale\n/use Adopted Puppy Crate\n/use Big Red Raygun")
 			elseif class == "MONK" then
-				if b("Storm, Earth, and Fire") == "Storm, Earth, and Fire" then overrideModAlt = "\n/use Storm, Earth, and Fire"
-				elseif b("Serenity") == "Serenity" then overrideModAlt = "\n/use Serenity"
-				end
-				if b("Invoke Xuen, the White Tiger") == "Invoke Xuen, the White Tiger" then override = "\n/use Invoke Xuen, the White Tiger"
-				elseif b("Invoke Yu'lon, the Jade Serpent") == "Invoke Yu'lon, the Jade Serpent" then override = "\n/use Invoke Yu'lon, the Jade Serpent"
-				elseif b("Invoke Chi-Ji, the Red Crane") == "Invoke Chi-Ji, the Red Crane" then override = "\n/use Invoke Chi-Ji, the Red Crane"
-				elseif b("Invoke Niuzao, the Black Ox") == "Invoke Niuzao, the Black Ox" then override = "\n/use Invoke Niuzao, the Black Ox"
-				end 
-				EditMacro("WSkillbomb",nil,nil,"#show"..overrideModAlt..override..dpsRacials.."\n/use Rukhmar's Sacred Memory\n/use Adopted Puppy Crate\n/use [@player]13\n/use 13\n/use Celestial Defender's Medallion\n/use Big Red Raygun\n/use Piccolo of the Flaming Fire\n/use [@player]Summon White Tiger Statue")
+				EditMacro("WSkillbomb",nil,nil,"#show"..(b({{"Storm, Earth, and Fire","\n/use ",""},{"Serenity","\n/use ",""},}) or "")..(b({{"Invoke Xuen, the White Tiger","\n/use ",""},{"Invoke Yu'lon, the Jade Serpent","\n/use ",""},{"Invoke Chi-Ji, the Red Crane","\n/use ",""},{"Invoke Niuzao, the Black Ox","\n/use ",""},}) or "")..dpsRacials.."\n/use Rukhmar's Sacred Memory\n/use Adopted Puppy Crate\n/use [@player]13\n/use 13\n/use Celestial Defender's Medallion\n/use Big Red Raygun\n/use Piccolo of the Flaming Fire\n/use [@player]Summon White Tiger Statue")
 			elseif class == "PALADIN" then
 				EditMacro("WSkillbomb",nil,nil,"#show\n/use "..b("Avenging Wrath","[]","").."\n/use [@player]13\n/use 13\n/use Sha'tari Defender's Medallion"..dpsRacials.."\n/use Gnawed Thumb Ring\n/use Echoes of Rezan")
 			elseif class == "HUNTER" then
-				if b("Bestial Wrath") == "Bestial Wrath" then override = "Bestial Wrath"
-				elseif b("Trueshot") == "Trueshot" then override = "Trueshot"
-				elseif b("Coordinated Assault") == "Coordinated Assault" then override = "Coordinated Assault"
-				else override = "Hunter's Call"
-				end
-				EditMacro("WSkillbomb",nil,nil,"#show\n/use "..override.."\n/use Will of Northrend"..dpsRacials.."\n/use [@player]13\n/use 13\n/use Adopted Puppy Crate\n/use Pendant of the Scarab Storm\n/use Big Red Raygun\n/use Echoes of Rezan")
+				EditMacro("WSkillbomb",nil,nil,"#show\n/use "..(b({{"Bestial Wrath","",""},{"Trueshot","",""},{"Coordinated Assault","",""},}) or "Hunter's Call").."\n/use Will of Northrend"..dpsRacials.."\n/use [@player]13\n/use 13\n/use Adopted Puppy Crate\n/use Pendant of the Scarab Storm\n/use Big Red Raygun\n/use Echoes of Rezan")
 			elseif class == "ROGUE" then
 				if b("Deathmark") == "Deathmark" then override = "Deathmark"
 				elseif b("Adrenaline Rush") == "Adrenaline Rush" then override = "Adrenaline Rush"
