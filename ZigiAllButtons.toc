@@ -2,5 +2,15 @@
 ## Title: |cff1985d1Zigi|r |cff00b2ffAll|r |cff1994ffButtons|r
 ## Notes: This addons purpose is to consolidate all character's macros and make them change relevancy upon the event PLAYER_ENTERING_WORLD.
 ## Author: Raxana, Queen ov all Noons
+# RequiredDeps: ZigiGlobals
 
+var-tables.lua
+builder.lua
+consumablebuilder.lua
+grouprosterbuilder.lua
+hsbuilder.lua
+itembuilder.lua
+pandaremixspecial.lua
+zigitrade.lua
+zigiHSaction.lua
 code.lua

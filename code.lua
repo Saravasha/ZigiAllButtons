@@ -1,6 +1,7 @@
 SLASH_ZIGIALLBUTTONS1 = "/zigi"
 local ZigiAllButtons = CreateFrame("FRAME", "ZigiAllButtons")
 
+-- ZigiAllButtons:RegisterEvent("ADDON_LOADED")
 ZigiAllButtons:RegisterEvent("BAG_UPDATE_DELAYED")
 ZigiAllButtons:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 ZigiAllButtons:RegisterUnitEvent("UNIT_PET","player")
@@ -11,7 +12,6 @@ ZigiAllButtons:RegisterEvent("LEARNED_SPELL_IN_SKILL_LINE")
 ZigiAllButtons:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 ZigiAllButtons:RegisterEvent("TRAIT_CONFIG_UPDATED")
 ZigiAllButtons:RegisterEvent("COVENANT_CHOSEN")
-
 
 local loaded = false
 local locked = false
@@ -26,6 +26,7 @@ end
 --[[/use [nomounted]Eternal Black Diamond Ring
 /run if IsControlKeyDown() then C_PartyInfo.LeaveParty() elseif IsShiftKeyDown() then LFGTeleport(IsInLFGDungeon()) end
 --]]
+
 
 local _,class = UnitClass("player")
 
@@ -62,7 +63,7 @@ local classSkillList = {
 		[17364] = "Stormstrike",
 		[974] = "Earth Shield",
 		[108281] = "Ancestral Guidance",
-		[428332] = "Primordial Wave",
+		[428332] = "Primordial Wave(Shadowlands)",
 		[375982] = "Primordial Wave",
 		[51505] = "Lava Burst",
 		[114050] = "Ascendance",
@@ -200,6 +201,7 @@ local classSkillList = {
 		-- Hero Talent: Hellcaller
 		[442726] = "Malevolence",
 		--
+		[688] = "Summon Imp",
 		[268358] = "Demonic Circle",
 		[417537] = "Oblivion",
 		[386689] = "Demonic Healthstone",
@@ -845,7 +847,7 @@ local classSkillList = {
 		[202137] = "Sigil of Silence",
 		[211881] = "Fel Eruption",
 		[202138] = "Sigil of Chains",
-		[390163] = "Elysian Decree",
+		[390163] = "Sigil of Spite",
 		[258925] = "Fel Barrage",
 		[263648] = "Soul Barrier",
 		[320341] = "Bulk Extraction",
@@ -939,13 +941,110 @@ local classSkillList = {
 		[371806] = "Recall",
 	},
 }
+
 local commandPetAbilities = {
 	["HUNTER"] = {
 		[272682] = "Master's Call",
 		[272679] = "Fortitude of the Bear",
 	}
 }
--- Battle of Dazar'alor, Mercenary BG Racial parser
+
+-- bind to function, has two override subroutines for arrays and nested array types
+local function b(spellName, macroCond, semiCol)
+	-- Skriv om så att jag inte behöver sätta overrides innan anropen, lägg till stöd för parameter-overriding för arrays och strängar, vill kunna skicka in arrayer med spells.
+	if not InCombatLockdown() then
+		-- if string
+		if type(spellName) == "string" then 
+			for k,v in pairs(classSkillList[class]) do
+				if v == spellName then
+					if IsPlayerSpell(k) or IsSpellKnown(k) then
+						-- spellName = (select(1,GetSpellInfo(k)))
+						spellName = C_Spell.GetSpellInfo(k).name
+						if (macroCond == "" or macroCond == nil) and (semiCol == "" or semiCol == nil) then
+							return spellName
+						else
+							return (macroCond or "")..(spellName or "")..(semiCol or "")
+						end
+					end
+				end
+			end
+		elseif type(spellName) == "table" then
+		-- Method overrides
+			local tmpSpellObject = {}
+			local nestedTableFound = false
+			for i,v in pairs(spellName) do
+				if type(v) == "table" then
+					nestedTableFound = true
+				end
+			end
+			-- if nested table
+			if nestedTableFound == true then
+			-- call signature should look like (b({{spellName,macroCond,semiCol},{...},}) or "")
+				local tmpSpellObjectArray = {{}}
+				for i,tbl in ipairs(spellName) do
+					table.insert(tmpSpellObjectArray,i,tbl)
+					for i,str in ipairs(tbl) do
+						table.insert(tmpSpellObject,i,str)
+					end
+					spellName = tmpSpellObject[1]
+					macroCond = tmpSpellObject[2]
+					semiCol = tmpSpellObject[3]
+					for k,v in pairs(classSkillList[class]) do
+						if v == spellName then
+							if IsPlayerSpell(k) or IsSpellKnown(k) then
+								-- spellName = (select(1,GetSpellInfo(k)))
+								spellName = C_Spell.GetSpellInfo(k).name
+								-- print(spellName)
+								return macroCond..spellName..semiCol
+							end
+						end
+					end
+				end
+			else
+				-- call signature should look like (b({spellName,macroCond,semiCol}) or "")
+				-- observed to be never used by user, obsolete?
+				for i,str in pairs(spellName) do
+					table.insert(tmpSpellObject,i,str)
+				end
+				spellName = tmpSpellObject[1]
+				macroCond = tmpSpellObject[2]
+				semiCol = tmpSpellObject[3]
+				for k,v in pairs(classSkillList[class]) do
+					if v == spellName then
+						if IsPlayerSpell(k) or IsSpellKnown(k) then
+							-- spellName = (select(1,GetSpellInfo(k)))
+							spellName = C_Spell.GetSpellInfo(k).name
+							print("Object[spellName]", spellName)
+							print("Object[macroCond]", macroCond)
+							print("Object[semiCol]", semiCol)
+							return macroCond..spellName..semiCol
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+local function bPet(spellName, macroCond, semiCol)
+	if not InCombatLockdown() then 
+		for k,v in pairs(commandPetAbilities[class]) do
+			if v == spellName then
+				if IsSpellKnownOrOverridesKnown(k) then
+					-- spellName = (select(1,GetSpellInfo(k)))
+					spellName = C_Spell.GetSpellInfo(k).name
+					if (macroCond == "" or macroCond == nil) and (semiCol == "" or semiCol == nil) then
+						return spellName or ""
+					else
+						return (macroCond or "")..(spellName or "")..(semiCol or "")
+					end
+				end
+			end
+		end
+		return fallback or ""
+	end
+end
+
 local vars = {
 	[1] = "", 
 	[2] = "",
@@ -1079,6 +1178,7 @@ local groundAreas = {
 	["Font of Fealty"] = true, -- Chains of Domination Campaign Scenario
 	["Tazavesh, the Veiled Market"] = true,
 }
+
 -- Garrisons Map IDs
 local garrisonId = { 
 	[1152] = true, 
@@ -1239,6 +1339,7 @@ local EQS = {
 	[4] = "Supermenk",
 	[5] = "",
 }
+
 -- Target BG Healers and Set BG Healers // Helpful measures in non-bg areas
 local numaltbuff101112 = {
 	["SHAMAN"] = "Hex",
@@ -1301,6 +1402,7 @@ local numaltbuff789 = {
 	["DEMONHUNTER"] = "Imprison",
 	["EVOKER"] = "Sleep Walk",
 }
+
 local numctrlbuff789 = {
 	["SHAMAN"] = "Purge",
 	["MAGE"] = "Spellsteal",
@@ -1394,6 +1496,7 @@ local aC = {
 	["DEMONHUNTER"] = "Silver-Plated Turkey Shooter",
 	["EVOKER"] = "Naturalize",
 }
+
 -- array med klass abilities för varje klass, PoA == Party or Arena
 
 local arenaDots = {
@@ -1490,128 +1593,6 @@ local wmpnomodkick = {
 	["EVOKER"] = "Quell",
 }
 
-local function bPet(spellName, macroCond, semiCol)
-	if not InCombatLockdown() then 
-		for k,v in pairs(commandPetAbilities[class]) do
-			if v == spellName then
-				if IsSpellKnownOrOverridesKnown(k) then
-					-- spellName = (select(1,GetSpellInfo(k)))
-					spellName = C_Spell.GetSpellInfo(k).name
-					if (macroCond == "" or macroCond == nil) and (semiCol == "" or semiCol == nil) then
-						return spellName or ""
-					else
-						return (macroCond or "")..(spellName or "")..(semiCol or "")
-					end
-				end
-			end
-		end
-		return fallback or ""
-	end
-end
-
--- bind to function, has two override subroutines for arrays and nested array types
-local function b(spellName, macroCond, semiCol)
-	-- Skriv om så att jag inte behöver sätta overrides innan anropen, lägg till stöd för parameter-overriding för arrays och strängar, vill kunna skicka in arrayer med spells.
-	if not InCombatLockdown() then
-		-- if string
-		if type(spellName) == "string" then 
-			for k,v in pairs(classSkillList[class]) do
-				if v == spellName then
-					if IsPlayerSpell(k) or IsSpellKnown(k) then
-						-- spellName = (select(1,GetSpellInfo(k)))
-						spellName = C_Spell.GetSpellInfo(k).name
-						if (macroCond == "" or macroCond == nil) and (semiCol == "" or semiCol == nil) then
-							return spellName
-						else
-							return (macroCond or "")..(spellName or "")..(semiCol or "")
-						end
-					end
-				end
-			end
-		elseif type(spellName) == "table" then
-		-- Method overrides
-			local tmpSpellObject = {}
-			local nestedTableFound = false
-			for i,v in pairs(spellName) do
-				if type(v) == "table" then
-					nestedTableFound = true
-				end
-			end
-			-- if nested table
-			if nestedTableFound == true then
-			-- call signature should look like (b({{spellName,macroCond,semiCol},{...},}) or "")
-				local tmpSpellObjectArray = {{}}
-				for i,tbl in ipairs(spellName) do
-					table.insert(tmpSpellObjectArray,i,tbl)
-					for i,str in ipairs(tbl) do
-						table.insert(tmpSpellObject,i,str)
-					end
-					spellName = tmpSpellObject[1]
-					macroCond = tmpSpellObject[2]
-					semiCol = tmpSpellObject[3]
-					for k,v in pairs(classSkillList[class]) do
-						if v == spellName then
-							if IsPlayerSpell(k) or IsSpellKnown(k) then
-								-- spellName = (select(1,GetSpellInfo(k)))
-								spellName = C_Spell.GetSpellInfo(k).name
-								-- print(spellName)
-								return macroCond..spellName..semiCol
-							end
-						end
-					end
-				end
-			else
-				-- call signature should look like (b({spellName,macroCond,semiCol}) or "")
-				-- observed to be never used by user, obsolete?
-				for i,str in pairs(spellName) do
-					table.insert(tmpSpellObject,i,str)
-				end
-				spellName = tmpSpellObject[1]
-				macroCond = tmpSpellObject[2]
-				semiCol = tmpSpellObject[3]
-				for k,v in pairs(classSkillList[class]) do
-					if v == spellName then
-						if IsPlayerSpell(k) or IsSpellKnown(k) then
-							-- spellName = (select(1,GetSpellInfo(k)))
-							spellName = C_Spell.GetSpellInfo(k).name
-							print("Object[spellName]", spellName)
-							print("Object[macroCond]", macroCond)
-							print("Object[semiCol]", semiCol)
-							return macroCond..spellName..semiCol
-						end
-					end
-				end
-			end
-		end
-	end
-end
-local function groupRosterBuilder(role)
-	if role == "tank" then
-		role = "help,nodead" 
-		for i = 1, 5 do 
-			if UnitGroupRolesAssigned("party"..i) == "TANK" then 
-				role = "@".."party"..i 
-				-- print("Role Tank found at: ",role)
-				return role or ""
-			else
-				-- print("Tank not found!")
-				return role or ""
-			end 
-		end
-	elseif role == "healer" then
-		role = "help,nodead"
-		for i = 1, 5 do  
-			if UnitGroupRolesAssigned("party"..i) == "HEALER" then 
-				role = "@".."party"..i 
-				-- print("Role Healer found at: ",role)
-				return role or ""
-			else
-				-- print("Healer not found!")
-				return role or ""
-			end  
-		end
-	end
-end
 
 local function pandaremixSpecial(spellType)
 	if PlayerGetTimerunningSeasonID() == 1 then
@@ -1713,152 +1694,14 @@ local function pandaremixSpecial(spellType)
 	end
 end
 
-local function hsBuilder(type, macroCond, semiCol, class, slBP, z, eLevel, playerSpec, race, playerName )
-	if type == "HS" then
-		-- Covenant Hearthstone
-		local covHS = {
-			[0] = "Hearthstone",
-			[1] = "Kyrian Hearthstone",
-			[2] = "Venthyr Sinstone",
-			[3] = "Night Fae Hearthstone",
-			[4] = "Necrolord Hearthstone",
-			[5] = "Dominated Hearthstone",
-			[6] = "Enlightened Hearthstone",
-		}
-		-- Hearthstones
-		local HS = {
-			["SHAMAN"] = "Ohn'ir Windsage's Hearthstone",
-			["MAGE"] = "Tome of Town Portal",
-			["WARLOCK"] = "Headless Horseman's Hearthstone",
-			["MONK"] = "Brewfest Reveler's Hearthstone",
-			["PALADIN"] = "Hearthstone",
-			["HUNTER"] = covHS[slBP],
-			["ROGUE"] = covHS[slBP],
-			["PRIEST"] = covHS[slBP],
-			["DEATHKNIGHT"] = covHS[slBP],
-			["WARRIOR"] = "The Innkeeper's Daughter",
-			["DRUID"] = "Noble Gardener's Hearthstone",
-			["DEMONHUNTER"] = "Ethereal Portal",
-			["EVOKER"] = "Timewalker's Hearthstone",
-		}
-
-		if (class == "MAGE" and playerSpec == 3) or (class == "DEATHKNIGHT" and playerSpec == 2) then
-				HS[class] = "Greatfather Winter's Hearthstone"
-		-- elseif (class == "MAGE" and playerSpec == 1) then
-		-- 	HS[class] = "Tome of Town Portal"
-		elseif (class == "WARLOCK" and playerName == "Voidlisa") then
-			HS[class] = "Venthyr Sinstone"
-		elseif (class == "MONK" and playerSpec ~= 1) then 
-			HS[class] = covHS[slBP]
-		elseif (class == "PALADIN" and playerSpec ~=3) or (class == "PRIEST" and playerSpec == 2) then
-			HS[class] = "Path of the Naaru"
-		elseif (playerName == "Stabbin" and class == "HUNTER" and race == "Goblin") then
-			HS[class] = "Stone of the Hearth"
-		elseif race == "NightElf" and (class == "WARRIOR" or class == "HUNTER") then
-			HS[class] = "Night Fae Hearthstone"
-		elseif (class == "HUNTER" and playerSpec == 2) then 
-			HS[class] = "Holographic Digitalization Hearthstone"
-		elseif (class == "PRIEST" and playerSpec == 1) then
-			HS[class] = "Eternal Traveler's Hearthstone"
-		elseif class == "DRUID" then
-			if playerSpec == 1 then
-				HS[class] = "Lunar Elder's Hearthstone"
-			elseif playerSpec == 4 then
-				HS[class] = "Noble Gardener's Hearthstone"
-			end
-		end
-
-		if race == "Draenei" or race == "LightforgedDraenei" then
-			HS[class] = "Draenic Hologem"
-		end
-
-		-- Block for getting Calendar Dates for World Events, World Event Setter
-		if C_Calendar and C_DateAndTime then
-			C_Calendar.SetMonth(0)
-			local gHI = C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1) and C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1).name or ""
-			
-			local holidays = {
-				"Lunar Festival", 
-				"Love is in the Air", 
-				"Noblegarden", 
-				"Children's Week",
-				"Midsummer Fire Festival", 
-				"Brewfest", 
-				"Hallow's End", 
-				"Pilgrim's Bounty",
-				"Feast of Winter Veil",
-			}
-			for i=1,5 do
-				for h, holidays in pairs(holidays) do 
-					if holidays == C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, i).name then
-						gHI = holidays
-					end
-				end
-			end
-			if gHI == "Lunar Festival" then
-				HS[class] = "Lunar Elder's Hearthstone"
-			elseif gHI == "Love is in the Air" then
-				HS[class] = "Peddlefeet's Lovely Hearthstone"
-			elseif gHI == "Noblegarden" then
-				HS[class] = "Noble Gardener's Hearthstone"
-			elseif gHI == "Children's Week" then
-				-- HS[class] = "Lunar Elder's Hearthstone"
-			elseif gHI == "Midsummer Fire Festival" then
-				HS[class] = "Fire Eater's Hearthstone"
-			elseif gHI == "Brewfest" then
-				HS[class] = "Brewfest Reveler's Hearthstone"
-			elseif gHI == "Hallow's End" then
-				HS[class] = "Headless Horseman's Hearthstone"
-			elseif gHI == "Pilgrim's Bounty" then
-				-- HS[class] = "Lunar Elder's Hearthstone"
-			elseif gHI == "Feast of Winter Veil" then
-				HS[class] = "Greatfather Winter's Hearthstone"
-			end
-		end
-
-		if z == "Alterac Valley" and eLevel > 57 then
-			-- race == horde races, else stormpike
-			if faction == "Horde" then
-				HS[class] = "Frostwolf Insignia"
-			else 
-				HS[class] = "Stormpike Insignia"
-			end
-		end
-		type = HS[class]
-		return (macroCond or "") .. (type or "") .. (semiCol or "")
-	end
-	if type == "hsToy" then
-		local hsToy = {
-			["SHAMAN"] = "\n/use Portable Audiophone\n/use Underlight Sealamp",
-			["MAGE"] = "\n/use [harm,nodead]Gaze of the Darkmoon;Magic Fun Rock",
-			["WARLOCK"] = "\n/cancelaura Golden Hearthstone Card: Lord Jaraxxus\n/use Golden Hearthstone Card: Lord Jaraxxus",
-			["MONK"] = "\n/use Brewfest Chowdown Trophy",
-			["PALADIN"] = "\n/use Jar of Sunwarmed Sand",
-			["HUNTER"] = "\n/use Tiny Mechanical Mouse\n/use Xan'tish's Flute",
-			["ROGUE"] = "\n/use Cursed Spyglass",
-			["PRIEST"] = "\n/use Steamy Romance Novel Kit\n/use For da Blood God!",
-			["DEATHKNIGHT"] = "\n/use Coldrage's Cooler",
-			["WARRIOR"] = "\n/cancelaura Tournament Favor\n/use Tournament Favor\n/use Kovork Kostume",
-			["DRUID"] = "\n/cancelaura Make like a Tree\n/use Ancient's Bloom\n/use Primal Stave of Claw and Fur\n/use Dreamsurge Remnant",
-			["DEMONHUNTER"] = "\n/cancelaura Golden Hearthstone Card: Lord Jaraxxus\n/use Golden Hearthstone Card: Lord Jaraxxus",
-		}
-		if class == "EVOKER" then
-			local randomHoloviewer = {
-				"Holoviewer: The Timeless One",
-				"Holoviewer: The Scarlet Queen",
-				"Holoviewer: The Lady of Dreams",
-			} 
-			randomHoloviewer = randomHoloviewer[random(#randomHoloviewer)]
-			hsToy[class] = "\n/use "..randomHoloviewer.."\n/use A Collection Of Me"
-		end
-
-		if playerName == "Stabbin" and class == "HUNTER" and race == "Goblin" then
-			hsToy[class] = "\n/use Slightly-Chewed Insult Book\n/use Cursed Spyglass"
-		elseif race == "NightElf" and class == "WARRIOR" then
-			hsToy[class] = "\n/use Owl Post"
-		end
-		type = hsToy[class] 
-		return (type or "")
+-- performs action when using Healthstone keybind --> PlaySound() and DoEmote()
+local function zigiHS()
+	if (C_Item.GetItemCount("Healthstone", false) >= 1) or (C_Item.GetItemCount("Demonic Healthstone", false) >= 1) then
+		PlaySound(15160)
+		DoEmote("glare")
+	else	
+		PlaySound(15160)
+		DoEmote("cry")
 	end
 end
 
@@ -2022,6 +1865,169 @@ local function itemBuilder(item,option,playerSpec)
 		return item or ""
 	end
 end
+
+local function hsBuilder(type, macroCond, semiCol, class, slBP, z, eLevel, playerSpec, race, playerName)
+	local classk = class
+	-- custom classes indexed in classk
+	if (playerName == "Stabbin" and class == "HUNTER" and race == "Goblin") then
+		classk = "PIRATE"
+	elseif (race == "NightElf" and class == "HUNTER") then
+		classk = "SENTINEL_HUNTER"
+	elseif (race == "NightElf" and class == "WARRIOR") then
+		classk = "SENTINEL_WARRIOR"		
+	elseif (playerName == "Mortalia" and class == "HUNTER" and race == "BloodElf") then
+		classk = "DARKRANGER"
+	end
+	class = classk
+	-- print(classk)
+	if type == "HS" then
+		-- Covenant Hearthstone
+		local covHS = {
+			[0] = "Hearthstone",
+			[1] = "Kyrian Hearthstone",
+			[2] = "Venthyr Sinstone",
+			[3] = "Night Fae Hearthstone",
+			[4] = "Necrolord Hearthstone",
+			[5] = "Dominated Hearthstone",
+			[6] = "Enlightened Hearthstone",
+		}
+		-- Hearthstones
+		local HS = {
+			["SHAMAN"] = "Ohn'ir Windsage's Hearthstone",
+			["MAGE"] = "Tome of Town Portal",
+			["WARLOCK"] = "Headless Horseman's Hearthstone",
+			["MONK"] = "Brewfest Reveler's Hearthstone",
+			["PALADIN"] = covHS[slBP],
+			["HUNTER"] = covHS[slBP],
+			["ROGUE"] = covHS[slBP],
+			["PRIEST"] = covHS[slBP],
+			["DEATHKNIGHT"] = covHS[slBP],
+			["WARRIOR"] = "The Innkeeper's Daughter",
+			["DRUID"] = "Noble Gardener's Hearthstone",
+			["DEMONHUNTER"] = "Ethereal Portal",
+			["EVOKER"] = "Timewalker's Hearthstone",
+		}
+
+		if (class == "MAGE" and playerSpec == 3) or (class == "DEATHKNIGHT" and playerSpec == 2) then
+				HS[class] = "Greatfather Winter's Hearthstone"
+		-- elseif (class == "MAGE" and playerSpec == 1) then
+		-- 	HS[class] = "Tome of Town Portal"
+		elseif (class == "WARLOCK" and playerName == "Voidlisa") then
+			HS[class] = "Venthyr Sinstone"
+		elseif (class == "MONK" and playerSpec ~= 1) then 
+			HS[class] = covHS[slBP]
+		elseif (class == "PALADIN" and playerSpec ~=3) or (class == "PRIEST" and playerSpec == 2) then
+			HS[class] = "Path of the Naaru"
+		elseif classk == "PIRATE" then
+			HS[class] = "Stone of the Hearth"
+		elseif classk == "SENTINEL_HUNTER" or classk == "SENTINEL_WARRIOR" then
+			HS[class] = "Night Fae Hearthstone"
+		elseif classk == "DARKRANGER" then
+			HS[class] = "Dominated Hearthstone"
+		elseif (class == "HUNTER" and playerSpec == 2) then 
+			HS[class] = "Holographic Digitalization Hearthstone"
+		elseif (class == "PRIEST" and playerSpec == 1) then
+			HS[class] = "Eternal Traveler's Hearthstone"
+		elseif class == "DRUID" then
+			if playerSpec == 1 then
+				HS[class] = "Lunar Elder's Hearthstone"
+			elseif playerSpec == 4 then
+				HS[class] = "Noble Gardener's Hearthstone"
+			end
+		end
+
+		if race == "Draenei" or race == "LightforgedDraenei" then
+			HS[class] = "Draenic Hologem"
+		end
+
+		C_Calendar.SetMonth(0)
+		local gHI = C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1) and C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1).name or ""
+
+		local holidays = {
+			"Lunar Festival", 
+			"Love is in the Air", 
+			"Noblegarden", 
+			"Children's Week",
+			"Midsummer Fire Festival", 
+			"Brewfest", 
+			"Hallow's End", 
+			"Pilgrim's Bounty",
+			"Feast of Winter Veil",
+		}
+
+		for i=1,C_Calendar.GetNumDayEvents(0, C_DateAndTime.GetCurrentCalendarTime().monthDay) do
+			for h, holidays in pairs(holidays) do 
+				if holidays == C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, i).name then
+					gHI = holidays
+				end
+			end
+		end
+
+		if gHI == "Lunar Festival" then
+			HS[class] = "Lunar Elder's Hearthstone"
+		elseif gHI == "Love is in the Air" then
+			HS[class] = "Peddlefeet's Lovely Hearthstone"
+		elseif gHI == "Noblegarden" then
+			HS[class] = "Noble Gardener's Hearthstone"
+		elseif gHI == "Children's Week" then
+			-- HS[class] = "Lunar Elder's Hearthstone"
+		elseif gHI == "Midsummer Fire Festival" then
+			HS[class] = "Fire Eater's Hearthstone"
+		elseif gHI == "Brewfest" then
+			HS[class] = "Brewfest Reveler's Hearthstone"
+		elseif gHI == "Hallow's End" then
+			HS[class] = "Headless Horseman's Hearthstone"
+		elseif gHI == "Pilgrim's Bounty" then
+			-- HS[class] = "Lunar Elder's Hearthstone"
+		elseif gHI == "Feast of Winter Veil" then
+			HS[class] = "Greatfather Winter's Hearthstone"
+		end
+
+		if z == "Alterac Valley" and eLevel > 57 then
+			-- race == horde races, else stormpike
+			if faction == "Horde" then
+				HS[class] = "Frostwolf Insignia"
+			else 
+				HS[class] = "Stormpike Insignia"
+			end
+		end
+		type = HS[class]
+		return (macroCond or "") .. (type or "") .. (semiCol or "")
+	end
+	if type == "hsToy" then
+		local hsToy = {
+			["SHAMAN"] = "\n/use Portable Audiophone\n/use Underlight Sealamp",
+			["MAGE"] = "\n/use [harm,nodead]Gaze of the Darkmoon;Magic Fun Rock",
+			["WARLOCK"] = "\n/cancelaura Golden Hearthstone Card: Lord Jaraxxus\n/use Golden Hearthstone Card: Lord Jaraxxus",
+			["MONK"] = "\n/use Brewfest Chowdown Trophy",
+			["PALADIN"] = "\n/use Jar of Sunwarmed Sand",
+			["HUNTER"] = "\n/use Tiny Mechanical Mouse\n/use Xan'tish's Flute",
+			["ROGUE"] = "\n/use Cursed Spyglass",
+			["PRIEST"] = "\n/use Steamy Romance Novel Kit\n/use For da Blood God!",
+			["DEATHKNIGHT"] = "\n/use Coldrage's Cooler",
+			["WARRIOR"] = "\n/cancelaura Tournament Favor\n/use Tournament Favor\n/use Kovork Kostume",
+			["DRUID"] = "\n/cancelaura Make like a Tree\n/use Ancient's Bloom\n/use Primal Stave of Claw and Fur\n/use Dreamsurge Remnant",
+			["DEMONHUNTER"] = "\n/cancelaura Golden Hearthstone Card: Lord Jaraxxus\n/use Golden Hearthstone Card: Lord Jaraxxus",
+			["PIRATE"] = "\n/use Slightly-Chewed Insult Book\n/use Cursed Spyglass",
+			["SENTINEL_WARRIOR"] = "\n/use Owl Post",
+			["SENTINEL_HUNTER"] = "\n/use Owl Post",
+		}
+
+		if classk == "EVOKER" then
+			local randomHoloviewer = {
+				"Holoviewer: The Timeless One",
+				"Holoviewer: The Scarlet Queen",
+				"Holoviewer: The Lady of Dreams",
+			} 
+			randomHoloviewer = randomHoloviewer[random(#randomHoloviewer)]
+			hsToy[classk] = "\n/use "..randomHoloviewer.."\n/use A Collection Of Me"
+		end
+
+		type = hsToy[classk] 
+		return (type or "")
+	end
+end
+
 local function consumableBuilder(consumable,macroCond,semiCol)
 	if consumable == "invispot" then
 		-- hasInvisPot parser
@@ -2046,6 +2052,7 @@ local function consumableBuilder(consumable,macroCond,semiCol)
 		end
 		return (hasInvisPot or "")
 	end
+
 	if consumable == "tonic" then
 		-- macroCond = playerName, semiCol = instanceType
 		local hasTonics = {
@@ -2101,8 +2108,8 @@ local function consumableBuilder(consumable,macroCond,semiCol)
 		end
 		return (macroCond or "")..(neckIsEquipped or "")..(semiCol or "")
 	end
-	if consumable == "potion" then
 
+	if consumable == "potion" then
 		local hasPot = ""
     	-- Throughput Potion parser
 		if instanceType == "pvp" and C_Item.GetItemCount("Saltwater Potion", false, true) >= 1 then
@@ -2160,6 +2167,7 @@ local function consumableBuilder(consumable,macroCond,semiCol)
 		end
 		return (macroCond or "")..(hasPot or "")..(semiCol or "")
 	end
+
 	if consumable == "bandages" then
 		-- First Aid Bandages Parser
         local hasBandages = {
@@ -2182,6 +2190,7 @@ local function consumableBuilder(consumable,macroCond,semiCol)
 	 	end
 	 	return (macroCond or "")..(hasBandagesInBags or "")..(semiCol or "")
 	end
+
 	if consumable == "manapot" then
 		-- Mana Potion Parser
         consumable = {
@@ -2202,6 +2211,7 @@ local function consumableBuilder(consumable,macroCond,semiCol)
 	 	end
 	 	return (macroCond or "")..(consumable or "")..(semiCol or "")
 	end
+
 	if consumable == "water" then
 		-- Magefood parser
 		local hasWaters = {
@@ -2252,6 +2262,7 @@ local function consumableBuilder(consumable,macroCond,semiCol)
 		end
 		return (macroCond or "")..(hasWaterInBags or "")..(semiCol or "")	
 	end
+
 	if consumable == "managem" then
 		if C_Item.GetItemCount(36799) >= 1 then
 			hasManaGem = "item:36799"		
@@ -2271,6 +2282,7 @@ local function consumableBuilder(consumable,macroCond,semiCol)
 		end
 		return (macroCond or "")..(hasManaGem or "")..(semiCol or "")
 	end
+
 	if consumable == "nimblebrew" then
 		local nimbleBrew = "Magic Pet Mirror"
 		if C_Item.GetItemCount("Nimble Brew") >= 1 then 
@@ -2278,7 +2290,9 @@ local function consumableBuilder(consumable,macroCond,semiCol)
 		end
 		return (macroCond or "")..(nimbleBrew or "")..(semiCol or "") 
 	end
+
 	if consumable == "bladlast" then
+		local faction = UnitFactionGroup("player")
 		-- consumable = , macroCond = faction, semiCol = instanceType
 		consumable = {
 			"Drums of Rage",
@@ -2322,7 +2336,35 @@ local function consumableBuilder(consumable,macroCond,semiCol)
 	end
 end
 
-function zigiTrade(tradable)
+local function groupRosterBuilder(role)
+	if role == "tank" then
+		role = "help,nodead" 
+		for i = 1, 5 do 
+			if UnitGroupRolesAssigned("party"..i) == "TANK" then 
+				role = "@".."party"..i 
+				-- print("Role Tank found at: ",role)
+				return role or ""
+			else
+				-- print("Tank not found!")
+				return role or ""
+			end 
+		end
+	elseif role == "healer" then
+		role = "help,nodead"
+		for i = 1, 5 do  
+			if UnitGroupRolesAssigned("party"..i) == "HEALER" then 
+				role = "@".."party"..i 
+				-- print("Role Healer found at: ",role)
+				return role or ""
+			else
+				-- print("Healer not found!")
+				return role or ""
+			end  
+		end
+	end
+end
+
+local function zigiTrade(tradable)
 	local c=C_Container 
 	for i=0,4 do 
 		for x=1,c.GetContainerNumSlots(i)do 
@@ -2335,9 +2377,10 @@ function zigiTrade(tradable)
 	end
 end
 
-local function eventHandler(event)
 
-	-- Jag vill splitta upp eventhandlerns events till olika funktioner som anropas av eventHandlern eventuellt, det blir för rörigt.
+local function eventHandler(event)
+	
+	local _,class = UnitClass("player")
 	local faction = UnitFactionGroup("player")
 	local _,race = UnitRace("player")
 	local sex = UnitSex("player")
@@ -2349,7 +2392,14 @@ local function eventHandler(event)
 	local z, m, mA, mP = GetZoneText(), "", "", ""
 	local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
 	-- print("test")
-	hasCannon = vars[1]
+
+	if InCombatLockdown() then
+		ZigiAllButtons:RegisterEvent("PLAYER_REGEN_ENABLED")
+	else
+
+
+		-- print("test")
+			hasCannon = vars[1]
 	alt4 = vars[2]
 	alt5 = vars[3]
 	alt6 = vars[4]
@@ -2413,10 +2463,6 @@ local function eventHandler(event)
 	extraRacials = vars[62]
 	swapblaster = vars[63]
 
-	if InCombatLockdown() then
-		ZigiAllButtons:RegisterEvent("PLAYER_REGEN_ENABLED")
-	else
-
 		-- -- Configure Battlefield Map
 		if not BattlefieldMapFrame then
 			BattlefieldMap_LoadUI(); 
@@ -2426,6 +2472,7 @@ local function eventHandler(event)
 			BattlefieldMapFrame:SetPoint("TOPLEFT")
 			BattlefieldMapFrame.BorderFrame.CloseButton:Hide()
 		end
+
 		if class == "MAGE" then 
 			pwned = "Khadgar's Disenchanting Rod"
 		elseif class == "WARLOCK" then
@@ -2437,6 +2484,7 @@ local function eventHandler(event)
 		end
 
 		slBP = C_Covenants.GetActiveCovenantID(covenantsEnum)
+
 		-- CovToys
 		if slBP and covToys[slBP] then
 			covToys = covToys[slBP]
@@ -2444,27 +2492,13 @@ local function eventHandler(event)
 			covToys = "\n/use "..covToys
 		end
 
-		C_Calendar.SetMonth(0)
-		local gHI = C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1) and C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1).name or ""
-		
-		local holidays = {
-			"Lunar Festival", 
-			"Love is in the Air", 
-			"Noblegarden", 
-			"Children's Week",
-			"Midsummer Fire Festival", 
-			"Brewfest", 
-			"Hallow's End", 
-			"Pilgrim's Bounty",
-			"Feast of Winter Veil",
+		local EQS = {
+			[1] = "Noon!",
+			[2] = "DoubleGate",
+			[3] = "Menkify!",
+			[4] = "Supermenk",
+			[5] = "",
 		}
-		for i=1,5 do
-			for h, holidays in pairs(holidays) do 
-				if holidays == C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, i).name then
-					gHI = holidays
-				end
-			end
-		end
 
 		-- if Instanced Content 
 		if instanceType ~= "none" then
@@ -2482,7 +2516,7 @@ local function eventHandler(event)
 			pennantClass = "\n/use Clan Banner"
 		elseif class == "ROGUE" and playerSpec ~= 2 then
 			pennantClass = "\n/use Honorable Pennant\n/cancelaura A Mighty Pirate"
-		elseif class == "ROGUE" or (playerName == "Stabbin" and class == "HUNTER" and race == "Goblin") then 
+		elseif class == "ROGUE" or (classk == "PIRATE") then 
 			pennantClass = "\n/use Jolly Roger\n/cancelaura Honorable Pennant\n/use Swarthy Warning Sign"
 		end
 
@@ -3115,7 +3149,10 @@ local function eventHandler(event)
 			EditMacro("WSxCGen+Z",nil,nil,"/use Seafarer's Slidewhistle\n/use [nostealth]Repurposed Fel Focuser"..itemBuilder("augmentRune",eLevel)..ccz..CZ..covSpecial)
 			function ZigiPrintZoneVars()
 
+				-- local gHI = gHI
+				-- print(gHI)
 				DEFAULT_CHAT_FRAME:AddMessage("ZigiAllButtons: Recalibrating zone based variables :)\nalt4 = "..alt4.."\nalt5 = "..alt5.."\nalt6 = "..alt6.."\nCZ = "..CZ.."\nccz = "..ccz.."\nPoA = "..PoA.."\nAR = "..itemBuilder("augmentRune",eLevel).."\nconTE = "..conTE.."\nconRE = "..conRE.."\nconBE = "..conBE.."\nconCE = "..conCE.."\nhasCannon = "..hasCannon.."\nz = "..z.."\ninstanceName = "..instanceName.."\ninstanceType = "..instanceType.."\ndifficultyID = "..difficultyID.."\ngHI = "..gHI,0.5,1.0,0.0)
+			-- \ngHI = "..gHI
 			end
       		      		    
 			if class == "DEATHKNIGHT" then
@@ -3123,6 +3160,7 @@ local function eventHandler(event)
 			else
 				PoA = "help,nodead,@party"
 			end    
+			
 			EditMacro("WMPAlt+4",nil,nil,"/target [@boss1,exists,nodead,nomod:ctrl]\n/target [@arena1,exists,nodead,nomod:ctrl]\n/use [mod:ctrl,"..PoA.. "1,nodead]"..aC[class]..alt4)
 			EditMacro("WMPAlt+5",nil,nil,"/target [@boss2,exists,nodead,nomod:ctrl]\n/target [@arena2,exists,nodead,nomod:ctrl]\n/use [mod:ctrl,"..PoA.. "2,nodead]"..aC[class]..alt5)
 			EditMacro("WMPAlt+6",nil,nil,"/target [@boss3,exists,nodead,nomod:ctrl]\n/target [@arena3,exists,nodead,nomod:ctrl]\n/use [mod:ctrl,"..PoA.."3,nodead]"..aC[class]..alt6)
@@ -3196,6 +3234,7 @@ local function eventHandler(event)
 				sigA = "Door of Shadows"
 			end
 			-- print(covTable[cov])
+			-- print(cov[slBP])
 			-- print(covTable[cov[slBP]])
 			-- print(covTable[cov[slBP]][class])
 			-- print("covA", covA)
@@ -3275,14 +3314,14 @@ local function eventHandler(event)
 					sigA = "Seed of Renewed Souls"
 				end
 				if class == "SHAMAN" then
-					covA = (b({{"Liquid Magma Totem","",""},{"Ancestral Swiftness","",""},{"Nature's Swiftness","",""},{"Primordial Wave","",""},{"Doom Winds","",""},}) or covA) 
-					sigA = (b({{"Healing Tide Totem","",""},{"Ancestral Swiftness","",""},{"Nature's Swiftness","",""},{"Primordial Wave","",""},}) or sigA)
+					covA = (b({{"Liquid Magma Totem","",""},{"Ancestral Swiftness","",""},{"Nature's Swiftness","",""},{"Primordial Wave(Shadowlands)","",""},{"Primordial Wave","",""},{"Primordial Wave(Necrolord)","",""},{"Doom Winds","",""},}) or covA) 
+					sigA = (b({{"Healing Tide Totem","",""},{"Ancestral Swiftness","",""},{"Nature's Swiftness","",""},{"Primordial Wave(Shadowlands)","",""},{"Primordial Wave","",""},{"Primordial Wave(Necrolord)","",""},}) or sigA)
 				elseif class == "MAGE" then
 					covA = (b({{"Meteor","",""},{"Glacial Spike","",""},{"Mirror Image","",""},}) or covA) 
 					sigA = (b({{"Shifting Power","",""},{"Mirror Image","",""},{"Cold Snap","",""},{"Meteor","",""},}) or sigA)
 				elseif class == "WARLOCK" then
-					covA = (b({{"Malevolence","",""},{"Summon Soulkeeper","",""},{"Soul Rot","",""},{"Guillotine","",""},{"Dimensional Rift","",""},}) or covA)
-					sigA = (b({{"Soul Rot","",""},{"Dimensional Rift","",""},{"Guillotine","",""},{"Malevolence","",""},{"Summon Soulkeeper","",""},{"Inquisitor's Gaze","",""},}) or sigA)
+					covA = (b({{"Malevolence","",""},{"Summon Soulkeeper","",""},{"Soul Rot","",""},{"Guillotine","",""},{"Dimensional Rift","",""},{"Soulburn","",""},}) or covA)
+					sigA = (b({{"Soul Rot","",""},{"Dimensional Rift","",""},{"Guillotine","",""},{"Malevolence","",""},{"Summon Soulkeeper","",""},{"Inquisitor's Gaze","",""},{"Create Healthstone","",""},{"Summon Imp","",""},}) or sigA)
 				elseif class == "MONK" then
 					covA = (b({{"Exploding Keg","",""},{"Sheilun's Gift","",""},{"Bonedust Brew","",""},{"Jadefire Stomp","",""},{"Strike of the Windlord","",""},}) or covA)
 					sigA = (b({{"Weapons of Order","",""},{"Jadefire Stomp","",""},{"Bonedust Brew","",""},{"Whirling Dragon Punch","",""},{"Sheilun's Gift","",""},}) or sigA)
@@ -3311,10 +3350,10 @@ local function eventHandler(event)
 						sigA = "Mangle"
 					end
 				elseif class == "DEMONHUNTER" then
-					covA = (b({{"Fel Barrage","",""},{"Glaive Tempest","",""},{"Elysian Decree","",""},{"Soul Carver","",""},}) or covA)
+					covA = (b({{"Fel Barrage","",""},{"Sigil of Spite","",""},{"Glaive Tempest","",""},{"Soul Carver","",""},}) or covA)
 					sigA = (b({{"Soul Carver","",""},{"Immolation Aura","",""},}) or sigA)
 				elseif class == "EVOKER" then
-					covA = b({{"Engulf","";""},{"Deep Breath","",""},}) or covA
+					covA = b({{"Engulf","";""},{"Deep Breath","!",""},}) or covA
 					sigA = usableWeaponEquipped
 				end
 				sigB = "[@mouseover,exists,nodead,mod][@cursor,mod]"..sigA
@@ -3450,11 +3489,11 @@ local function eventHandler(event)
 			end
 			EditMacro("WFirstAid",nil,nil,"/run local c,g = GetTitleName(GetCurrentTitle()),GetCurrentTitle() if not((c == \"Field Medic\") or (g == 372)) then SetTitleByName(\"Field Medic\") end\n/use "..consumableBuilder("bandages",""))
 			if C_Item.GetItemCount("Healthstone", false) >= 1  then
-				EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."Healthstone\n/stopmacro [mod]"..((hsBuilder("hsToy","","",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/run PlaySound(15160)\n/glare")
+				EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."Healthstone\n/stopmacro [mod]"..((hsBuilder("hsToy","","",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/run zigiHS()")
 			elseif C_Item.GetItemCount("Demonic Healthstone", false) >= 1  then
-				EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."Demonic Healthstone\n/stopmacro [mod]"..((hsBuilder("hsToy","","",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/run PlaySound(15160)\n/glare")
+				EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."Demonic Healthstone\n/stopmacro [mod]"..((hsBuilder("hsToy","","",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/run zigiHS()")
 			else
-				EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/stopmacro [mod]"..((hsBuilder("hsToy","","",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/use Healthstone\n/use Demonic Healthstone\n/run PlaySound(15160)\n/cry", 1, 1)
+				EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/stopmacro [mod]"..((hsBuilder("hsToy","","",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/use Healthstone\n/use Demonic Healthstone\n/run zigiHS()", 1, 1)
 			end  
 			if class == "SHAMAN" then
 				EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant"..itemBuilder("glider")..";[mod]6;[nocombat]Ancestral Spirit;"..pwned.."\n/use [mod:ctrl]Ancestral Vision"..itemBuilder("brazier"))
@@ -3471,7 +3510,7 @@ local function eventHandler(event)
 				EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant"..itemBuilder("glider")..";[mod]6;[nocombat]Resuscitate;"..pwned.."\n/use [mod:ctrl]Reawaken"..itemBuilder("brazier"))
 			elseif class == "PALADIN" then
 				EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant"..itemBuilder("glider")..";[mod]6;[nocombat]Redemption;"..pwned.."\n/use [mod:ctrl]Absolution"..itemBuilder("brazier"))
-				EditMacro("WSxCAGen+F",nil,nil,(b("Blessing of Summer","/targetfriendplayer\n/use [help,nodead]",";Languages\n/targetlasttarget") or "").."\n/stopmacro [combat,exists]"..itemBuilder("instrument",noPants))
+				EditMacro("WSxCAGen+F",nil,nil,(b({{"Blessing of Summer","/targetfriendplayer\n/use [help,nodead]",";Languages\n/targetlasttarget"},{"Blessing of Freedom","/targetfriendplayer\n/use [help,nodead]",";Languages\n/targetlasttarget"},}) or "").."\n/stopmacro [combat,exists]"..itemBuilder("instrument",noPants))
 			elseif class == "HUNTER" then
 				EditMacro("WSxGen3",nil,nil,"/targetlasttarget [noexists,nocombat,nodead]\n/use "..(b("Kill Shot","[@mouseover,harm,nodead][harm,nodead]",";") or "")..((itemBuilder("flyingSkinner") or "") or "").."Imaginary Gun\n/targetenemy [noharm]\n/cleartarget [dead]"..((itemBuilder("inject",class,playerSpec) or "") or "").."\n/targetlasttarget [dead]")
 				EditMacro("WRessMix",nil,nil,"/cancelaura Slow Fall\n/cancelaura Levitate\n/cancelaura Goblin Glider\n/use [mod:ctrl]Bronze Racer's Pennant"..itemBuilder("glider")..";[mod]6;"..itemBuilder("crKnife")..pwned..""..itemBuilder("brazier"))
@@ -3508,7 +3547,7 @@ local function eventHandler(event)
 			overrideModCtrl = ""
 			overrideModAlt = ""
 			if class == "SHAMAN" then
-				EditMacro("WSxGenX",nil,nil,"/use "..(b({{"Thunderstrike Ward","[mod:alt]",";"},{"Windfury Weapon","[mod:alt]",";"},{"Earthliving Weapon","[mod:alt]",";"},}) or "").."[mod:ctrl]Astral Recall;"..(b({{"Spirit Walk","[mod:shift]",";"},{"Spiritwalker's Grace","[mod:shift]",";"},}) or "")..(b({{"Earth Shield","[@mouseover,help,nodead]["..groupRosterBuilder("tank").."][]",""},{"Lightning Shield","",""},}) or "").."\n/use Void Totem\n/use Deceptia's Smoldering Boots")
+				EditMacro("WSxGenX",nil,nil,"/use "..(b({{"Thunderstrike Ward","[mod:alt]",";"},{"Windfury Weapon","[mod:alt]",";"},{"Earthliving Weapon","[mod:alt]",";"},{"Tidecaller's Guard","[mod:alt]",";"},}) or "").."[mod:ctrl]Astral Recall;"..(b({{"Spirit Walk","[mod:shift]",";"},{"Spiritwalker's Grace","[mod:shift]",";"},}) or "")..(b({{"Earth Shield","[@mouseover,help,nodead]["..groupRosterBuilder("tank").."][]",""},{"Lightning Shield","",""},}) or "").."\n/use Void Totem\n/use Deceptia's Smoldering Boots")
 			-- elseif class == "MAGE" then 
 			-- elseif class == "WARLOCK" then
 			elseif class == "MONK" then 
@@ -3537,8 +3576,6 @@ local function eventHandler(event)
 				EditMacro("WSxGenC",nil,nil,"#show\n/use "..(b("Sleep Walk","[@mouseover,harm,nodead,mod:ctrl][mod:ctrl]",";") or "")..(b("Source of Magic","[mod:shift][mod:shift,"..groupRosterBuilder("healer").."]",";") or "")..(b("Reversion","[@mouseover,help,nodead][]","") or "[@mouseover,help,nodead][]Emerald Blossom").."\n/cancelaura X-Ray Specs")
 			end
 		end
-	
-		
 		
 		if (event == "LEARNED_SPELL_IN_SKILL_LINE" or event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "TRAIT_CONFIG_UPDATED" or event == "PLAYER_ENTERING_WORLD") then
 			if (class == "WARLOCK" or class == "DEMONHUNTER") then
@@ -3571,7 +3608,7 @@ local function eventHandler(event)
 				elseif b("Primal Strike") then override = "[@mouseover,harm,nodead][]Primal Strike" 
 				end
 				EditMacro("WSxGen4",nil,nil,"#show\n/use "..override.."\n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat,noexists,nospec:3]Smolderheart\n/startattack")
-				EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use "..(b({{"Riptide","[@party1,help,nodead,mod:alt]",";"},}) or "")..(b({{"Primordial Wave","[@mouseover,exists,nodead,nomod:alt][nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Primordial Wave\n/targetlasttarget"},{"Storm Elemental","[pet:Storm Elemental]Tempest;",""},{"Fire Elemental","[pet:Fire Elemental,@mouseover,harm,nodead][pet:Fire Elemental]Meteor;",""},{"Healing Tide Totem","",""},}) or "").."\n/use [nocombat,noexists]Sen'jin Spirit Drum\n/cleartarget [dead]")
+				EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noexists]\n/use "..(b({{"Riptide","[@party1,help,nodead,mod:alt]",";"},}) or "")..(b({{"Primordial Wave(Shadowlands)","[@mouseover,exists,nodead,nomod:alt][nomod:alt]","(Shadowlands)\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Primordial Wave(Shadowlands)\n/targetlasttarget"},{"Primordial Wave","[@mouseover,exists,nodead,nomod:alt][nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Primordial Wave\n/targetlasttarget"},{"Storm Elemental","[pet:Storm Elemental]Tempest;",""},{"Fire Elemental","[pet:Fire Elemental,@mouseover,harm,nodead][pet:Fire Elemental]Meteor;",""},{"Healing Tide Totem","",""},}) or "").."\n/use [nocombat,noexists]Sen'jin Spirit Drum\n/cleartarget [dead]")
 				EditMacro("WSxCGen+4",nil,nil,"#show\n/use [@party3,help,nodead,mod:alt]Riptide;"..(b({{"Ascendance","",""},{"Stormkeeper","",""},{"Wellspring","",""},{"Totemic Projection","[@cursor]",""},{"Downpour","[@cursor]",""},}) or "").."\n/targetenemy [noexists]\n/use Trawler Totem")
 				if playerSpec == 2 then override = "\n/use Lightning Bolt" elseif b("Earth Shock") then override = "\n/use Earth Shock" elseif b("Elemental Blast") then override = "\n/use Elemental Blast" elseif b("Healing Wave") then override = "\n/use [@mouseover,help,nodead][]Healing Wave" end
 				EditMacro("WSxGen5",nil,nil,"/targetenemy [noexists,nomod]\n/target [@Greater Earth,mod]\n/use "..(b({{"Spirit Link Totem","[mod,@cursor]",""},{"Earth Elemental","[mod,@pet,help,nodead][mod,help,nodead]Healing Surge;[mod]","\n/use [mod]Tiny Box of Tiny Rocks\n/targetlasttarget [mod,exists]"},}) or "")..override)
@@ -3586,7 +3623,7 @@ local function eventHandler(event)
 				EditMacro("WSxSGen+6",nil,nil,"#show\n/use "..(b({{"Sundering","",""},{"Stormkeeper","",""},{"Healing Tide Totem","",""},{"Chain Heal","[@mouseover,help,nodead][]",""},}) or "Lightning Bolt").."\n/use Orb of Deception\n/targetenemy [noexists]")
 				EditMacro("WSxGen7",nil,nil,"/use "..(b({{"Surging Totem","[mod:shift,@player]",""},{"Healing Rain","[mod:shift,@player]",";"},{"Earthquake","[mod:shift,@player][@cursor]",";"},{"Windfury Totem","[mod:shift]",";"},}) or "")..(b({{"Chain Lightning","[@mouseover,harm,nodead][]",""},{"Riptide","",""},}) or "X-treme Water Blaster Display").."\n/startattack")
 				EditMacro("WSxGen8",nil,nil,"#show\n/stopspelltarget\n/use "..(b({{"Liquid Magma Totem","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",""},{"Earthen Wall Totem","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",""},{"Ancestral Protection Totem","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",""},{"Downpour","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",""},{"Healing Rain","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",""},{"Fire Nova","",""},{"Surging Totem","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",""},{"Frost Shock","",""},}) or "Flametongue Weapon"))
-				EditMacro("WSxGen9",nil,nil,"#show\n/stopspelltarget\n/use "..(b({{"Surging Totem","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",""},{"Tidecaller's Guard","",""},{"Primordial Wave","",""},{"Healing Stream Totem","",""},{"Windfury Totem","",""},{"Ice Strike","",""},{"Fire Nova","",""},{"Earthliving Weapon","",""},{"Spirit Link Totem","",""},{"Tremor Totem","",""},{"Downpour","[@cursor]",""},}) or "Water Walking"))
+				EditMacro("WSxGen9",nil,nil,"#show\n/stopspelltarget\n/use "..(b({{"Surging Totem","[mod:shift,@player][@mouseover,exists,nodead][@cursor]",""},{"Tidecaller's Guard","",""},{"Primordial Wave(Shadowlands)","","(Shadowlands)"},{"Primordial Wave","",""},{"Healing Stream Totem","",""},{"Windfury Totem","",""},{"Ice Strike","",""},{"Fire Nova","",""},{"Earthliving Weapon","",""},{"Spirit Link Totem","",""},{"Tremor Totem","",""},{"Downpour","[@cursor]",""},}) or "Water Walking"))
 				EditMacro("WSxCSGen+2",nil,nil,"/use [mod:alt,spec:3,@party3,help,nodead][spec:3,@party1,help,nodead][spec:3,@targettarget,help,nodead]Purify Spirit;[mod:alt,@party3,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Cleanse Spirit;[nocombat,noharm]Spirit Wand")
 				EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,harm,nodead]Flame Shock;[mod:alt,spec:3,@party4,help,nodead][spec:3,@party2,help,nodead]Purify Spirit;[mod:alt,@party4,help,nodead][@party2,help,nodead]Cleanse Spirit;[nocombat,noharm]Cranky Crab;\n/cleartarget [dead]\n/stopspelltarget")
 				EditMacro("WSxCSGen+4",nil,nil,"/use [@focus,harm,nodead]Primordial Wave;[mod:alt,@party3,help,nodead][@focus,help,nodead][@party1,help,nodead][@targettarget,help,nodead]Chain Heal\n/use [spec:3]Waterspeaker's Totem")
@@ -3682,13 +3719,13 @@ local function eventHandler(event)
 				if b("Cataclysm") then override = "[mod:shift,@player][@mouseover,exists,nodead][@cursor]Cataclysm"
 				elseif b("Bilescourge Bombers") and b("Guillotine") then override = "[@player,mod:shift][@mouseover,exists,nodead][@cursor]Bilescourge Bombers"
 				elseif b("Guillotine") then override = "[mod:shift,@player][@mouseover,exists,nodead][@cursor]Guillotine"
-				elseif b("Demonic Strength") then override = "[@mouseover,harm,nodead][]Demonic Strength"
+				elseif b("Demonic Strength") then override = "[mod:shift,nopet]Summon Imp;[@mouseover,harm,nodead][]Demonic Strength"
 				elseif b("Phantom Singularity") then override = "[mod:shift,@player][@mouseover,exists,nodead][@cursor]Phantom Singularity"
 				elseif b("Vile Taint") then override = "[mod:shift,@player][@mouseover,exists,nodead][@cursor]Vile Taint"
 				elseif playerSpec == 2 then
-					override = "Felstorm"
+					override = "[mod:shift,nopet]Summon Imp;Felstorm"
 				else
-					override = "Command Demon"
+					override = "[mod:shift,nopet]Summon Imp;Command Demon"
 				end
 				EditMacro("WSxGen7",nil,nil,"#showtooltip\n/stopspelltarget\n/use "..override.."\n/targetenemy [noexists]")
 				if b("Soul Rot") then override = "[@mouseover,harm,nodead][]Soul Rot"
@@ -3812,7 +3849,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/use [mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]Word of Glory")
 				EditMacro("WSxGenQ",nil,nil,"/use "..(b("Repentance","[mod:alt,@focus,harm,nodead]",";") or "").."[mod:shift]Divine Shield;"..(b({{"Rebuke","[@mouseover,harm,nodead][]",";"},{"Hammer of Justice","[@mouseover,harm,nodead][]",";"},}) or ""))
 				EditMacro("WSxGenE",nil,nil,"#show\n/use "..(b({{"Divine Favor","[mod:alt]",";"},{"Hand of Divinity","[mod:alt]",";"},}) or "").."[@mouseover,help,nodead][]Word of Glory")
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use [@mouseover,help,nodead][]Lay on Hands\n/use [help,nodead]Apexis Focusing Shard\n/stopspelltarget"..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/cast [@mouseover,help,nodead][]Lay on Hands\n/use [help,nodead]Apexis Focusing Shard\n/stopspelltarget"..oOtas..covToys)
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..(b({{"Repentance","[@mouseover,harm,nodead][]",""},{"Blinding Light","",""},}) or "Hammer of Justice"))
 				EditMacro("WSxGenR",nil,nil,(b("Aura Mastery","#show ","\n") or "").."/use "..(b("Divine Steed","[mod:ctrl]",";") or "")..(b("Blessing of Freedom","[@mouseover,help,nodead][help,nodead]",";") or "")..(b("Avenger's Shield","[@mouseover,harm,nodead][]","") or "Judgment").."\n/use [mod:ctrl]Prismatic Bauble")
 				EditMacro("WSxGenT",nil,nil,"/stopspelltarget\n/use "..(b({{"Holy Armaments","[mod:alt,@player][@mouseover,exists,nodead][@cursor]",""},{"Turn Evil","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";"},}) or "")..swapblaster.."\n/use Titanium Seal of Dalaran\n/use \n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat]Wayfarer's Bonfire")
@@ -3840,13 +3877,13 @@ local function eventHandler(event)
 				EditMacro("WSxSGen+2",nil,nil,"#show\n/use [spec:1,pet,nopet:Spirit Beast][spec:3,pet]Dismiss Pet;[nopet]Call Pet 2;[@mouseover,help,nodead,pet:Spirit Beast][pet:Spirit Beast,help,nodead][pet:Spirit Beast,@player]Spirit Mend;[spec:3]Arcane Shot;Dismiss Pet\n/use Totem of Spirits")
 				EditMacro("WSxSGen+3",nil,nil,"/startattack\n/use "..(b({{"Wildfire Bomb","[@mouseover,harm,nodead,nomod:alt][nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]Wildfire Bomb\n/targetlasttarget"},{"A Murder of Crows","",""},{"Bloodshed","",""},{"Serpent Sting","",""},{"Stampede","",""},{"Death Chakram","",""},{"Dire Beast","",""},{"Wailing Arrow","",""},}) or "Hunter's Call"))
 				EditMacro("WSxGen4",nil,nil,"#show\n/use [harm,dead]Gin-Ji Knife Set;[help,nodead]Dalaran Disc;"..(b({{"Aimed Shot","[harm,nodead]",";"},{"Kill Command","[@mouseover,harm,nodead][harm,nodead]",";"},}) or "").."Puntable Marmot\n/target Puntable Marmot\n/targetenemy [noexists]\n/startattack [harm,combat]\n/cleartarget [dead]\n/use Squeaky Bat")
-				if (playerName == "Stabbin" and class == "HUNTER" and race == "Goblin") then
+				if (classk == "PIRATE") then
 					EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noharm]\n/cleartarget [dead]\n/use "..(b({{"Flanking Strike","[nomod:alt]",""},{"Steel Trap","[@cursor,nomod:alt]",""},{"Explosive Shot","[@mouseover,harm,nodead][]",""},{"Dire Beast","",""},{"Wailing Arrow","",""},{"Chimaera Shot","",""},{"Serpent Sting","[nomod:alt]",""},{"Misdirection","[nomod:alt]",""},{"Kill Command","[nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]Kill Command\n/targetlasttarget"},}) or ""))
 				else
 					EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noharm]\n/cleartarget [dead]\n/use [nocombat,noexists]Owl Post;"..(b({{"Flanking Strike","[nomod:alt]",""},{"Steel Trap","[@cursor,nomod:alt]",""},{"Explosive Shot","[@mouseover,harm,nodead][]",""},{"Dire Beast","",""},{"Wailing Arrow","",""},{"Chimaera Shot","",""},{"Serpent Sting","[nomod:alt]",""},{"Misdirection","[nomod:alt]",""},{"Kill Command","[nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]Kill Command\n/targetlasttarget"},}) or ""))
 				end
 				EditMacro("WSxCGen+4",nil,nil,"/stopspelltarget\n/cast "..(b({{"Call of the Wild","",""},{"Salvo","",""},{"Fury of the Eagle","",""},{"Spearhead","",""},{"Death Chakram","",""},{"Stampede","",""},{"Barrage","",""},{"Eyes of the Beast","",""},}) or "Hunter's Call"))
-				EditMacro("WSxGen5",nil,nil,"/use [mod]Exhilaration\n/use [mod]Fortitude of the Bear;[help,nodead]Silver-Plated Turkey Shooter;"..(b({{"Raptor Strike","[equipped:Two-Hand]",";"},}) or "Arcane Shot").."\n/use [mod]Skoller's Bag of Squirrel Treats\n/cleartarget [dead]\n/targetenemy [noexists]")
+				EditMacro("WSxGen5",nil,nil,"/use [mod]Exhilaration\n/use [mod]Fortitude of the Bear;[help,nodead]Silver-Plated Turkey Shooter;"..(b({{"Raptor Strike","[equipped:Two-Hand]",";Arcane Shot"},}) or "Arcane Shot").."\n/use [mod]Skoller's Bag of Squirrel Treats\n/cleartarget [dead]\n/targetenemy [noexists]")
 				EditMacro("WSxSGen+5",nil,nil,"#show\n/use [nocombat,noexists]Pandaren Scarecrow;Hunter's Mark\n/targetenemy [noexists]\n/cleartarget [dead]")
 				EditMacro("WSxGen6",nil,nil,"/stopspelltarget\n/use "..(b({{"Bestial Wrath","[mod]",";"},{"Trueshot","[mod]",";"},{"Coordinated Assault","[mod]",";"},}) or "").."[nocombat,noexists]Twiddle Twirler: Sentinel's Glaive;"..(b({{"Carve","",""},{"Butchery","",""},{"Multi-Shot","[@mouseover,harm,nodead][]",""},{"Steel Trap","[@mouseover,exists,nodead][@cursor]",""},}) or "").."\n/startattack\n/equipset [noequipped:Two-Hand,spec:3]Menkify!")
 				EditMacro("WSxSGen+6",nil,nil,"#show\n/use [nocombat,noexists]Laser Pointer\n/use "..(b({{"Steel Trap","[@player]",""},{"Barrage","",""},{"Aspect of the Eagle","",""},{"Stampede","",""},{"Death Chakram","",""},{"A Murder of Crows","",""},{"Bloodshed","",""},{"Rapid Fire","",""},{"Carve","","Carve"},{"Butchery","",""},}) or "Laser Pointer"))
@@ -3935,7 +3972,7 @@ local function eventHandler(event)
 			elseif class == "PRIEST" then
 				EditMacro("WSxGen1",nil,nil,"/use [help,nodead,nocombat]The Heartbreaker;"..(b("Power Infusion","[@mouseover,help,nodead][help,nodead]",";") or "")..(b({{"Void Torrent","[@mouseover,harm,nodead][harm,nodead]",""},{"Premonition","",""},{"Mind Blast","[@mouseover,harm,nodead][harm,nodead]",""},{"Shadow Word: Pain","[@mouseover,harm,nodead][harm,nodead]",""}}) or "").."\n/startattack\n/use Xan'tish's Flute")
 				EditMacro("WSxSGen+1",nil,nil,"#show "..(b("Power Infusion") or "Shadow Word: Pain").."\n/use [mod:alt,@party3,nodead][mod:ctrl,@party2,exists][@focus,help][@party1,exists][@targettarget,exists]Flash Heal;Kaldorei Light Globe")
-				EditMacro("WSxGen2",nil,nil,"#show\n/targetenemy [noexists]\n/cleartarget [dead]\n/cancelaura Fling Rings\n/use [nospec:3,help,nodead,nocombat]Holy Lightsphere;[help,nodead,nocombat]Corbyn's Beacon\n/use "..(b("Power Word: Life","[@mouseover,help,nodead][help,nodead]",";") or "").."[@mouseover,harm,nodead][]Smite\n/use [nocombat]Darkmoon Ring-Flinger\n/use Haunting Memento")
+				EditMacro("WSxGen2",nil,nil,"/targetenemy [noexists]\n/cleartarget [dead]\n/cancelaura Fling Rings\n/use [nospec:3,help,nodead,nocombat]Holy Lightsphere;[help,nodead,nocombat]Corbyn's Beacon\n/use [@mouseover,harm,nodead][]Smite\n/use [nocombat]Darkmoon Ring-Flinger\n/use Haunting Memento")
 				EditMacro("WSxSGen+2",nil,nil,"#show\n/use [mod:alt,@party4,nodead][@mouseover,help,nodead][]Flash Heal\n/use [nocombat,noexists,resting]Gnomish X-Ray Specs\n/cancelaura Don Carlos' Famous Hat\n/cancelaura X-Ray Specs")
 				EditMacro("WSxGen3",nil,nil,"/targetenemy [noexists]\n/cleartarget [dead]\n/use "..(b("Shadow Word: Death","[@mouseover,harm,nodead][harm,nodead]",";") or "")..(b("Power Word: Life","[@mouseover,help,nodead,combat][help,nodead,combat]","") or "").."\n/use Scarlet Confessional Book\n/use [nocombat,noexists,spec:3]Twitching Eyeball")
 				EditMacro("WSxSGen+3",nil,nil,"/targetenemy [noexists]\n/stopspelltarget\n/cleartarget [dead]\n/use "..(b("Shadow Word: Pain","[@mouseover,harm,nodead,nomod:alt][nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use Shadow Word: Pain\n/targetlasttarget") or "").."\n/use Totem of Spirits")
@@ -4167,8 +4204,8 @@ local function eventHandler(event)
 				EditMacro("WSxSGen+5",nil,nil,"#show\n/use [spec:2,@player]Infernal Strike;"..(b({{"Essence Break","",""},{"Glaive Tempest","",""},{"Chaos Nova","",""},}) or "").."\n/targetenemy [noexists]\n/startattack")
 				EditMacro("WSxGen6",nil,nil,"#show "..(b({{"Soul Carver","",""},{"Blade Dance","",""},{"Immolation Aura","",""},}) or "").."\n/use [mod:ctrl]Shadowy Disguise\n/use [mod:ctrl]Shadow Slicing Shortsword\n/stopspelltarget\n/use [mod:ctrl,@mouseover,exists,nodead][mod:ctrl,@cursor]Metamorphosis;"..(b({{"Soul Carver","",""},{"Blade Dance","",""},{"Immolation Aura","",""},}) or "").."\n/targetenemy [noexists]")
 				EditMacro("WSxSGen+6",nil,nil,"#show\n/use "..(b({{"Sigil of Flame","[@player]",""},{"Demon Spikes","",""},{"Immolation Aura","",""},}) or "").."\n/stopspelltarget")
-				EditMacro("WSxGen7",nil,nil,"#show\n/stopspelltarget\n/use "..(b("Elysian Decree","[@player,mod:shift]",";") or "")..(b({{"Spirit Bomb","",""},{"Soul Carver","",""},{"Immolation Aura","",""},}) or "").."\n/targetenemy [noexists]")
-				EditMacro("WSxGen8",nil,nil,"#show\n/stopspelltarget\n/use "..(b({{"Elysian Decree","[@player,mod:shift][@mouseover,exists,nodead][@cursor]",""},{"Glaive Tempest","",""},{"Fel Barrage","",""},{"Immolation Aura","",""},}) or ""))
+				EditMacro("WSxGen7",nil,nil,"#show\n/stopspelltarget\n/use "..(b("Sigil of Spite","[@player,mod:shift]",";") or "")..(b({{"Spirit Bomb","",""},{"Soul Carver","",""},{"Immolation Aura","",""},}) or "").."\n/targetenemy [noexists]")
+				EditMacro("WSxGen8",nil,nil,"#show\n/stopspelltarget\n/use "..(b({{"Sigil of Spite","[@player,mod:shift][@mouseover,exists,nodead][@cursor]",""},{"Glaive Tempest","",""},{"Fel Barrage","",""},{"Immolation Aura","",""},}) or ""))
 				EditMacro("WSxGen9",nil,nil,"#show\n/stopspelltarget\n/use "..(b({{"Fel Barrage","",""},{"Chaos Nova","",""},}) or "Immolation Aura"))
 				EditMacro("WSxCSGen+2",nil,nil,"")
 				EditMacro("WSxCSGen+3",nil,nil,"/use [nocombat,noexists]The Perfect Blossom;[@focus,harm,nodead]Throw Glaive;Fel Petal;")
@@ -4247,11 +4284,12 @@ local function eventHandler(event)
 				end 
 			end -- avslutar class
 		end	-- avslutar racials[race]			
-	end -- events	
+	end -- events
 end
 
 ZigiAllButtons:SetScript("OnEvent", function(self, event)
 	-- Delay the first load
+
 	if not loaded and not InCombatLockdown() then
 		loaded = true
 		C_Timer.After(1, function()
