@@ -1,16 +1,29 @@
 ## Interface: 110000
 ## Title: |cff1985d1Zigi|r |cff00b2ffAll|r |cff1994ffButtons|r
-## Notes: This addons purpose is to consolidate all character's macros and make them change relevancy upon the event PLAYER_ENTERING_WORLD.
-## Author: Raxana, Queen ov all Noons
-# RequiredDeps: ZigiGlobals
+## Notes: This addons purpose is to consolidate all character's macros and make them change relevancy upon the event PLAYER_ENTERING_WORLD. 
 
-var-tables.lua
-builder.lua
-consumablebuilder.lua
-grouprosterbuilder.lua
-hsbuilder.lua
-itembuilder.lua
-pandaremixspecial.lua
-zigitrade.lua
-zigiHSaction.lua
-code.lua
+## Author: Raxana, Queen ov all Noons
+
+globals\global-vars.lua
+tables\zigi-all-buttons-var-tables.lua
+
+modules\ZigiAllButtons\ConsumableBuilder.lua
+modules\ZigiAllButtons\ConsumableTrader.lua
+modules\ZigiAllButtons\GroupRosterBuilder.lua
+modules\ZigiAllButtons\HSAction.lua
+modules\ZigiAllButtons\HSBuilder.lua
+modules\ZigiAllButtons\ItemBuilder.lua
+modules\ZigiAllButtons\PandaRemixSpecial.lua
+modules\ZigiAllButtons\SkillBuilder.lua
+
+modules\ZigiHunter.lua
+modules\ZigiLevelNewChar.lua
+modules\ZigiMounts.lua
+modules\ZigiSwapper.lua
+modules\ZigiTargetCaller.lua
+
+
+ZigiAllButtons.lua
+
+# To load files in other folders, use this convention
+# globals\globals.lua

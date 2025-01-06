@@ -1,7 +1,7 @@
 SLASH_ZIGILEVELNEWCHAR1 = "/zigiplz"
 local frame = CreateFrame("FRAME", "ZigiLevelNewChar")
 
-local specSets = {
+local EQS = {
 		[1] = "Noon!",
 		[2] = "DoubleGate",
 		[3] = "Menkify!",
@@ -159,7 +159,7 @@ local function ZigiEq()
 	end
 
 	for i = 1, specs do
-		MakeEqSet(specSets[i], icons[class .. ":" .. i])
+		MakeEqSet(EQS[i], icons[class .. ":" .. i])
 	end
 
 	MakeEqSet("Speedy")

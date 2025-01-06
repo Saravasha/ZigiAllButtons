@@ -1,5 +1,5 @@
 -- performs action when using Healthstone keybind --> PlaySound() and DoEmote()
-function zigiHS()
+function HSAction()
 	if (C_Item.GetItemCount("Healthstone", false) >= 1) or (C_Item.GetItemCount("Demonic Healthstone", false) >= 1) then
 		PlaySound(15160)
 		DoEmote("glare")

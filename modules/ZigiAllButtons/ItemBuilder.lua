@@ -59,6 +59,7 @@ function itemBuilder(item,option,playerSpec)
     end
 	if item == "inject" then
 		-- option = class, playerSpec = playerSpec
+		playerSpec = ZG.Player_Info("playerSpec")
 		if option == "HUNTER" then
 			if playerSpec == 2 then
 				item = "\n/use Hypnosis Goggles"

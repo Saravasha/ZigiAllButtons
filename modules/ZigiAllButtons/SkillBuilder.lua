@@ -923,7 +923,7 @@ function b(spellName, macroCond, semiCol)
 	if not InCombatLockdown() then
 		-- if string
 		if type(spellName) == "string" then 
-			for k,v in pairs(classSkillList[ZG.class]) do
+			for k,v in pairs(classSkillList[ZG.Player_Info("class")]) do
 				if v == spellName then
 					if IsPlayerSpell(k) or IsSpellKnown(k) then
 						-- spellName = (select(1,GetSpellInfo(k)))
@@ -957,7 +957,7 @@ function b(spellName, macroCond, semiCol)
 					spellName = tmpSpellObject[1]
 					macroCond = tmpSpellObject[2]
 					semiCol = tmpSpellObject[3]
-					for k,v in pairs(classSkillList[ZG.class]) do
+					for k,v in pairs(classSkillList[ZG.Player_Info("class")]) do
 						if v == spellName then
 							if IsPlayerSpell(k) or IsSpellKnown(k) then
 								-- spellName = (select(1,GetSpellInfo(k)))

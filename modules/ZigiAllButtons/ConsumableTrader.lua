@@ -1,4 +1,4 @@
-function zigiTrade(tradable)
+function ConsumableTrader(tradable)
 	local c=C_Container 
 	for i=0,4 do 
 		for x=1,c.GetContainerNumSlots(i)do 

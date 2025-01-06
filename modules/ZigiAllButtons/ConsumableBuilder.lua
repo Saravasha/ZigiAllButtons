@@ -89,6 +89,9 @@ function consumableBuilder(consumable,macroCond,semiCol)
 		elseif IsInJailersTower() == true and C_Item.GetItemCount("Mirror of the Conjured Twin", false, true) >= 1 then
 			hasPot = "Mirror of the Conjured Twin"
 		else
+
+			local class,race,playerSpec = ZG.Player_Info("class"),ZG.Player_Info("race"),ZG.Player_Info("playerSpec")
+
 			  -- Role definition scope for dps potions
 			local primary = "int"
 			if (class == "DEMONHUNTER") or (class == "DRUID" and (playerSpec == 2 or playerSpec == 3)) or (class == "HUNTER") or (class == "MONK" and playerSpec ~= 2) or (class == "ROGUE") or (class == "SHAMAN" and playerSpec == 2) then

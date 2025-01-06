@@ -19,177 +19,18 @@ local function eventHandler(event)
         ZigiMounts:RegisterEvent("PLAYER_REGEN_ENABLED")
     else
 
-		local faction = UnitFactionGroup("player")
-		local _,race = UnitRace("player")
-		local _,class = UnitClass("player")
-		local sex = UnitSex("player")
-		local playerName = UnitName("player")
-		local playerSpec = GetSpecialization(false,false)
-		local classk = class
-		-- custom classes indexed in classk
-		if (playerName == "Stabbin" and class == "HUNTER" and race == "Goblin") then
-			classk = "PIRATE"
-		elseif (race == "NightElf" and class == "HUNTER") then
-			classk = "SENTINEL_HUNTER"
-		elseif (race == "NightElf" and class == "WARRIOR") then
-			classk = "SENTINEL_WARRIOR"		
-		elseif (playerName == "Mortalia" and class == "HUNTER" and race == "BloodElf") then
-			classk = "DARKRANGER"
-		end
+		local faction = ZG.Player_Info("faction")
+		local race = ZG.Player_Info("race")
+		local class = ZG.Player_Info("class")
+		local classk = ZG.Player_Info("classk")
+		local level = ZG.Player_Info("level")
+		local eLevel = ZG.Player_Info("eLevel")
+		local slBP = ZG.Player_Info("slBP")
+		local z = ZG.Player_Info("z")
+		local instanceName = ZG.Instance_Info("instanceName")
+		local instanceType = ZG.Instance_Info("instanceType")
+		local gHI = ZG.World_Event()
 		
-		local level = UnitLevel("player")
-		local eLevel = UnitEffectiveLevel("player")
-
-		local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
-
-		local covenantsEnum = {
-			1,
-			2,
-			3,
-			4,
-			5,
-			6,
-		}
-		local slBP = C_Covenants.GetActiveCovenantID(covenantsEnum)
-				-- Outdoor zones where flying is disabled
-
-		C_Calendar.SetMonth(0)
-		local gHI = C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1) and C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1).name or ""
-
-		local holidays = {
-			"Lunar Festival", 
-			"Love is in the Air", 
-			"Noblegarden", 
-			"Children's Week",
-			"Midsummer Fire Festival", 
-			"Brewfest", 
-			"Hallow's End", 
-			"Pilgrim's Bounty",
-			"Feast of Winter Veil",
-		}
-
-		for i=1,C_Calendar.GetNumDayEvents(0, C_DateAndTime.GetCurrentCalendarTime().monthDay) do
-			for h, holidays in pairs(holidays) do 
-				if holidays == C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, i).name then
-					gHI = holidays
-				end
-			end
-		end
-		local groundAreas = {
-			-- Kalimdor
-			["Ammen Vale"] = true,
-			["Azuremyst Isle"] = true,
-			["Bloodmyst Isle"] = true,
-			["The Exodar"] = true,
-			-- Eastern Kingdoms
-			["Sunstrider Isle"] = true,
-			["Eversong Woods"] = true,
-			["Ghostlands"] = true,
-			["Silvermoon City"] = true,
-			["Isle of Quel'Danas"] = true,
-			-- Darkmoon Faire
-			["Darkmoon Faire"] = true,
-			["Darkmoon Island"] = true,
-			-- Cataclysm
-			["Tol Barad Peninsula"] = true,
-			["Tol Barad"] = true,
-			["Molten Front"] = true,
-			-- Pandaria
-			["Isle of Thunder"] = true,
-			["Mogu Island Daily Area"] = true, -- Isle of Thunder
-			["Isle of Giants"] = true,
-			["Timeless Isle"] = true,
-			-- Draenor
-			["Tanaan Jungle Intro"] = true,
-			-- Broken Isles
-			["Helheim"] = true,
-			["Niskara"] = true,
-			-- Order Halls
-			["The Maelstrom"] = true,
-			["Mardum, the Shattered Abyss"] = true,
-			["Skyhold"] = true,
-			["The Wandering Isle"] = true,
-			["Dreadscar Rift"] = true,
-			["Emerald Dreamway"] = true,
-			["Malorne's Nightmare"] = true, -- Druid Emerald Dream Scenario
-			["Artifact - The Vortex Pinnacle - Shaman Order Hall"] = true, -- Shaman Skywall Scenario
-			["Firelands_Artifact"] = true, -- Shaman Firelands Scenario
-			["Death Knight Campaign - Scarlet Monastery"] = true, -- Death Knight Scarlet Monastery Scenario
-			-- Argus
-			["Krokuun"] = true,
-			["Antoran Wastes"] = true,
-			["Mac'Aree"] = true, -- Removed in 9.1.5 but still used in API in some places
-			["Eredath"] = true,
-			["Invasion Points"] = true,
-			-- Battle for Azeroth
-			["8.1 Darkshore Alliance Quests"] = true, -- Darkshore Unlock Scenario
-			["8.1 Darkshore Horde Quests"] = true, -- Darkshore Unlock Scenario
-			["Mechagon City"] = true,
-			["The Great Sea Horde"] = true, -- Horde War Campaign Scenario
-			["Crapapolis"] = true, -- Goblin Heritage
-			["Crapapolis - Scenario"] = true,
-			["Vale of Eternal Twilight"] = true, -- Vision of N'Zoth
-			["Vision of the Twisting Sands"] = true, -- Vision of N'Zoth
-			-- Shadowlands
-			["Shadowlands"] = true,
-			["Oribos"] = true,
-			["Maldraxxus Broker Islands"] = true, -- Shattered Grove
-			["The Maw"] = true,
-			["Korthia"] = true,
-			["Caverns of Contemplation"] = true, -- Korthia
-			["Torghast"] = true,
-			["Font of Fealty"] = true, -- Chains of Domination Campaign Scenario
-			["Sanctum of Domination"] = true,
-			["Tazavesh, the Veiled Market"] = true,
-		}
-		-- Garrisons Map IDs
-		local garrisonId = { [1152] = true, [1330] = true, [1153] = true, [1158] = true, [1331] = true, [1159] = true, }
-
-
-		local dfZones = {
-			["Ohn'ahran Plains"] = true,
-			["Thaldraszus"] = true,
-			["The Azure Span"] = true,
-			["The Waking Shores"] = true,
-			["The Forbidden Reach"] = true, 
-			["Valdrakken"] = true,
-			["The Roasted Ram"] = true,
-			["The Dragon's Hoard"] = true,
-			["Temporal Conflux"] = true,
-			["The Primalist Future"] = true,
-			["Zaralek Cavern"] = true,
-			["Emerald Dream"] = true,
-			["The Nokud Offensive"] = true,
-		}
-
-		local slZones = {
-			["Cosmic"] = true,
-			["Bastion"] = true,
-			["The Necrotic Wake"] = true,
-			["Maldraxxus"] = true,
-			["House of Plagues"] = true,
-			["Ardenweald"] = true,
-			["Revendreth"] = true,
-			["The Shadowlands"] = true,
-			["Oribos"] = true,
-			["The Maw"] = true,
-			["Sanctum of Domination"] = true,
-			["Korthia"] = true,
-			["Zereth Mortis"] = true,
-		}
-
-		local bfaZones = {
-			["Zandalar"] = true,
-			["Kul Tiras"] = true,
-			["Zuldazar"] = true,
-			["Boralus"] = true,
-			["Dazar'alor"] = true,
-			["Tiragarde Sound"] = true,
-			["Nazjatar"] = true,
-			["Damprock Cavern"] = true,
-			["Boralus Harbor"] = true,
-			["Tradewinds Market"] = true,
-		}
 		
 		local palaMounts = {
 			["Draenei"] = "Summon Exarch's Elekk,Summon Great Exarch's Elekk,",
@@ -427,14 +268,10 @@ local function eventHandler(event)
 		factionBike =  factionMounts[24]
 		factionHog = factionMounts[25]
 
-	 	-- Mount Parser based on events
-		-- if (event == "ZONE_CHANGED_NEW_AREA" or event == "BAG_UPDATE_DELAYED" or event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PET_SPECIALIZATION_CHANGED" or event == "PLAYER_LOGIN" or event == "TRAIT_CONFIG_UPDATED") then
-			
-    	-- local z, m, mA, mP = GetZoneText(), "", "", ""
-		
-		if (slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and slZones[z]) or (slBP == 0 and slZones[z]) then
+		-- slBP Setter
+		if (slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and ZG.slZones[z]) or (slBP == 0 and ZG.slZones[z]) then
 			slBP = 5
-		elseif slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and not slZones[z] then
+		elseif slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and not ZG.slZones[z] then
 			slBP = 6
 		end
 
@@ -569,7 +406,6 @@ local function eventHandler(event)
 		end
 
 
-		local slBP = C_Covenants.GetActiveCovenantID(covenantsEnum)
     	covGroundMounts = covGroundMounts[slBP]
     	covGroundMounts = covGroundMounts[random(#covGroundMounts)]
     	covFlyingMounts = covFlyingMounts[slBP]
@@ -852,7 +688,7 @@ local function eventHandler(event)
 			racistMount[race] = ""
 			palaMounts[race] = ""
 			-- print("test")
-		elseif (instanceType ~= "none" and not garrisonId[mapID]) or groundAreas[z] or groundAreas[instanceName] then
+		elseif (instanceType ~= "none" and not ZG.garrisonId[mapID]) or ZG.groundAreas[z] or ZG.groundAreas[instanceName] then
 			-- We can't fly inside instances, except Draenor Garrisons and The Deaths of Chromie
 			-- Flying is also disabled in certain outdoor areas/zones
 			-- print("level = ",groundMount[classk])
@@ -873,7 +709,7 @@ local function eventHandler(event)
 			end
 		-- print("Cannot fly in certain areas")
 		-- Dragon Isles
-		elseif instanceName == "The Nokhud Offensive" or dfZones[z] --[[or (level >= 60 or eLevel >= 60)--]] or PlayerGetTimerunningSeasonID() == 1 then 
+		elseif instanceName == "The Nokhud Offensive" or ZG.dfZones[z] --[[or (level >= 60 or eLevel >= 60)--]] or PlayerGetTimerunningSeasonID() == 1 then 
 			-- local dfFlyingMounts = {"Highland Drake", "Renewed Proto-Drake", "Grotto Netherwing Drake",} 						
 			-- flyingMount[classk] = dfFlyingMounts[random(#dfFlyingMounts)]			
 			-- if class == "SHAMAN" then
