@@ -151,54 +151,61 @@ ZG.bfaZones = {
 }
 
 
-function ZG.Player_Info(payload)
-	
-	if payload == "class" then
+function ZG.Player_Info(method)
+	if method == "class" then
 		local _,class = UnitClass("player")
 		ZG.class = class
-		payload = class 
-	elseif payload == "faction" then
+		method = class 
+	elseif method == "faction" then
 		local faction = UnitFactionGroup("player")
 		ZG.faction = faction
-		payload = faction
-	elseif payload == "race" then
+		method = faction
+	elseif method == "race" then
 		local _,race = UnitRace("player")
 		ZG.race = race
-		payload = race
-	elseif payload == "sex" then
+		method = race
+	elseif method == "sex" then
 		local sex = UnitSex("player")
 		ZG.sex = sex
-		payload = sex
-	elseif payload == "playerSpec" then
+		method = sex
+	elseif method == "playerSpec" then
 		local playerSpec = GetSpecialization(false,false)
 		ZG.playerSpec = playerSpec
-		payload = playerSpec
-	elseif payload == "playerName" then
+		method = playerSpec
+	elseif method == "playerName" then
 		local playerName = UnitName("player")
 		ZG.playerName = playerName
-		payload = playerName
-	elseif payload == "petSpec" then
+		method = playerName
+	elseif method == "petSpec" then
 		local petSpec = GetSpecialization(false,true)
 		ZG.petSpec = petSpec
-		payload = petSpec
-	elseif payload == "level" then
+		method = petSpec
+	elseif method == "level" then
 		local level = UnitLevel("player")
 		ZG.level = level
-		payload = level
-	elseif payload == "eLevel" then
+		method = level
+	elseif method == "eLevel" then
 		local eLevel = UnitEffectiveLevel("player")
 		ZG.eLevel = eLevel
-		payload = eLevel
+		method = eLevel
 		-- prints zonetext
-	elseif payload == "z" then
+	elseif method == "z" then
 		local z, m, mA, mP = GetZoneText(), "", "", ""
 		ZG.z = z
-		payload = z
-	elseif payload == "slBP" then
+		method = z
+	elseif method == "slBP" then
+		local z = GetZoneText()
+		local level = UnitLevel("player")
+		local eLevel = UnitEffectiveLevel("player")
 		local slBP = C_Covenants.GetActiveCovenantID(ZG.covenantsEnum)
+		if (slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and ZG.slZones[z]) or (slBP == 0 and ZG.slZones[z]) then
+			slBP = 5
+		elseif slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and not ZG.slZones[z] then
+			slBP = 6
+		end
 		ZG.slBP = slBP
-		payload = slBP
-	elseif payload == "classk" then
+		method = slBP
+	elseif method == "classk" then
 		local _,class = UnitClass("player")
 		local _,race = UnitRace("player")
 		local playerName = UnitName("player")
@@ -214,45 +221,59 @@ function ZG.Player_Info(payload)
 			classk = "DARKRANGER"
 		end
 		ZG.classk = classk
-		payload = classk
-	end
-
-	if payload ~= nil then
-		return payload
+		method = classk
 	else
-		return print("ZG.Player_Info: You didn't supply a valid payload, try again")
+		method = "invalid"
 	end
 
+	if method == "invalid" then
+		-- print("ZG.Player_Info: You didn't supply a valid method, try again")
+	else
+		return method
+	end
 end
 
 
 function ZG.Instance_Info(payload)
-	local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
+	local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
 	if payload == "InstanceName" then 
+		ZG.instanceName = instanceName
 		payload = instanceName
 	elseif payload == "instanceType" then 
+		ZG.instanceType = instanceType
 		payload = instanceType
-	elseif payload == "InstanceName" then 
-		payload = instanceName
 	elseif payload == "difficultyID" then 
+		ZG.difficultyID = difficultyID
 		payload = difficultyID
 	elseif payload == "difficultyName" then 
+		ZG.difficultyName = difficultyName
 		payload = difficultyName
 	elseif payload == "maxPlayers" then 
+		ZG.maxPlayers = maxPlayers
 		payload = maxPlayers
-	elseif payload == "playerDifficulty" then 
-		payload = playerDifficulty
-	elseif payload == "isDynamicInstance" then 
-		payload = isDynamicInstance
-	elseif payload == "mapID" then 
-		payload = mapID
+	elseif payload == "dynamicDifficulty" then 
+		ZG.dynamicDifficulty = dynamicDifficulty
+		payload = dynamicDifficulty
+	elseif payload == "isDynamic" then 
+		ZG.isDynamic = isDynamic
+		payload = isDynamic
+	elseif payload == "instanceID" then 
+		ZG.instanceID = instanceID
+		payload = instanceID
 	elseif payload == "instanceGroupSize" then 
+		ZG.instanceGroupSize = instanceGroupSize
 		payload = instanceGroupSize
+	elseif payload == "LfgDungeonID" then
+		ZG.LfgDungeonID = LfgDungeonID
+		payload = LfgDungeonID
+	else 
+		payload = "invalid"
 	end
-	if payload ~= nil then
-		return payload
+	-- print(payload)
+	if payload == "invalid" then
+		-- print("ZG.Instance_Info: You didn't supply a valid payload, try again")
 	else
-		return print("ZG.Instance_Info: You didn't supply a valid payload, try again")
+		return payload
 	end
 end
 
@@ -283,6 +304,6 @@ function ZG.World_Event()
 	if gHI ~= nil then
 		return gHI
 	else
-		return print("Info: Something went wrong with World_Event")
+		print("Info: Something went wrong with World_Event")
 	end
 end

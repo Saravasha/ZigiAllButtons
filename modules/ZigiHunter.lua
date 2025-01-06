@@ -67,7 +67,7 @@ local function eventHandler(self, event)
         frame:RegisterEvent("PLAYER_REGEN_ENABLED")
     else
         frame:UnregisterEvent("PLAYER_REGEN_ENABLED")
-        local _,class = UnitClass("player")
+        local class = ZG.Player_Info("class")
         -- Hunter Misc pet parser
         if class == "HUNTER" and (event == "PET_STABLE_CLOSED" or event == "PLAYER_LOGIN") then
             local petAbilityMacro, petExoticMacro = "/use [mod,@player]Flare;[nopet]Call Pet 4;", "/use [mod:alt]Eyes of the Beast;[nopet]Call Pet 5;"

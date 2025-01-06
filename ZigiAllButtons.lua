@@ -141,14 +141,6 @@ local function eventHandler(event)
 			covToys = "\n/use "..covToys
 		end
 
-		local EQS = {
-			[1] = "Noon!",
-			[2] = "DoubleGate",
-			[3] = "Menkify!",
-			[4] = "Supermenk",
-			[5] = "",
-		}
-
 		-- if Instanced Content 
 		if instanceType ~= "none" then
 			SetBinding("A","STRAFELEFT")
@@ -333,15 +325,6 @@ local function eventHandler(event)
 			EditMacro("WSkillbomb",nil,nil,(b({{"Dragonrage","/use ",""},{"Emerald Communion","/use !",""},{"Time Skip","/use !",""},}) or "").."\n/use [@player]13\n/use 13"..dpsRacials.."\n/use Adopted Puppy Crate\n/use Big Red Raygun\n/use Echoes of Rezan")
 		end
 
-		if (event == "PLAYER_LEVEL_UP" or event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD") then 
-			if (slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and ZG.slZones[z]) or (slBP == 0 and ZG.slZones[z]) then
-				slBP = 5
-			elseif slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and not ZG.slZones[z] then
-				slBP = 6
-			end
-		end
-
-
 		-- print("slBP is: ",slBP)
 		if race ~= "BloodElf" and (level and eLevel) >= 25 then
 			oOtas = "\n/use Orb of the Sin'dorei"
@@ -356,9 +339,9 @@ local function eventHandler(event)
 		-- end
 
 		-- speciella item sets
-		noPants = EQS[playerSpec]
+		noPants = ZG.EQS[playerSpec]
 		tpPants = "Tipipants"
-		-- print("noPants = ", EQS[playerSpec])
+		-- print("noPants = ", ZG.EQS[playerSpec])
 		if C_EquipmentSet.GetEquipmentSetID(tpPants) ~= nil and playerSpec ~= 5 then
 			tpPants = C_EquipmentSet.GetEquipmentSetID(tpPants) or ""
 			noPants = C_EquipmentSet.GetEquipmentSetID(noPants) or ""
@@ -798,8 +781,8 @@ local function eventHandler(event)
 			EditMacro("WSxCGen+Z",nil,nil,"/use Seafarer's Slidewhistle\n/use [nostealth]Repurposed Fel Focuser"..itemBuilder("augmentRune",eLevel)..ccz..CZ..covSpecial)
 			function ZigiPrintZoneVars()
 
-				-- local gHI = gHI
-				-- print(gHI)
+				local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
+				
 				DEFAULT_CHAT_FRAME:AddMessage("ZigiAllButtons: Recalibrating zone based variables :)\nalt4 = "..alt4.."\nalt5 = "..alt5.."\nalt6 = "..alt6.."\nCZ = "..CZ.."\nccz = "..ccz.."\nPoA = "..PoA.."\nAR = "..itemBuilder("augmentRune",eLevel).."\nconTE = "..conTE.."\nconRE = "..conRE.."\nconBE = "..conBE.."\nconCE = "..conCE.."\nhasCannon = "..hasCannon.."\nz = "..z.."\ninstanceName = "..instanceName.."\ninstanceType = "..instanceType.."\ndifficultyID = "..difficultyID.."\ngHI = "..gHI,0.5,1.0,0.0)
 			-- \ngHI = "..gHI
 			end
@@ -1526,11 +1509,11 @@ local function eventHandler(event)
 				EditMacro("WSxSGen+2",nil,nil,"#show\n/use [spec:1,pet,nopet:Spirit Beast][spec:3,pet]Dismiss Pet;[nopet]Call Pet 2;[@mouseover,help,nodead,pet:Spirit Beast][pet:Spirit Beast,help,nodead][pet:Spirit Beast,@player]Spirit Mend;[spec:3]Arcane Shot;Dismiss Pet\n/use Totem of Spirits")
 				EditMacro("WSxSGen+3",nil,nil,"/startattack\n/use "..(b({{"Wildfire Bomb","[@mouseover,harm,nodead,nomod:alt][nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]Wildfire Bomb\n/targetlasttarget"},{"A Murder of Crows","",""},{"Bloodshed","",""},{"Serpent Sting","",""},{"Stampede","",""},{"Death Chakram","",""},{"Dire Beast","",""},{"Wailing Arrow","",""},}) or "Hunter's Call"))
 				EditMacro("WSxGen4",nil,nil,"#show\n/use [harm,dead]Gin-Ji Knife Set;[help,nodead]Dalaran Disc;"..(b({{"Aimed Shot","[harm,nodead]",";"},{"Kill Command","[@mouseover,harm,nodead][harm,nodead]",";"},}) or "").."Puntable Marmot\n/target Puntable Marmot\n/targetenemy [noexists]\n/startattack [harm,combat]\n/cleartarget [dead]\n/use Squeaky Bat")
+				override = "[nocombat,noexists]Owl Post;"
 				if (classk == "PIRATE") then
-					EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noharm]\n/cleartarget [dead]\n/use "..(b({{"Flanking Strike","[nomod:alt]",""},{"Steel Trap","[@cursor,nomod:alt]",""},{"Explosive Shot","[@mouseover,harm,nodead][]",""},{"Dire Beast","",""},{"Wailing Arrow","",""},{"Chimaera Shot","",""},{"Serpent Sting","[nomod:alt]",""},{"Misdirection","[nomod:alt]",""},{"Kill Command","[nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]Kill Command\n/targetlasttarget"},}) or ""))
-				else
-					EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noharm]\n/cleartarget [dead]\n/use [nocombat,noexists]Owl Post;"..(b({{"Flanking Strike","[nomod:alt]",""},{"Steel Trap","[@cursor,nomod:alt]",""},{"Explosive Shot","[@mouseover,harm,nodead][]",""},{"Dire Beast","",""},{"Wailing Arrow","",""},{"Chimaera Shot","",""},{"Serpent Sting","[nomod:alt]",""},{"Misdirection","[nomod:alt]",""},{"Kill Command","[nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]Kill Command\n/targetlasttarget"},}) or ""))
+					override = "" 
 				end
+				EditMacro("WSxSGen+4",nil,nil,"/targetenemy [noharm]\n/cleartarget [dead]\n/use "..override..(b({{"Flanking Strike","[nomod:alt]",""},{"Steel Trap","[@cursor,nomod:alt]",""},{"Explosive Shot","[@mouseover,harm,nodead][]",""},{"Dire Beast","",""},{"Wailing Arrow","",""},{"Chimaera Shot","",""},{"Serpent Sting","[nomod:alt]",""},{"Misdirection","[nomod:alt]",""},{"Kill Command","[nomod:alt]","\n/stopmacro [nomod:alt]\n/targetlasttarget\n/use [mod:alt]Kill Command\n/targetlasttarget"},}) or ""))
 				EditMacro("WSxCGen+4",nil,nil,"/stopspelltarget\n/cast "..(b({{"Call of the Wild","",""},{"Salvo","",""},{"Fury of the Eagle","",""},{"Spearhead","",""},{"Death Chakram","",""},{"Stampede","",""},{"Barrage","",""},{"Eyes of the Beast","",""},}) or "Hunter's Call"))
 				EditMacro("WSxGen5",nil,nil,"/use [mod]Exhilaration\n/use [mod]Fortitude of the Bear;[help,nodead]Silver-Plated Turkey Shooter;"..(b({{"Raptor Strike","[equipped:Two-Hand]",";Arcane Shot"},}) or "Arcane Shot").."\n/use [mod]Skoller's Bag of Squirrel Treats\n/cleartarget [dead]\n/targetenemy [noexists]")
 				EditMacro("WSxSGen+5",nil,nil,"#show\n/use [nocombat,noexists]Pandaren Scarecrow;Hunter's Mark\n/targetenemy [noexists]\n/cleartarget [dead]")

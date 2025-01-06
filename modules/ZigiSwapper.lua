@@ -1,43 +1,23 @@
 -- Huvudfunktion, Togglar pets, sätter player titel
 function ZigiRunSwapper()
 
-		local faction = UnitFactionGroup("player")
-	local _,class = UnitClass("player")
-	local _,race = UnitRace("player")
-	local sex = UnitSex("player")
-	local playerSpec = GetSpecialization(false,false)
+	local slBP = ZG.Player_Info("slBP")
+	local class = ZG.Player_Info("class")
+	local classk = ZG.Player_Info("classk")
+	local race = ZG.Player_Info("race")
+	local faction = ZG.Player_Info("faction")
+	local level = ZG.Player_Info("level")
+	local eLevel = ZG.Player_Info("eLevel")
+	local playerSpec = ZG.Player_Info("playerSpec")
+	local playerName = ZG.Player_Info("playerName")
+	local z = ZG.Player_Info("z")
+	local difficultyID = ZG.Instance_Info("difficultyID")
+	local instanceType = ZG.Instance_Info("instanceType")
+	local instanceName = ZG.Instance_Info("instanceName")
+	local gHI = ZG.World_Event()
+
 	local SST = {}
-	local playerName = UnitName("player")
-	local level = UnitLevel("player")
-	local eLevel = UnitEffectiveLevel("player")
 
-
-	local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
-
-		local covenantsEnum = {
-		1,
-		2,
-		3,
-		4,
-		5,
-		6, 
-	}
-
-	local slBP = C_Covenants.GetActiveCovenantID(covenantsEnum)
-	local classk = ""
-	-- custom classes indexed in classk
-	if (playerName == "Stabbin" and class == "HUNTER" and race == "Goblin") then
-		classk = "PIRATE"
-	elseif (race == "NightElf" and class == "HUNTER") then
-		classk = "SENTINEL_HUNTER"
-	elseif (race == "NightElf" and class == "WARRIOR") then
-		classk = "SENTINEL_WARRIOR"		
-	elseif (playerName == "Mortalia" and class == "HUNTER" and race == "BloodElf") then
-		classk = "DARKRANGER"
-	end
-
-	-- local SST = {}
-	-- local playerSpec = ZG.playerSpec() or ""
 	local factionWarPet = "Lil' War Machine"
 	local factionMurloc = "Gillvanas"
 	local pets = {}
@@ -53,118 +33,6 @@ function ZigiRunSwapper()
 		ds = "Dutiful Gruntling"
 		as = "Argent Gruntling"
 	end
-
-		local z, m, mA, mP = GetZoneText(), "", "", ""
-	-- Outdoor zones where flying is disabled
-	local groundAreas = {
-		-- Kalimdor
-		["Ammen Vale"] = true,
-		["Azuremyst Isle"] = true,
-		["Bloodmyst Isle"] = true,
-		["The Exodar"] = true,
-		-- Eastern Kingdoms
-		["Sunstrider Isle"] = true,
-		["Eversong Woods"] = true,
-		["Ghostlands"] = true,
-		["Silvermoon City"] = true,
-		["Isle of Quel'Danas"] = true,
-		-- Darkmoon Faire
-		["Darkmoon Faire"] = true,
-		["Darkmoon Island"] = true,
-		-- Cataclysm
-		["Tol Barad Peninsula"] = true,
-		["Tol Barad"] = true,
-		["Molten Front"] = true,
-		-- Pandaria
-		["Isle of Thunder"] = true,
-		["Mogu Island Daily Area"] = true, -- Isle of Thunder
-		["Isle of Giants"] = true,
-		["Timeless Isle"] = true,
-		-- Draenor
-		["Tanaan Jungle Intro"] = true,
-		-- Broken Isles
-		["Helheim"] = true,
-		["Niskara"] = true,
-		-- Order Halls
-		["The Maelstrom"] = true,
-		["Mardum, the Shattered Abyss"] = true,
-		["Skyhold"] = true,
-		["The Wandering Isle"] = true,
-		["Dreadscar Rift"] = true,
-		["Emerald Dreamway"] = true,
-		["Malorne's Nightmare"] = true, -- Druid Emerald Dream Scenario
-		["Artifact - The Vortex Pinnacle - Shaman Order Hall"] = true, -- Shaman Skywall Scenario
-		["Firelands_Artifact"] = true, -- Shaman Firelands Scenario
-		["Death Knight Campaign - Scarlet Monastery"] = true, -- Death Knight Scarlet Monastery Scenario
-		-- Argus
-		["Krokuun"] = true,
-		["Antoran Wastes"] = true,
-		["Mac'Aree"] = true, -- Removed in 9.1.5 but still used in API in some places
-		["Eredath"] = true,
-		["Invasion Points"] = true,
-		-- Battle for Azeroth
-		["8.1 Darkshore Alliance Quests"] = true, -- Darkshore Unlock Scenario
-		["8.1 Darkshore Horde Quests"] = true, -- Darkshore Unlock Scenario
-		["Mechagon City"] = true,
-		["The Great Sea Horde"] = true, -- Horde War Campaign Scenario
-		["Crapapolis"] = true, -- Goblin Heritage
-		["Crapapolis - Scenario"] = true,
-		["Vale of Eternal Twilight"] = true, -- Vision of N'Zoth
-		["Vision of the Twisting Sands"] = true, -- Vision of N'Zoth
-		-- Shadowlands
-		["Shadowlands"] = true,
-		["Oribos"] = true,
-		["Maldraxxus Broker Islands"] = true, -- Shattered Grove
-		["The Maw"] = true,
-		["Korthia"] = true,
-		["Caverns of Contemplation"] = true, -- Korthia
-		["Torghast"] = true,
-		["Font of Fealty"] = true, -- Chains of Domination Campaign Scenario
-		["Tazavesh, the Veiled Market"] = true,
-	}
-	-- Garrisons Map IDs
-	local garrisonId = { [1152] = true, [1330] = true, [1153] = true, [1158] = true, [1331] = true, [1159] = true, }
-
-	local dfZones = {
-		["Ohn'ahran Plains"] = true,
-		["Thaldraszus"] = true,
-		["The Azure Span"] = true,
-		["The Waking Shores"] = true,
-		["The Forbidden Reach"] = true, 
-		["Valdrakken"] = true,
-		["The Roasted Ram"] = true,
-		["The Dragon's Hoard"] = true,
-		["Temporal Conflux"] = true,
-		["The Primalist Future"] = true,
-		["Zaralek Cavern"] = true,
-		["Emerald Dream"] = true,
-	}
-
-	local slZones = {
-		["Cosmic"] = true,
-		["Bastion"] = true,
-		["Maldraxxus"] = true,
-		["Ardenweald"] = true,
-		["Revendreth"] = true,
-		["The Shadowlands"] = true,
-		["Oribos"] = true,
-		["The Maw"] = true,
-		["Korthia"] = true,
-		["Zereth Mortis"] = true,
-	}
-
-	local bfaZones = {
-		["Zandalar"] = true,
-		["Kul Tiras"] = true,
-		["Zuldazar"] = true,
-		["Boralus"] = true,
-		["Dazar'alor"] = true,
-		["Tiragarde Sound"] = true,
-		["Nazjatar"] = true,
-		["Damprock Cavern"] = true,
-		["Boralus Harbor"] = true,
-		["Tradewinds Market"] = true,
-	}
 
 	local petTable = {
 		["SHAMAN"] = {
@@ -396,11 +264,9 @@ function ZigiRunSwapper()
 	end
 
 	-- local slBP = ZG.slBP()
-   	if (slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and slZones[z]) or (slBP == 0 and slZones[z]) then
-		slBP = 5
+   	if (slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and ZG.slZones[z]) or (slBP == 0 and ZG.slZones[z]) then
 		SST[playerSpec] = 462 --"Maw Walker"
-	elseif slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and not slZones[z] then
-		slBP = 6
+	elseif slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and not ZG.slZones[z] then
 		SST[playerSpec] = 463 --"Veilstrider"
 	end
 
@@ -438,30 +304,6 @@ function ZigiRunSwapper()
 	else 
 		pets = {covPets}
 	end
-
-	-- Holiday Overrides
-	C_Calendar.SetMonth(0)
-		local gHI = C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1) and C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1).name or ""
-
-		local holidays = {
-			"Lunar Festival", 
-			"Love is in the Air", 
-			"Noblegarden", 
-			"Children's Week",
-			"Midsummer Fire Festival", 
-			"Brewfest", 
-			"Hallow's End", 
-			"Pilgrim's Bounty",
-			"Feast of Winter Veil",
-		}
-
-		for i=1,C_Calendar.GetNumDayEvents(0, C_DateAndTime.GetCurrentCalendarTime().monthDay) do
-			for h, holidays in pairs(holidays) do 
-				if holidays == C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, i).name then
-					gHI = holidays
-				end
-			end
-		end
 
 	-- print("gHI = ", GWE())
 	if gHI == "Lunar Festival" then
@@ -608,8 +450,10 @@ function ZigiEqSetSwapper()
 		[4] = "Supermenk",
 		[5] = "Noon!",
 	}
-	local playerSpec = GetSpecialization(false,false)
-	local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
+
+	local playerSpec = ZG.Player_Info("playerSpec")
+	local difficultyID = ZG.Instance_Info("difficultyID")
+	local instanceType = ZG.Instance_Info("instanceType")
 
 	-- chilling in town
 	if IsResting() == true then
@@ -638,8 +482,11 @@ end
 
 function ZigiSetSwapper()
 
-	local _,class = UnitClass("player")
-	local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
+	local class = ZG.Player_Info("class")
+	local instanceType = ZG.Instance_Info("instanceType")
+	local difficultyID = ZG.Instance_Info("difficultyID")
+	local faction = ZG.Player_Info("faction")
+	local gHI = ZG.World_Event()
 
 	local hasBell = "\n/use B. F. F. Necklace"
 	local pepeState = ""
@@ -650,29 +497,6 @@ function ZigiSetSwapper()
 	elseif GetItemCount("Cooking School Bell") >= 1 then
 		hasBell = "\n/use Cooking School Bell"
 	end	
-
-	C_Calendar.SetMonth(0)
-	local gHI = C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1) and C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1).name or ""
-
-	local holidays = {
-		"Lunar Festival", 
-		"Love is in the Air", 
-		"Noblegarden", 
-		"Children's Week",
-		"Midsummer Fire Festival", 
-		"Brewfest", 
-		"Hallow's End", 
-		"Pilgrim's Bounty",
-		"Feast of Winter Veil",
-	}
-
-	for i=1,C_Calendar.GetNumDayEvents(0, C_DateAndTime.GetCurrentCalendarTime().monthDay) do
-		for h, holidays in pairs(holidays) do 
-			if holidays == C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, i).name then
-				gHI = holidays
-			end
-		end
-	end
 
 	if gHI == "Lunar Festival" then
 		local factionFireworks = "Everlasting Horde Firework"
@@ -700,22 +524,22 @@ function ZigiSetSwapper()
 	end
 
 	if gHI == "Feast of Winter Veil" then 
-		if not AuraUtil.FindAuraByName("Festive Pepe", "player") then
+		if C_UnitAuras.GetAuraDataBySpellName("player","Festive Pepe") == nil then
 			pepeState = "\n/use Festive Trans-Dimensional Bird Whistle"
 		end
 	elseif (class == "WARLOCK" or class == "DEMONHUNTER") then
-		if not AuraUtil.FindAuraByName("Festive Pepe", "player") or not AuraUtil.FindAuraByName("Pepe", "player") then 
+		if C_UnitAuras.GetAuraDataBySpellName("player","Pepe") == nil then 
 			pepeState = "\n/use A Tiny Set of Warglaives"
 		end
-	elseif not AuraUtil.FindAuraByName("Festive Pepe", "player") or not AuraUtil.FindAuraByName("Pepe", "player") then
+	elseif C_UnitAuras.GetAuraDataBySpellName("player","Pepe") == nil then
 		pepeState = "\n/use Trans-Dimensional Bird Whistle"
 	else
 		pepeState = ""
 	end
-	
+
 	-- Timewalking
 	if (difficultyID == 24 or difficultyID == 33) or PlayerGetTimerunningSeasonID() == 1 then
-		if not AuraUtil.FindAuraByName("Accelerated Time", "player") then
+		if not C_UnitAuras.GetAuraDataBySpellName("player","Accelerated Time") then
 			swapToy = "\n/use Investi-gator's Pocketwatch"
 		else
 			swapToy = ""

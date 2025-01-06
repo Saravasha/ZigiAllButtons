@@ -7,7 +7,6 @@ ZigiMounts:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 ZigiMounts:RegisterEvent("VARIABLES_LOADED")
 ZigiMounts:RegisterEvent("LEARNED_SPELL_IN_TAB")
 ZigiMounts:RegisterEvent("PLAYER_FLAGS_CHANGED","player")
--- ZigiMounts:RegisterEvent("ADDON_LOADED")
 
 local loaded = false
 local locked = false
@@ -30,7 +29,6 @@ local function eventHandler(event)
 		local instanceName = ZG.Instance_Info("instanceName")
 		local instanceType = ZG.Instance_Info("instanceType")
 		local gHI = ZG.World_Event()
-		
 		
 		local palaMounts = {
 			["Draenei"] = "Summon Exarch's Elekk,Summon Great Exarch's Elekk,",

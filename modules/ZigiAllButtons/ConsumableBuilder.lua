@@ -1,4 +1,12 @@
 function consumableBuilder(consumable,macroCond,semiCol)
+	
+	local class = ZG.Player_Info("class")
+	local z = ZG.Player_Info("z")
+	local instanceType = ZG.Instance_Info("instanceType")
+	local difficultyID = ZG.Instance_Info("difficultyID")
+	local race = ZG.Player_Info("race")
+	local playerSpec = ZG.Player_Info("playerSpec")
+
 	if consumable == "invispot" then
 		-- hasInvisPot parser
 		local hasInvisPot = {
@@ -90,7 +98,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 			hasPot = "Mirror of the Conjured Twin"
 		else
 
-			local class,race,playerSpec = ZG.Player_Info("class"),ZG.Player_Info("race"),ZG.Player_Info("playerSpec")
+			
 
 			  -- Role definition scope for dps potions
 			local primary = "int"
@@ -265,7 +273,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 	end
 
 	if consumable == "bladlast" then
-		local faction = UnitFactionGroup("player")
+		local faction = ZG.Player_Info("player")
 		-- consumable = , macroCond = faction, semiCol = instanceType
 		consumable = {
 			"Drums of Rage",

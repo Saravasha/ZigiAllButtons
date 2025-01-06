@@ -22,8 +22,10 @@ modules\ZigiMounts.lua
 modules\ZigiSwapper.lua
 modules\ZigiTargetCaller.lua
 
-
 ZigiAllButtons.lua
 
 # To load files in other folders, use this convention
 # globals\globals.lua
+
+## SavedVariables: ZigiLevelNewCharDB
+

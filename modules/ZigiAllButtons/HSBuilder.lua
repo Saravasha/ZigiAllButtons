@@ -1,6 +1,7 @@
 function hsBuilder(type, macroCond, semiCol, class, slBP, z, eLevel, playerSpec, race, playerName)
-	
+											
 	local classk = ZG.Player_Info("classk")
+	local faction = ZG.Player_Info("faction")
 	local gHI = ZG.World_Event()
 
 	if type == "HS" then
@@ -111,6 +112,7 @@ function hsBuilder(type, macroCond, semiCol, class, slBP, z, eLevel, playerSpec,
 			["DEMONHUNTER"] = "\n/cancelaura Golden Hearthstone Card: Lord Jaraxxus\n/use Golden Hearthstone Card: Lord Jaraxxus",
 			["PIRATE"] = "\n/use Slightly-Chewed Insult Book\n/use Cursed Spyglass",
 			["SENTINEL_WARRIOR"] = "\n/use Owl Post",
+			["DARKRANGER"] = "\n/use Sylvanas' Music Box"
 		}
 
 		if classk == "EVOKER" then
