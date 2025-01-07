@@ -105,7 +105,12 @@ function ZigiRunSwapper()
 			[2] = {"Fathom","Sea Gull","Barnaby","Captain Nibs","Crackers","Greatwing Macaw","Pocket Cannon","Tideskipper","Cap'n Crackers"},
 			[3] = {"Fathom","Sea Gull","Barnaby","Captain Nibs","Crackers","Greatwing Macaw","Pocket Cannon","Tideskipper","Cap'n Crackers"},
 		},
-		["SENTINEL"] = {
+		["SENTINEL_HUNTER"] = {
+			[1] = {"Watcher of the Huntress","Darkshore Sentinel"},
+			[2] = {"Watcher of the Huntress","Darkshore Sentinel"},
+			[3] = {"Watcher of the Huntress","Darkshore Sentinel"},
+		},
+		["SENTINEL_WARRIOR"] = {
 			[1] = {"Watcher of the Huntress","Darkshore Sentinel"},
 			[2] = {"Watcher of the Huntress","Darkshore Sentinel"},
 			[3] = {"Watcher of the Huntress","Darkshore Sentinel"},
@@ -284,10 +289,10 @@ function ZigiRunSwapper()
 	elseif (playerName == "Fannylands" and playerSpec == 3) then
 		pets = {"Nightmare Whelpling","Nightmare Lasher","Nightmare Treant"}
 	elseif playerSpec ~= 5 then
-		pets = petTable[class[playerSpec]]
+		pets = petTable[classk[playerSpec]]
 		for k,v in pairs(petTable) do
 			if k == class then
-				for i,j in ipairs(petTable[class]) do
+				for i,j in ipairs(petTable[classk]) do
 					if i == playerSpec then
 						pets = j
 						-- for g, d in pairs(pets) do
