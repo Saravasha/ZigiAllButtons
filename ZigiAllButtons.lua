@@ -109,9 +109,9 @@ local function eventHandler(event)
 		local playerSpec = ZG.Player_Info("playerSpec")
 		local playerName = ZG.Player_Info("playerName")
 		local z = ZG.Player_Info("z")
-		local difficultyID = ZG.Instance_Info("difficultyID")
-		local instanceType = ZG.Instance_Info("instanceType")
 		local instanceName = ZG.Instance_Info("instanceName")
+		local instanceType = ZG.Instance_Info("instanceType")
+		local difficultyID = ZG.Instance_Info("difficultyID")
 		local gHI = ZG.World_Event()
 		
 		-- -- Configure Battlefield Map
@@ -335,9 +335,6 @@ local function eventHandler(event)
 			oOtas = oOtas
 		end
 
- 	-- 	if (event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "TRAIT_CONFIG_UPDATED" or event == "PLAYER_ENTERING_WORLD") then 
-		-- end
-
 		-- speciella item sets
 		noPants = ZG.EQS[playerSpec]
 		tpPants = "Tipipants"
@@ -348,8 +345,7 @@ local function eventHandler(event)
 			tpPants = "C_EquipmentSet.UseEquipmentSet("..tpPants..")" 
 			noPants = "C_EquipmentSet.UseEquipmentSet("..noPants..")"
 		end 
-		-- if (event == "PLAYER_ENTERING_WORLD" or event == "LEARNED_SPELL_IN_SKILL_LINE" or event == "ACTIVE_TALENT_GROUP_CHANGED") and C_PvP.IsWarModeActive() == true or (instanceType == "pvp" or instanceType == "arena") then
-			-- print("test")
+		
 			-- PvP Talents
 			-- Hämta aktiva talents
 		local PvPTalentNames, PvPTalentIcons = {}, {}
@@ -567,24 +563,24 @@ local function eventHandler(event)
 
         if (event == "ZONE_CHANGED_NEW_AREA" or event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "BAG_UPDATE_DELAYED" or event == "TRAIT_CONFIG_UPDATED" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_LEVEL_UP" or event == "LEARNED_SPELL_IN_SKILL_LINE") then 
 
-			if C_Item.GetItemCount("Darkmoon Cannon") == 1 then 
+			if ZG.Item_Count("Darkmoon Cannon") == 1 then 
 				hasCannon = "\n/use Darkmoon Cannon"
 			end
 			alt4 = ink
 			alt5 = hasCannon
 			CZ = ""
 			if ZG.dfZones[z] then
-				if C_Item.GetItemCount("Fleeting Sands") >= 1 then
+				if ZG.Item_Count("Fleeting Sands") >= 1 then
 					alt4 = alt4.."\n/use Fleeting Sands"
 				end 
-				if C_Item.GetItemCount("Shikaar Hunting Horn") >= 1 then
+				if ZG.Item_Count("Shikaar Hunting Horn") >= 1 then
 					alt6 = alt6.."\n/use Shikaar Hunting Horn"
 				end 
 				alt9 = "\n/use Element-Infused Rocket Helmet"
-				if C_Item.GetItemCount("Sticky Warp Grenade") >= 1 then
+				if ZG.Item_Count("Sticky Warp Grenade") >= 1 then
 					hasShark = "Sticky Warp Grenade"
 				end
-				if C_Item.GetItemCount("Gravitational Displacer") >= 1 then
+				if ZG.Item_Count("Gravitational Displacer") >= 1 then
 					hasScrapper = "Gravitational Displacer"
 				end
 		    elseif IsInJailersTower() == true then
@@ -595,7 +591,7 @@ local function eventHandler(event)
 				}
 				local torghastAnimaCellInBags = ""
 				for i, torghastAnimaCell in pairs(torghastAnimaCell) do
-				    if C_Item.GetItemCount(torghastAnimaCell) >= 1 then
+				    if ZG.Item_Count(torghastAnimaCell) >= 1 then
 				        torghastAnimaCellInBags = torghastAnimaCell
 				    end
 				end
@@ -624,53 +620,53 @@ local function eventHandler(event)
 				}
 				local kyrianInBags = ""
 				for i, kyrianInstrument in pairs(kyrianInstrument) do
-				    if C_Item.GetItemCount(kyrianInstrument) >= 1 then
+				    if ZG.Item_Count(kyrianInstrument) >= 1 then
 				        kyrianInBags = kyrianInstrument
 				    end
 				end
-				if C_Item.GetItemCount("Crumbling Pride Extractors") >= 1 then
+				if ZG.Item_Count("Crumbling Pride Extractors") >= 1 then
 					hasShark = "Crumbling Pride Extractors"
 				end
-				if C_Item.GetItemCount("Shrieker's Voicebox") >= 1 then
+				if ZG.Item_Count("Shrieker's Voicebox") >= 1 then
 					hasScrapper = "Shrieker's Voicebox"
 				end
 				CZ = "[nostealth]"..kyrianInBags.."\n/use [nostealth]Borr-Geth's Fiery Brimstone" 
 				alt4 = alt4.."\n/use Silver Shardhide Whistle"
 				alt6 = alt6.."\n/use Phial of Ravenous Slime"
 			elseif ZG.bfaZones[z] then
-				if C_Item.GetItemCount("G99.99 Landshark") >= 1 then
+				if ZG.Item_Count("G99.99 Landshark") >= 1 then
 					hasShark = "G99.99 Landshark"
 				end
-				if C_Item.GetItemCount("Scrap Grenade") >= 1 then
+				if ZG.Item_Count("Scrap Grenade") >= 1 then
 					hasScrapper = "Scrap Grenade"
 				end
-				if C_Item.GetItemCount("Exposed Fish") >= 1 then
+				if ZG.Item_Count("Exposed Fish") >= 1 then
 					conEF = "\n/use Exposed Fish"
 				end
-				if C_Item.GetItemCount("Alpha Fin") >= 1 then 
+				if ZG.Item_Count("Alpha Fin") >= 1 then 
 					conAF = "\n/use Alpha Fin"
 				end
-				if C_Item.GetItemCount("Voltscale Shield") >= 1 then
+				if ZG.Item_Count("Voltscale Shield") >= 1 then
 					conVS = "\n/use Voltscale Shield"
 				end
-				if C_Item.GetItemCount("Storm Elemental Totem") >= 1 then
+				if ZG.Item_Count("Storm Elemental Totem") >= 1 then
 					conSET = "\n/use Storm Elemental Totem"
 				end
-				if C_Item.GetItemCount("Sea Totem") >= 1 then
+				if ZG.Item_Count("Sea Totem") >= 1 then
 					conST = "\n/use Sea Totem"
 				end
-				if C_Item.GetItemCount("Seastorm Totem") >= 1 then
+				if ZG.Item_Count("Seastorm Totem") >= 1 then
 					conSst = "\n/use Seastorm Totem"
 				end
-				if C_Item.GetItemCount("Mudwrap") >= 1 then
+				if ZG.Item_Count("Mudwrap") >= 1 then
 					conMW = "\n/use Mudwrap"
 				end
-				if C_Item.GetItemCount("Muck Slime") >= 1 then
+				if ZG.Item_Count("Muck Slime") >= 1 then
 					conMS = "\n/use Muck Slime"
 				end
 				-- Nazjatar exclusive and Aquatic mount
 				if z == "Nazjatar" then
-					if C_Item.GetItemCount("Deepcoral Pod") >= 1 then
+					if ZG.Item_Count("Deepcoral Pod") >= 1 then
 						conDB = "\n/use Deepcoral Pod"
 					end
 				end
@@ -682,16 +678,16 @@ local function eventHandler(event)
 				CZ = "General's Expertise"
 			-- Arathi Highlands
 			elseif z == "Arathi Highlands" then
-				if C_Item.GetItemCount("Thundering Essence") >= 1 then 
+				if ZG.Item_Count("Thundering Essence") >= 1 then 
 					conTE = "\n/use Thundering Essence"
 				end
-				if C_Item.GetItemCount("Burning Essence") >= 1 then 
+				if ZG.Item_Count("Burning Essence") >= 1 then 
 					conBE = "\n/use Burning Essence"
 				end
-				if C_Item.GetItemCount("Cresting Essence") >= 1 then 
+				if ZG.Item_Count("Cresting Essence") >= 1 then 
 					conCE = "\n/use Cresting Essence"
 				end
-				if C_Item.GetItemCount("Rumbling Essence") >= 1 then 
+				if ZG.Item_Count("Rumbling Essence") >= 1 then 
 					conRE = "\n/use Rumbling Essence"
 				end
 				alt5 = hasCannon..""..conTE..""..conBE..""..conCE..""..conRE
@@ -780,8 +776,6 @@ local function eventHandler(event)
 			end
 			EditMacro("WSxCGen+Z",nil,nil,"/use Seafarer's Slidewhistle\n/use [nostealth]Repurposed Fel Focuser"..itemBuilder("augmentRune",eLevel)..ccz..CZ..covSpecial)
 			function ZigiPrintZoneVars()
-
-				local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
 				
 				DEFAULT_CHAT_FRAME:AddMessage("ZigiAllButtons: Recalibrating zone based variables :)\nalt4 = "..alt4.."\nalt5 = "..alt5.."\nalt6 = "..alt6.."\nCZ = "..CZ.."\nccz = "..ccz.."\nPoA = "..PoA.."\nAR = "..itemBuilder("augmentRune",eLevel).."\nconTE = "..conTE.."\nconRE = "..conRE.."\nconBE = "..conBE.."\nconCE = "..conCE.."\nhasCannon = "..hasCannon.."\nz = "..z.."\ninstanceName = "..instanceName.."\ninstanceType = "..instanceType.."\ndifficultyID = "..difficultyID.."\ngHI = "..gHI,0.5,1.0,0.0)
 			-- \ngHI = "..gHI
@@ -904,13 +898,13 @@ local function eventHandler(event)
 				sigB = "[@mouseover,exists,nodead,mod][@cursor,mod]"..sigA
 				covB = "[@mouseover,exists,nodead][@cursor]"..covA
 				slBPGen = sigB..";"..covB
-				if C_Item.GetItemCount("Timeless Scroll of Cleansing") >= 1 then
+				if ZG.Item_Count("Timeless Scroll of Cleansing") >= 1 then
 					EditMacro("PvPAT 1" , nil, 4549192, "/stopspelltarget\n/stopspelltarget\n/use [@mouseover,exists,nodead,nomod][@cursor,nomod]Timeless Scroll of Cleansing")
 				end
-				if C_Item.GetItemCount("Timeless Scroll of Summoning") >= 1 then
+				if ZG.Item_Count("Timeless Scroll of Summoning") >= 1 then
 					EditMacro("PvPAT 2" , nil, 4549182, "/stopspelltarget\n/stopspelltarget\n/use [@mouseover,exists,nodead,nomod][@cursor,nomod]Timeless Scroll of Summoning")
 				end
-				if C_Item.GetItemCount("Drake Treat") >= 1 then
+				if ZG.Item_Count("Drake Treat") >= 1 then
 					EditMacro("PvPAT 3" , nil, 132165, "/stopspelltarget\n/stopspelltarget\n/use [@mouseover,exists,nodead,nomod][@cursor,nomod]Drake Treat")
 				end
 				pwned = pandaremixSpecial("resItem") or ""
@@ -1105,24 +1099,24 @@ local function eventHandler(event)
 				usable = "World Shrinker" 
 				EditMacro("Wx3ShowPot",nil, nil,"#showtooltip "..consumableBuilder("potion")..consumableBuilder("potion","\n/use "..usable.."\n/use ","\n/use Hell-Bent Bracers\n/doom"))
 			end
-			if C_Item.GetItemCount(consumableBuilder("potion")) < 1 then
+			if ZG.Item_Count(consumableBuilder("potion")) < 1 then
 				EditMacro("Wx3ShowPot", nil, 132380, "#show\n/oops", 1, 1)
 			end
 			EditMacro("WTonic",nil,nil,"#show [mod:shift]"..itemBuilder("fartToy",slBP)..";"..consumableBuilder("tonic").."\n/use "..itemBuilder("fartToy",slBP).."\n/use "..consumableBuilder("tonic").."\n/use Eternal Black Diamond Ring")
 			EditMacro("WSxCGen+J",nil,nil,"#show\n/use "..consumableBuilder("invispot"))
 		    EditMacro("Wx2Garrisons",nil,nil,"#show\n/use [nocombat,noexists,nomod:alt]Mobile Banking(Guild Perk);[mod:shift]Narcissa's Mirror;"..consumableBuilder("nimblebrew"))
-			if C_Item.GetItemCount(consumableBuilder("water")) > 0 then
+			if ZG.Item_Count(consumableBuilder("water")) > 0 then
 				EditMacro("WWeyrnstone",nil,nil,consumableBuilder("water","/use "))
 			else
 				EditMacro("WWeyrnstone",nil,nil,"/use Whispers of Rai'Vosh\n/helpme")
 			end
-			if C_Item.GetItemCount("Weyrnstone") >= 1 then
+			if ZG.Item_Count("Weyrnstone") >= 1 then
 				EditMacro("WWeyrnstone",nil,nil,"/use Weyrnstone\n/run PlaySound(15160)")
 			end
 			EditMacro("WFirstAid",nil,nil,"/run local c,g = GetTitleName(GetCurrentTitle()),GetCurrentTitle() if not((c == \"Field Medic\") or (g == 372)) then SetTitleByName(\"Field Medic\") end\n/use "..consumableBuilder("bandages",""))
-			if C_Item.GetItemCount("Healthstone", false) >= 1  then
+			if ZG.Item_Count("Healthstone") >= 1  then
 				EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."Healthstone\n/stopmacro [mod]"..((hsBuilder("hsToy","","",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/run HSAction()")
-			elseif C_Item.GetItemCount("Demonic Healthstone", false) >= 1  then
+			elseif ZG.Item_Count("Demonic Healthstone") >= 1  then
 				EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."Demonic Healthstone\n/stopmacro [mod]"..((hsBuilder("hsToy","","",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/run HSAction()")
 			else
 				EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/stopmacro [mod]"..((hsBuilder("hsToy","","",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."\n/use Healthstone\n/use Demonic Healthstone\n/run HSAction()", 1, 1)
@@ -1215,9 +1209,10 @@ local function eventHandler(event)
 			else
 				EditMacro("WSxAGen+5",nil,nil,"#show 14\n/targetenemy [noexists]\n/target [nocombat,noexists]Squirrel\n/use 14\n/use [nocombat,noexists]Critter Hand Cannon;[harm,nocombat]Hozen Idol")
 			end
-				if C_Item.GetItemCount("Swapblaster") ~= 1 then
-					swapblaster = ""
-				end
+
+			if ZG.Item_Count("Swapblaster") ~= 1 then
+				swapblaster = ""
+			end
 			
 			-- Main Class configuration
 			-- Shaman, Raxxy

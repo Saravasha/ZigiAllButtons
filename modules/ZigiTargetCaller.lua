@@ -9,8 +9,9 @@ function ZigiTargetCaller(target)
 		c='player'
 		d=b.GetBestMapForUnit(c)
 		e=b.GetPlayerMapPosition(d,c)
+		f= "("..format("%.1f",(UnitHealth("player")/UnitHealthMax("player")*100)).."%)"
 		b.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(d,e.x,e.y))
-		SendChatMessage(a..' at '..b.GetUserWaypointHyperlink(),'CHANNEL',c,1)
+		SendChatMessage(a.. ' ' ..f..' at '..b.GetUserWaypointHyperlink(),'CHANNEL',c,1)
 		b.ClearUserWaypoint()
 	end
 end

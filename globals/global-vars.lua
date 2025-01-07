@@ -233,6 +233,23 @@ function ZG.Player_Info(method)
 	end
 end
 
+function ZG.Player_Aura(aura) 
+	if aura ~= nil then
+		local state = C_UnitAuras.GetAuraDataBySpellName("player", aura)
+		return state
+	else
+		print("ZG.Player_Aura: aura supplied was nil")
+	end	
+end
+
+function ZG.Item_Count(item)
+	if item ~= nil then
+		local number = C_Item.GetItemCount(item)
+		return number
+	else
+		print("ZG.Item_Count: item supplied was nil")
+	end
+end
 
 function ZG.Instance_Info(payload)
 	local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()

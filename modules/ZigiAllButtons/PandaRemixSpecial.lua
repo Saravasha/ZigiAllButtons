@@ -55,19 +55,19 @@ function pandaremixSpecial(spellType)
 			return spellType
 		end
 		if spellType == "resItem" then
-			if C_Item.GetItemCount("Timeless Scroll of Resurrection") >= 1 then
+			if ZG.Item_Count("Timeless Scroll of Resurrection") >= 1 then
 				spellType = "Timeless Scroll of Resurrection"
 			return spellType
 			end 
 		end
 		if spellType == "meteorChip" then
-			if C_Item.GetItemCount("Meteor Chip") >= 1 then 
+			if ZG.Item_Count("Meteor Chip") >= 1 then 
 				spellType = "\n/use Meteor Chip"
 			return spellType
 			end
 		end
 		if spellType == "bottleBees" then
-			if C_Item.GetItemCount("Bottle of Bees") >= 1 then
+			if ZG.Item_Count("Bottle of Bees") >= 1 then
 				spellType = "Bottle of Bees"
 				return spellType
 			end
@@ -75,7 +75,7 @@ function pandaremixSpecial(spellType)
 		if spellType == "pandaTaxi" then
 			local pandaTaxiUsables = {"Tuft of Yak Fur"}
 			for i, pandaTaxiUsables in pairs(pandaTaxiUsables) do
-				if C_Item.GetItemCount(pandaTaxiUsables) >= 1 then
+				if ZG.Item_Count(pandaTaxiUsables) >= 1 then
 					spellType = "\n/use "..pandaTaxiUsables
 				end
 			end
@@ -89,7 +89,7 @@ function pandaremixSpecial(spellType)
 				"Bag of Kafa Beans"
 			}
 			for i, pandaTaxiUsables in pairs(pandaTaxiUsables) do
-				if C_Item.GetItemCount(pandaTaxiUsables) >= 1 then
+				if ZG.Item_Count(pandaTaxiUsables) >= 1 then
 					spellType = "\n/use "..pandaTaxiUsables
 				end
 			end

@@ -6,6 +6,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 	local difficultyID = ZG.Instance_Info("difficultyID")
 	local race = ZG.Player_Info("race")
 	local playerSpec = ZG.Player_Info("playerSpec")
+	local playerName = ZG.Player_Info("playerName")
 
 	if consumable == "invispot" then
 		-- hasInvisPot parser
@@ -14,11 +15,11 @@ function consumableBuilder(consumable,macroCond,semiCol)
 		}
 		local hasInvisPotInBags = ""
 		for i, hasInvisPot in pairs(hasInvisPot) do
-			if C_Item.GetItemCount(hasInvisPot) >= 1 then
+			if ZG.Item_Count(hasInvisPot) >= 1 then
 		    	hasInvisPotInBags = hasInvisPot
 			end
 		end
-		if C_Item.GetItemCount("Overengineered Sleeve Extenders") >= 1 and UnitName("player") == "Voidlisa" then
+		if ZG.Item_Count("Overengineered Sleeve Extenders") >= 1 and playerName == "Voidlisa" then
 			hasInvisPot = "9"
 		end
 		hasInvisPot = hasInvisPotInBags
@@ -72,7 +73,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 				"Algari Healing Potion",
 			}
 			for i, hasTonics in pairs(hasTonics) do
-				if C_Item.GetItemCount(hasTonics) >= 1 then
+				if ZG.Item_Count(hasTonics) >= 1 then
 			    	neckIsEquipped = hasTonics
 				end
 			end
@@ -80,7 +81,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 				neckIsEquipped = hasScrapper
 			elseif z == "Brawl'gar Arena" then
 				neckIsEquipped = "Brawler's Coastal Healing Potion"
-			elseif instanceType == "pvp" and C_Item.GetItemCount("\"Third Wind\" Potion") >= 1 then 
+			elseif instanceType == "pvp" and ZG.Item_Count("\"Third Wind\" Potion") >= 1 then 
 				neckIsEquipped = "\"Third Wind\" Potion"
 			end
 		end
@@ -90,11 +91,11 @@ function consumableBuilder(consumable,macroCond,semiCol)
 	if consumable == "potion" then
 		local hasPot = ""
     	-- Throughput Potion parser
-		if instanceType == "pvp" and C_Item.GetItemCount("Saltwater Potion", false, true) >= 1 then
+		if instanceType == "pvp" and ZG.Item_Count("Saltwater Potion", false, true) >= 1 then
 			hasPot = "Saltwater Potion"
-		elseif IsInJailersTower() == true and C_Item.GetItemCount("Fleeting Frenzy Potion", false, true) >= 1 then
+		elseif IsInJailersTower() == true and ZG.Item_Count("Fleeting Frenzy Potion", false, true) >= 1 then
 			hasPot = "Fleeting Frenzy Potion"
-		elseif IsInJailersTower() == true and C_Item.GetItemCount("Mirror of the Conjured Twin", false, true) >= 1 then
+		elseif IsInJailersTower() == true and ZG.Item_Count("Mirror of the Conjured Twin", false, true) >= 1 then
 			hasPot = "Mirror of the Conjured Twin"
 		else
 
@@ -119,7 +120,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 				[163224] = "str",
 			}
 			for k, v in pairs(hasPot) do
-			    if C_Item.GetItemCount(hasPot[k]) >= 1 and primary == hasPot[v] then
+			    if ZG.Item_Count(hasPot[k]) >= 1 and primary == hasPot[v] then
 			        hasPotInBags = "item:"..hasPot[k]
 			    end
 			end
@@ -139,7 +140,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 
 				}
 				for i, hasPot in pairs(hasPot) do
-				    if C_Item.GetItemCount(hasPot) >= 1 then
+				    if ZG.Item_Count(hasPot) >= 1 then
 				        hasPotInBags = "item:"..hasPot
 				    end
 				end
@@ -162,11 +163,11 @@ function consumableBuilder(consumable,macroCond,semiCol)
  	   	}
  	   	local hasBandagesInBags = ""
  	   	for i, hasBandages in pairs(hasBandages) do 
-	 	   	if C_Item.GetItemCount(hasBandages) >= 1 then
+	 	   	if ZG.Item_Count(hasBandages) >= 1 then
 	 	   		hasBandagesInBags = hasBandages
 	 	   	end
 	 	end
-	 	if C_Item.GetItemCount(hasBandagesInBags) < 1 then
+	 	if ZG.Item_Count(hasBandagesInBags) < 1 then
 	 		macroCond = ""
 	 	end
 	 	return (macroCond or "")..(hasBandagesInBags or "")..(semiCol or "")
@@ -181,7 +182,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
  	   	}
  	   	local hasManaPotsInBag = ""
  	   	for i, consumable in pairs(consumable) do 
-	 	   	if C_Item.GetItemCount(consumable) >= 1 then
+	 	   	if ZG.Item_Count(consumable) >= 1 then
 	 	   		hasManaPotsInBags = consumable
 	 	   	end
 	 	end
@@ -230,11 +231,11 @@ function consumableBuilder(consumable,macroCond,semiCol)
 		}
 		local hasWaterInBags = ""
 		for i, hasWaters in pairs(hasWaters) do
-		    if C_Item.GetItemCount(hasWaters) >= 1 then
+		    if ZG.Item_Count(hasWaters) >= 1 then
 		        hasWaterInBags = hasWaters
 		    end
 		end
-		if C_Item.GetItemCount(hasWaterInBags) < 1 and class == "MAGE" then 
+		if ZG.Item_Count(hasWaterInBags) < 1 and class == "MAGE" then 
 			hasWaters = "Conjure Refreshment"
 		end
 		if hasWaterInBags == "" or hasWaterInBags == nil then
@@ -245,18 +246,18 @@ function consumableBuilder(consumable,macroCond,semiCol)
 	end
 
 	if consumable == "managem" then
-		if C_Item.GetItemCount(36799) >= 1 then
+		if ZG.Item_Count(36799) >= 1 then
 			hasManaGem = "item:36799"		
 		elseif b("Displacement") == "Displacement" then 
 			hasManaGem = "Displacement"
 			--Arcane
-		elseif C_Item.GetItemCount(87257) >= 1 then
+		elseif ZG.Item_Count(87257) >= 1 then
 			hasManaGem = "item:87257"
 			--Fiery
-		elseif C_Item.GetItemCount(87258) >= 1 then
+		elseif ZG.Item_Count(87258) >= 1 then
 			hasManaGem = "item:87258"
 			--Icy
-		elseif C_Item.GetItemCount(87259) >= 1 then
+		elseif ZG.Item_Count(87259) >= 1 then
 			hasManaGem = "item:87259"
 		else 
 			hasManaGem = "Conjure Mana Gem"
@@ -266,14 +267,14 @@ function consumableBuilder(consumable,macroCond,semiCol)
 
 	if consumable == "nimblebrew" then
 		local nimbleBrew = "Magic Pet Mirror"
-		if C_Item.GetItemCount("Nimble Brew") >= 1 then 
+		if ZG.Item_Count("Nimble Brew") >= 1 then 
 			nimbleBrew = "Nimble Brew"
 		end
 		return (macroCond or "")..(nimbleBrew or "")..(semiCol or "") 
 	end
 
 	if consumable == "bladlast" then
-		local faction = ZG.Player_Info("player")
+		local faction = ZG.Player_Info("faction")
 		-- consumable = , macroCond = faction, semiCol = instanceType
 		consumable = {
 			"Drums of Rage",
@@ -286,11 +287,11 @@ function consumableBuilder(consumable,macroCond,semiCol)
 		}
 		local hasDrumsInBags = "Hot Buttered Popcorn"
 		for i, consumable in pairs(consumable) do
-		    if C_Item.GetItemCount(consumable) >= 1 then
+		    if ZG.Item_Count(consumable) >= 1 then
 		        hasDrumsInBags = consumable
 		    end
 		end
-		local name = AuraUtil.FindAuraByName("Lone Wolf", "player") 
+		local name = ZG.Player_Aura("Lone Wolf") 
 		if class == "SHAMAN" and macroCond == "Alliance" and b("Heroism") then 
 	    	hasDrumsInBags = "Heroism"
 		elseif class == "SHAMAN" and b("Bloodlust") then 
@@ -301,7 +302,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 			if IsSpellKnownOrOverridesKnown(272678) == true then
 				hasDrumsInBags = "[nopet]Call Pet 5;[pet]Primal Rage"
 			-- hunter med bl drums
-			elseif (name ~= "Lone Wolf" and (IsSpellKnownOrOverridesKnown(272678) == false) and C_Item.GetItemCount(hasDrumsInBags) >= 1) then
+			elseif (name ~= "Lone Wolf" and (IsSpellKnownOrOverridesKnown(272678) == false) and ZG.Item_Count(hasDrumsInBags) >= 1) then
 				hasDrumsInBags = "[nopet]Call Pet 5;[pet]"..hasDrumsInBags
 			-- hunter med bl pet
 			-- elseif (name == nil and petSpec == 1) then

@@ -266,13 +266,6 @@ local function eventHandler(event)
 		factionBike =  factionMounts[24]
 		factionHog = factionMounts[25]
 
-		-- slBP Setter
-		if (slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and ZG.slZones[z]) or (slBP == 0 and ZG.slZones[z]) then
-			slBP = 5
-		elseif slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and not ZG.slZones[z] then
-			slBP = 6
-		end
-
 		-- Mount class spec parser
 		if class == "SHAMAN" then
 			if playerSpec == 3 then
@@ -464,7 +457,7 @@ local function eventHandler(event)
 				"Spectral Bridle",
 			}
 			for i, torghastMountPower in pairs(torghastMountPower) do
-			    if GetItemCount(torghastMountPower) >= 1 then
+			    if ZG.Item_Count(torghastMountPower) >= 1 then
 			        powerInBags = torghastMountPowerd
 			    end
 			end

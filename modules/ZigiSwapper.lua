@@ -421,7 +421,7 @@ function ZigiRunSwapper()
 		local a = pets
 		local randPet = math.random(1,#a)
 		local _,c = C_PetJournal.FindPetIDByName(a[randPet])
-		local parrots = AuraUtil.FindAuraByName(232871 or 286268, "player")
+		local parrots = ZG.Player_Aura(232871 or 286268)
 		local b = {"Cap'n Crackers","Crackers"}
 		local targetName = UnitName("target") 
 		for k,v in pairs(b) do 
@@ -497,9 +497,9 @@ function ZigiSetSwapper()
 	local pepeState = ""
 	local swapToy = ""
 
-	if GetItemCount("Ancient Tauren Talisman") == 1 then
+	if ZG.Item_Count("Ancient Tauren Talisman") == 1 then
 		hasBell = "\n/use Ancient Tauren Talisman"
-	elseif GetItemCount("Cooking School Bell") >= 1 then
+	elseif ZG.Item_Count("Cooking School Bell") >= 1 then
 		hasBell = "\n/use Cooking School Bell"
 	end	
 
@@ -529,14 +529,14 @@ function ZigiSetSwapper()
 	end
 
 	if gHI == "Feast of Winter Veil" then 
-		if C_UnitAuras.GetAuraDataBySpellName("player","Festive Pepe") == nil then
+		if ZG.Player_Aura("Festive Pepe") == nil then
 			pepeState = "\n/use Festive Trans-Dimensional Bird Whistle"
 		end
 	elseif (class == "WARLOCK" or class == "DEMONHUNTER") then
-		if C_UnitAuras.GetAuraDataBySpellName("player","Pepe") == nil then 
+		if ZG.Player_Aura("Pepe") == nil then 
 			pepeState = "\n/use A Tiny Set of Warglaives"
 		end
-	elseif C_UnitAuras.GetAuraDataBySpellName("player","Pepe") == nil then
+	elseif ZG.Player_Aura("Pepe") == nil then
 		pepeState = "\n/use Trans-Dimensional Bird Whistle"
 	else
 		pepeState = ""
@@ -544,7 +544,7 @@ function ZigiSetSwapper()
 
 	-- Timewalking
 	if (difficultyID == 24 or difficultyID == 33) or PlayerGetTimerunningSeasonID() == 1 then
-		if not C_UnitAuras.GetAuraDataBySpellName("player","Accelerated Time") then
+		if not ZG.Player_Aura("Accelerated Time") then
 			swapToy = "\n/use Investi-gator's Pocketwatch"
 		else
 			swapToy = ""

@@ -1,6 +1,6 @@
 function itemBuilder(item,option,playerSpec)
 	if item == "crKnife" then
-		if C_Item.GetItemCount("Ultimate Gnomish Army Knife") >= 1 then 
+		if ZG.Item_Count("Ultimate Gnomish Army Knife") >= 1 then 
 			item = "[nocombat]Ultimate Gnomish Army Knife;"
 			return item or ""
 		else
@@ -9,7 +9,7 @@ function itemBuilder(item,option,playerSpec)
 		return item or "" 
 	end
 	if item == "glider" then
-		if C_Item.GetItemCount("Goblin Glider Kit") >= 1 then
+		if ZG.Item_Count("Goblin Glider Kit") >= 1 then
 			item = "\n/use [mod:ctrl]Goblin Glider Kit"
 		else 
 			item = "\n/use [mod:ctrl]15"
@@ -17,7 +17,7 @@ function itemBuilder(item,option,playerSpec)
 		return item or ""
 	end
 	if item == "brazier" then
-		if C_Item.GetItemCount("Brazier of Awakening") >= 1 then 
+		if ZG.Item_Count("Brazier of Awakening") >= 1 then 
 			item = "\n/use [mod:ctrl]Brazier of Awakening"
 		else 
 			item = ""
@@ -25,7 +25,7 @@ function itemBuilder(item,option,playerSpec)
 		return item or ""
 	end
 	if item == "resItem" then
-		if C_Item.GetItemCount("Unstable Temporal Time Shifter") >= 1 then 
+		if ZG.Item_Count("Unstable Temporal Time Shifter") >= 1 then 
 			item = "[help,dead,nomod]Unstable Temporal Time Shifter;"
 		else 
 			item = "[help,dead,nomod]9;"
@@ -33,11 +33,11 @@ function itemBuilder(item,option,playerSpec)
 		return item or ""
 	end
 	if item == "augmentRune" then
-		if option <= 70 and C_Item.GetItemCount("Dreambound Augment Rune") == 1 then
+		if option <= 70 and ZG.Item_Count("Dreambound Augment Rune") == 1 then
 			item = "\n/use [nostealth]Dreambound Augment Rune"
-		elseif option <= 50 and C_Item.GetItemCount("Lightforged Augment Rune") == 1 then
+		elseif option <= 50 and ZG.Item_Count("Lightforged Augment Rune") == 1 then
 			item = "\n/use [nostealth]Lightforged Augment Rune"
-		elseif option <= 60 and C_Item.GetItemCount("Eternal Augment Rune") == 1 then
+		elseif option <= 60 and ZG.Item_Count("Eternal Augment Rune") == 1 then
 			item = "\n/use [nostealth]Eternal Augment Rune"
 		else
 			item = ""
@@ -120,21 +120,21 @@ function itemBuilder(item,option,playerSpec)
 	end
 	if item == "instrument" then
 		-- Arcanite Ripper
-		if C_Item.GetItemCount(39769) >= 1 and (select(2,C_Container.GetItemCooldown(39769)) == 0) then
+		if ZG.Item_Count(39769) >= 1 and (select(2,C_Container.GetItemCooldown(39769)) == 0) then
 			item = 39769
 		-- Phoenix Lute
-		elseif C_Item.GetItemCount(44924) >= 1 and (select(2,C_Container.GetItemCooldown(44924)) == 0) then
+		elseif ZG.Item_Count(44924) >= 1 and (select(2,C_Container.GetItemCooldown(44924)) == 0) then
 			item = 44924
 		-- Death Resonator
-		elseif C_Item.GetItemCount(151255) >= 1 and (select(2,C_Container.GetItemCooldown(151255)) == 0) then
+		elseif ZG.Item_Count(151255) >= 1 and (select(2,C_Container.GetItemCooldown(151255)) == 0) then
 			item = 151255
-		elseif C_Item.GetItemCount(39769) >=1 then
+		elseif ZG.Item_Count(39769) >=1 then
 			item = 39769
 		-- Phoenix Lute
-		elseif C_Item.GetItemCount(44924) >=1 then
+		elseif ZG.Item_Count(44924) >=1 then
 			item = 44924
 		-- Death Resonator
-		elseif C_Item.GetItemCount(151255) >=1 then
+		elseif ZG.Item_Count(151255) >=1 then
 			item = 151255
 		else
 			item = 0
@@ -146,14 +146,14 @@ function itemBuilder(item,option,playerSpec)
 		item = "Foul Belly"
 		if option == 4 then
 			item = "Notfar's Favorite Food"
-		elseif option == 1 and C_Item.GetItemCount("item:177278") > 0 then  -- phial of serenity
+		elseif option == 1 and ZG.Item_Count("item:177278") > 0 then  -- phial of serenity
 			item = "item:177278"
 		end
 		return item or ""
 	end
 	if item == "broom" then
 		item = "[nocombat,noexists]Worn Doll;"
-		if C_Item.GetItemCount("Anti-Doom Broom") >= 1 then
+		if ZG.Item_Count("Anti-Doom Broom") >= 1 then
 			item = "[nocombat,noexists]Anti-Doom Broom;"
 		end
 		return item or ""
