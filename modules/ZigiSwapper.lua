@@ -254,7 +254,7 @@ function ZigiRunSwapper()
 			[2] = 317, --"Captain",
 			[3] = 541, --"Plunderlord",
 		}
-	elseif classk == "SENTINEL" then
+	elseif classk == "SENTINEL_HUNTER" or classk == "SENTINEL_WARRIOR" then
 		SST = {
 			[1] = 532, --"Dream Defender", 
 			[2] = 532, --"Dream Defender",
