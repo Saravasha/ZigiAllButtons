@@ -28,6 +28,7 @@ local function eventHandler(event)
 		local z = ZG.Player_Info("z")
 		local instanceName = ZG.Instance_Info("instanceName")
 		local instanceType = ZG.Instance_Info("instanceType")
+		local instanceID = ZG.Instance_Info("instanceID")
 		local gHI = ZG.World_Event()
 		
 		local palaMounts = {
@@ -679,7 +680,7 @@ local function eventHandler(event)
 			racistMount[race] = ""
 			palaMounts[race] = ""
 			-- print("test")
-		elseif (instanceType ~= "none" and not ZG.garrisonId[mapID]) or ZG.groundAreas[z] or ZG.groundAreas[instanceName] then
+		elseif (instanceType ~= "none" and not ZG.garrisonId[instanceID]) or ZG.groundAreas[z] or ZG.groundAreas[instanceName] then
 			-- We can't fly inside instances, except Draenor Garrisons and The Deaths of Chromie
 			-- Flying is also disabled in certain outdoor areas/zones
 			-- print("level = ",groundMount[classk])

@@ -1,4 +1,5 @@
-classSkillList = {
+local _,class = UnitClass("player")
+local classSkillList = {
 	["SHAMAN"] = {
 		-- Hero Talent: Farseer
 		[443454] = "Ancestral Swiftness",
@@ -910,7 +911,7 @@ classSkillList = {
 	},
 }
 
-commandPetAbilities = {
+local commandPetAbilities = {
 	["HUNTER"] = {
 		[272682] = "Master's Call",
 		[272679] = "Fortitude of the Bear",
@@ -918,10 +919,9 @@ commandPetAbilities = {
 }
 
 -- bind to function, has two override subroutines for arrays and nested array types
-function b(spellName, macroCond, semiCol)
+function Get_Spell(spellName, macroCond, semiCol)
 	-- Skriv om så att jag inte behöver sätta overrides innan anropen, lägg till stöd för parameter-overriding för arrays och strängar, vill kunna skicka in arrayer med spells.
 	if not InCombatLockdown() then
-		local class = ZG.Player_Info("class")
 		-- if string
 		if type(spellName) == "string" then 
 			for k,v in pairs(classSkillList[class]) do
@@ -995,9 +995,8 @@ function b(spellName, macroCond, semiCol)
 	end
 end
 
-function bPet(spellName, macroCond, semiCol)
+function Get_Pet_Spell(spellName, macroCond, semiCol)
 	if not InCombatLockdown() then 
-		local class = ZG.Player_Info("class")
 		for k,v in pairs(commandPetAbilities[class]) do
 			if v == spellName then
 				if IsSpellKnownOrOverridesKnown(k) then

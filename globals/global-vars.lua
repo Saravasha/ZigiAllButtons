@@ -227,7 +227,7 @@ function ZG.Player_Info(method)
 	end
 
 	if method == "invalid" then
-		-- print("ZG.Player_Info: You didn't supply a valid method, try again")
+		print("ZG.Player_Info: You didn't supply a valid method, try again")
 	else
 		return method
 	end
@@ -253,7 +253,7 @@ end
 
 function ZG.Instance_Info(payload)
 	local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
-	if payload == "InstanceName" then 
+	if payload == "instanceName" then 
 		ZG.instanceName = instanceName
 		payload = instanceName
 	elseif payload == "instanceType" then 
@@ -288,7 +288,7 @@ function ZG.Instance_Info(payload)
 	end
 	-- print(payload)
 	if payload == "invalid" then
-		-- print("ZG.Instance_Info: You didn't supply a valid payload, try again")
+		print("ZG.Instance_Info: You didn't supply a valid payload, try again")
 	else
 		return payload
 	end

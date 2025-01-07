@@ -4,14 +4,21 @@ function ZigiTargetCaller(target)
 	elseif target == nil then 
 		return 
 	else
-		a=target
-		b=C_Map
-		c='player'
-		d=b.GetBestMapForUnit(c)
-		e=b.GetPlayerMapPosition(d,c)
-		f= "("..format("%.1f",(UnitHealth("player")/UnitHealthMax("player")*100)).."%)"
-		b.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(d,e.x,e.y))
-		SendChatMessage(a.. ' ' ..f..' at '..b.GetUserWaypointHyperlink(),'CHANNEL',c,1)
-		b.ClearUserWaypoint()
+		local a=target
+		local b=C_Map
+		local c="player"
+		local d=b.GetBestMapForUnit(c)
+		local e=b.GetPlayerMapPosition(d,c)
+		local f= "("..format("%.1f",(UnitHealth("target")/UnitHealthMax("target")*100)).."%)"
+		if f == "0.0" then
+			f = "is dead"
+			SendChatMessage(a.. " " ..f,"CHANNEL",c,1)
+		else
+			b.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(d,e.x,e.y))
+			if b.GetUserWaypointHyperlink() ~= nil then
+				SendChatMessage(a.. " "..f.." at "..b.GetUserWaypointHyperlink() or "","CHANNEL",c,1)
+			end
+			b.ClearUserWaypoint()
+		end
 	end
 end

@@ -248,7 +248,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 	if consumable == "managem" then
 		if ZG.Item_Count(36799) >= 1 then
 			hasManaGem = "item:36799"		
-		elseif b("Displacement") == "Displacement" then 
+		elseif Get_Spell("Displacement") == "Displacement" then 
 			hasManaGem = "Displacement"
 			--Arcane
 		elseif ZG.Item_Count(87257) >= 1 then
@@ -292,11 +292,11 @@ function consumableBuilder(consumable,macroCond,semiCol)
 		    end
 		end
 		local name = ZG.Player_Aura("Lone Wolf") 
-		if class == "SHAMAN" and macroCond == "Alliance" and b("Heroism") then 
+		if class == "SHAMAN" and macroCond == "Alliance" and Get_Spell("Heroism") then 
 	    	hasDrumsInBags = "Heroism"
-		elseif class == "SHAMAN" and b("Bloodlust") then 
+		elseif class == "SHAMAN" and Get_Spell("Bloodlust") then 
 			hasDrumsInBags = "Bloodlust"
-		elseif class == "MAGE" and b("Time Warp") then 
+		elseif class == "MAGE" and Get_Spell("Time Warp") then 
 			hasDrumsInBags = "Time Warp"
 		elseif class == "HUNTER" then
 			if IsSpellKnownOrOverridesKnown(272678) == true then
@@ -311,7 +311,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 			elseif name == "Lone Wolf" then
 				hasDrumsInBags = "[nopet]"..hasDrumsInBags..";[pet]Command Pet" 
 			end
-		elseif class == "EVOKER" and b("Fury of the Aspects") then 
+		elseif class == "EVOKER" and Get_Spell("Fury of the Aspects") then 
 			hasDrumsInBags = "Fury of the Aspects\n/use Prismatic Bauble\n/targetfriendplayer\n/use [help,nodead]Rainbow Generator\n/targetlasttarget [exists]"
 		end
 		return hasDrumsInBags or ""
