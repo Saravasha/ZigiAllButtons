@@ -11,6 +11,7 @@ function ZigiRunSwapper()
 	local playerSpec = ZG.Player_Info("playerSpec")
 	local playerName = ZG.Player_Info("playerName")
 	local z = ZG.Player_Info("z")
+	local sex = ZG.Player_Info("sex")
 	local difficultyID = ZG.Instance_Info("difficultyID")
 	local instanceType = ZG.Instance_Info("instanceType")
 	local instanceName = ZG.Instance_Info("instanceName")
@@ -310,6 +311,10 @@ function ZigiRunSwapper()
 		pets = {covPets}
 	end
 
+	if instanceName == "Siren Isle" then
+		pets = {"Marmaduke"}
+	end
+
 	-- print("gHI = ", GWE())
 	if gHI == "Lunar Festival" then
 		SST[playerSpec] = 43 --"Elder"
@@ -389,6 +394,7 @@ function ZigiRunSwapper()
 		SST[playerSpec] = 361 -- Timelord title
 		pets = {"Infinite Whelpling","Timeless Mechanical Dragonling","Ominous Flame","Paradox Spirit"}
 	end
+
 	--Timerunning
 	if PlayerGetTimerunningSeasonID() == 1 then
 		if IsTitleKnown(306) then
@@ -421,7 +427,7 @@ function ZigiRunSwapper()
 		local a = pets
 		local randPet = math.random(1,#a)
 		local _,c = C_PetJournal.FindPetIDByName(a[randPet])
-		local parrots = ZG.Player_Aura(232871 or 286268)
+		local parrots = ZG.Player_Aura("Crackers") or ZG.Player_Aura("Cap'n Crackers")
 		local b = {"Cap'n Crackers","Crackers"}
 		local targetName = UnitName("target") 
 		for k,v in pairs(b) do 
@@ -441,6 +447,7 @@ function ZigiRunSwapper()
 			SetCurrentTitle(SST[playerSpec])
 			-- DEFAULT_CHAT_FRAME:AddMessage("ZigiSwapper: Updating your title :)",0.5,1.0,0.0)
 		end
+
 		local t = true
 		C_Timer.After(2, function() ZigiSetSwapper() t = false end)
 	end
@@ -465,10 +472,10 @@ function ZigiEqSetSwapper()
 		EQS[playerSpec] = "Casual"
 	end
 
-	-- Timewalking
-	if (difficultyID == 24 or difficultyID == 33) then
-		EQS[playerSpec] = "Timewalking"
-	end
+	-- Timewalking, commenting this out because blizzerd made all timewalking gear obsolete with their stupid change.
+	-- if (difficultyID == 24 or difficultyID == 33) then
+	-- 	EQS[playerSpec] = "Timewalking"
+	-- end
 
 	-- War mode / Pvp / Arena
 	if C_PvP.IsWarModeActive() == true or instanceType == "pvp" or instanceType == "arena" then

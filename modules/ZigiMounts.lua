@@ -44,7 +44,7 @@ local function eventHandler(event)
 
 		local groundMount = {
 			["SHAMAN"] = "Swift Frostwolf",
-			["MAGE"] = "Wild Dreamrunner,Sarge's Tale",
+			["MAGE"] = "Wild Dreamrunner,Sarge's Tale,Taivan",
 			["WARLOCK"] = "Felblaze Infernal,Wild Dreamrunner,Lucid Nightmare,Illidari Felstalker,Hellfire Infernal,Incognitro, The Indecipherable Felcycle",
 			["MONK"] = "Wild Dreamrunner,Swift Zulian Tiger,Lil' Donkey,Little Red Riding Goat",
 			["PALADIN"] = "Prestigious Bronze Courser,Argent Charger,Pureheart Courser",
@@ -82,7 +82,7 @@ local function eventHandler(event)
 		if faction == "Alliance" then 
 			groundMount = { 
 				["SHAMAN"] = "",
-				["MAGE"] = "Wild Dreamrunner, Sarge's Tale",
+				["MAGE"] = "Wild Dreamrunner, Sarge's Tale, Taivan",
 				["WARLOCK"] = "Lucid Nightmare,Illidari Felstalker,Hellfire Infernal,Incognitro, The Indecipherable Felcycle",
 				["MONK"] = "Wild Dreamrunner,Swift Zulian Tiger,Lil' Donkey,Little Red Riding Goat",
 				["PALADIN"] = "Prestigious Bronze Courser,Argent Charger,Pureheart Courser",
@@ -99,6 +99,7 @@ local function eventHandler(event)
 
 			}
 
+			-- Value must start with a ","
 			flyingMount = { 
 				["SHAMAN"] = ",Spirit of Eche'ro,Grand Gryphon,Honeyback Harvester",
 				["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Arcanist's Manasaber,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm,Honeyback Harvester,Eve's Ghastly Rider",
@@ -118,6 +119,7 @@ local function eventHandler(event)
 
 			}	
 
+			-- some exceptions
 			if race == "Mechagnome" then
 				flyingMount[classk] = ",Mechagon Peacekeeper"
 			elseif race == "VoidElf" and class == "WARRIOR" then
@@ -166,11 +168,11 @@ local function eventHandler(event)
 			["Pandaren"] = "",
 			["Scourge"] = "Undercity Plaguebat,",
 			["Tauren"] = "Brown Kodo,",
-			["Troll"] = "Fossilized Raptor,Bloodfang Widow,Swift Zulian Tiger,",
+			["Troll"] = "Bloodfang Widow,Swift Zulian Tiger,Jani's Trashpile",
 			["VoidElf"] = "Starcursed Voidstrider,",
 			["Vulpera"] = "Alabaster Hyena,Springfur Alpaca,Elusive Quickhoof,Caravan Hyena,",
 			["Worgen"] = "Running Wild,",
-			["ZandalariTroll"] = "",
+			["ZandalariTroll"] = "Jani's Trashpile",
 			["Dracthyr"] = "Lil' Donkey",
 		}
 
@@ -667,7 +669,7 @@ local function eventHandler(event)
 			-- elseif class == "DARKRANGER" then
 			-- 	flyingMount[classk] = "Grotto Netherwing Drake"
 			-- end
-			mountSlash = "/use "
+			-- mountSlash = "/use "
 			-- classMount[classk] = ""
 			groundMount[classk] = ""
 			pvpSkellySaber = "" 

@@ -14,7 +14,7 @@ local icons = {
 	["Tipipants"] = 134589,
 	["Fishy!"] = 136245,
 	["Cooky!"] = 133971,
-	["Timewalking"] = 463446,
+	-- ["Timewalking"] = 463446,
 	["PvP:Alliance"] = 463448,
 	["PvP:Horde"] = 463449,
 	["DEATHKNIGHT:1"] = 135770,
@@ -167,45 +167,49 @@ local function ZigiEq()
 	MakeEqSet("Fishy!")
 	MakeEqSet("Cooky!")
 	MakeEqSet("Casual")
-	MakeEqSet("Timewalking")
+	-- MakeEqSet("Timewalking")
 	MakeEqSet("PvP", icons["PvP:" .. faction])
 	DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: Standard Noon equipment sets have been added",0.5,1.0,0.0)
 
 end
 
 function SlashCmdList.ZIGILEVELNEWCHAR(msg, ...)
-	if msg == "eq" then
-		ZigiEq()
-	elseif msg == "save" then
-		ZigiSave()
-	elseif msg == "load" then
-		ZigiLoad()
-	elseif msg == "dragonzigi" then
-		ZigiLearnDragonriding()
-	elseif msg == "new" then
-		EditModeManagerFrame:SelectLayout(3)
-		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: Edit Mode Profile Applied",0.5,1.0,0.0)
-		SetCVar("autoLootDefault", 1)
-		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: autoLootDefault set to 1",0.5,1.0,0.0)
-		ZigiLoad()
-		ZigiEq()
-		ZigiLearnDragonriding()
-		-- Configure Battlefield Map
-		if not BattlefieldMapFrame then
-			BattlefieldMap_LoadUI()
-		end  
-		if BattlefieldMapFrame then
-			BattlefieldMapFrame:Show()
-			BattlefieldMapFrame:SetScale(1.4)
-			BattlefieldMapFrame:SetAlpha(.9)
-			BattlefieldMapFrame:SetPoint("TOPLEFT")
-			BattlefieldMapFrame.BorderFrame.CloseButton:Hide()
+	if not InCombatLockdown() then
+		if msg == "eq" then
+			ZigiEq()
+		elseif msg == "save" then
+			ZigiSave()
+		elseif msg == "load" then
+			ZigiLoad()
+		elseif msg == "dragonzigi" then
+			ZigiLearnDragonriding()
+		elseif msg == "new" then
+			EditModeManagerFrame:SelectLayout(3)
+			DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: Edit Mode Profile Applied",0.5,1.0,0.0)
+			SetCVar("autoLootDefault", 1)
+			DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: autoLootDefault set to 1",0.5,1.0,0.0)
+			ZigiLoad()
+			ZigiEq()
+			ZigiLearnDragonriding()
+			-- Configure Battlefield Map
+			if not BattlefieldMapFrame then
+				BattlefieldMap_LoadUI()
+			end  
+			if BattlefieldMapFrame then
+				BattlefieldMapFrame:Show()
+				BattlefieldMapFrame:SetScale(1.4)
+				BattlefieldMapFrame:SetAlpha(.9)
+				BattlefieldMapFrame:SetPoint("TOPLEFT")
+				BattlefieldMapFrame.BorderFrame.CloseButton:Hide()
+			end
+			DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: BattlefieldMapFrame configured and set.",0.5,1.0,0.0)
+			DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: We are all done here. Enjoy the leveling, Noon! :)",0.5,1.0,0.5)
+		elseif msg == "" then
+			DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: Zigi",0.5,1.0,0.0)
+		else
+			DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: Unacceptable Arguments to ZigiLevelNewChar.SlashCmdList",0.5,1.0,0.0)
 		end
-		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: BattlefieldMapFrame configured and set.",0.5,1.0,0.0)
-		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: We are all done here. Enjoy the leveling, Noon! :)",0.5,1.0,0.5)
-	elseif msg == "" then
-		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: Zigi",0.5,1.0,0.0)
 	else
-		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: Unacceptable Arguments to ZigiLevelNewChar.SlashCmdList",0.5,1.0,0.0)
+		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: Daddy blizerd doesn't want you to do that in combat, dippy doo! :)",0.5,1.0,0.0)
 	end
 end
