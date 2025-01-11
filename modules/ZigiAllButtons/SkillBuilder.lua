@@ -110,7 +110,7 @@ local classSkillList = {
 		[31687] = "Summon Water Elemental", 
 		[12472] = "Icy Veins", 
 		[365350] = "Arcane Surge",
-		[205022] = "Arcane Familiar", 
+		-- [205022] = "Arcane Familiar", 
 		[84714] = "Frozen Orb", 
 		[110959] = "Greater Invisibility", 
 		[30449] = "Spellsteal", 
@@ -708,6 +708,7 @@ local classSkillList = {
 		[386071] = "Disrupting Shout",
 	},
 	["DRUID"] = {
+		[8921] = "Moonfire",
 		[449193] = "Fluid Form", 
 		[18960] = "Teleport: Moonglade",
 		[193753] = "Dreamwalk",

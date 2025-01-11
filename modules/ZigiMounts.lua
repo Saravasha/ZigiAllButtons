@@ -121,7 +121,7 @@ local function eventHandler(event)
 
 			-- some exceptions
 			if race == "Mechagnome" then
-				flyingMount[classk] = ",Mechagon Peacekeeper"
+				flyingMount[classk] = "Mechagon Peacekeeper"
 			elseif race == "VoidElf" and class == "WARRIOR" then
 				flyingMount[classk] = ",Uncorrupted Voidwing"
 			end
@@ -168,7 +168,7 @@ local function eventHandler(event)
 			["Pandaren"] = "",
 			["Scourge"] = "Undercity Plaguebat,",
 			["Tauren"] = "Brown Kodo,",
-			["Troll"] = "Bloodfang Widow,Swift Zulian Tiger,Jani's Trashpile",
+			["Troll"] = "Bloodfang Widow,Swift Zulian Tiger,Jani's Trashpile,",
 			["VoidElf"] = "Starcursed Voidstrider,",
 			["Vulpera"] = "Alabaster Hyena,Springfur Alpaca,Elusive Quickhoof,Caravan Hyena,",
 			["Worgen"] = "Running Wild,",

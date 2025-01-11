@@ -155,6 +155,9 @@ function ZigiRunSwapper()
 			[2] = 503, --"The Smoldering",
 			[3] = 681, --"Winter's Envoy",
 		}
+		if not IsTitleKnown(61) then
+			SST[1] = 208 --"Seeker of Knowledge"
+		end
 		if not IsTitleKnown(681) then
 			SST[3] = 102 --"Merrymaker"
 		end
@@ -192,6 +195,9 @@ function ZigiRunSwapper()
 			[2] = 317, --"Captain",
 			[3] = 338, --"Shadowblade",
 		}
+		if not IsTitleKnown(338) then
+			SST[3] = 465 --"The Shrouded"
+		end
 	elseif classk == "PRIEST" then
 		SST = {
 			[1] = 99, --"The Argent Champion", 
@@ -263,9 +269,9 @@ function ZigiRunSwapper()
 		}	
 	elseif classk == "DARKRANGER" then
 		SST = {
-			[1] = 740, --"Malicious", 
-			[2] = 740, --"Malicious",
-			[3] = 740, --"Malicious",
+			[1] = 479, --"Malicious", 
+			[2] = 479, --"Malicious",
+			[3] = 479, --"Malicious",
 		}					
 	end
 

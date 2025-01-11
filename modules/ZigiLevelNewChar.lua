@@ -133,18 +133,47 @@ end
 local function ZigiLoad()
 	if ZigiLevelNewCharDB then
 		for slot, macroName in pairs(ZigiLevelNewCharDB) do
-			PickupAction(slot)
-			ClearCursor()
-
-			if macroName ~= "---" then
-				PickupMacro(macroName)
-				PlaceAction(slot)
+			if GetActionText(slot) == macroName or macroName == "---" then
+			else
+				DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar - ZigiAutoLoader - Updating: "..macroName.." @ "..slot,0.5,1.0,0.0)
+				-- print(slot, macroName)
+				PickupAction(slot)
 				ClearCursor()
+
+
+				if (macroName ~= "---") then
+					PickupMacro(macroName)
+					PlaceAction(slot)
+					ClearCursor()
+				end
 			end
 		end
 		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: Saved layout has been deployed",0.5,1.0,0.0)
 	else
 		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: There are no saved variables",0.5,1.0,0.0)
+	end
+end
+
+local function ZigiAutoLoader()
+	if ZigiLevelNewCharDB then
+		for slot, macroName in pairs(ZigiLevelNewCharDB) do
+			if GetActionText(slot) == macroName or macroName == "---" then
+			else
+				DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar - ZigiAutoLoader - Updating: "..macroName.." @ "..slot,0.5,1.0,0.0)
+				-- print(slot, macroName)
+				PickupAction(slot)
+				ClearCursor()
+
+
+				if (macroName ~= "---") then
+					PickupMacro(macroName)
+					PlaceAction(slot)
+					ClearCursor()
+				end
+			end
+		end
+	else
+		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar - ZigiAutoLoader: There are no saved variables",0.5,1.0,0.0)
 	end
 end
 
@@ -181,6 +210,8 @@ function SlashCmdList.ZIGILEVELNEWCHAR(msg, ...)
 			ZigiSave()
 		elseif msg == "load" then
 			ZigiLoad()
+		elseif msg == "autoLoader" then
+			ZigiAutoLoader()
 		elseif msg == "dragonzigi" then
 			ZigiLearnDragonriding()
 		elseif msg == "new" then

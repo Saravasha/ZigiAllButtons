@@ -15,7 +15,7 @@ function ZigiTargetCaller(target)
 			SendChatMessage(a.. " " ..f,"CHANNEL",c,1)
 		else
 			b.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(d,e.x,e.y))
-			if b.GetUserWaypointHyperlink() ~= nil then
+			if b.GetUserWaypointHyperlink() ~= nil and (d ~= nil or e ~= nil)  then
 				SendChatMessage(a.. " "..f.." at "..b.GetUserWaypointHyperlink() or "","CHANNEL",c,1)
 			end
 			b.ClearUserWaypoint()

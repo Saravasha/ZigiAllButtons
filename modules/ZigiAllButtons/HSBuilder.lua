@@ -107,11 +107,12 @@ function hsBuilder(type, macroCond, semiCol, class, slBP, z, eLevel, playerSpec,
 			["ROGUE"] = "\n/use Cursed Spyglass",
 			["PRIEST"] = "\n/use Steamy Romance Novel Kit\n/use For da Blood God!",
 			["DEATHKNIGHT"] = "\n/use Coldrage's Cooler",
-			["WARRIOR"] = "\n/cancelaura Tournament Favor\n/use Tournament Favor\n/use Kovork Kostume",
+			["WARRIOR"] = "\n/cancelaura Tournament Favor\n/use Tournament Favor\n/use Kovork Kostume\n/use Fyrakk's Frenzy",
 			["DRUID"] = "\n/cancelaura Make like a Tree\n/use Ancient's Bloom\n/use Primal Stave of Claw and Fur\n/use Dreamsurge Remnant",
 			["DEMONHUNTER"] = "\n/cancelaura Golden Hearthstone Card: Lord Jaraxxus\n/use Golden Hearthstone Card: Lord Jaraxxus",
 			["PIRATE"] = "\n/use Slightly-Chewed Insult Book\n/use Cursed Spyglass",
-			["SENTINEL_WARRIOR"] = "\n/use Owl Post",
+			["SENTINEL_HUNTER"] = "\n/use Friendsurge Defenders",
+			["SENTINEL_WARRIOR"] = "\n/use Owl Post\n/use Friendsurge Defenders",
 			["DARKRANGER"] = "\n/use Sylvanas' Music Box"
 		}
 
