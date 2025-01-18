@@ -23,6 +23,7 @@ local function eventHandler(event)
 		local class = ZG.Player_Info("class")
 		local classk = ZG.Player_Info("classk")
 		local level = ZG.Player_Info("level")
+		local playerSpec = ZG.Player_Info("playerSpec")
 		local eLevel = ZG.Player_Info("eLevel")
 		local slBP = ZG.Player_Info("slBP")
 		local z = ZG.Player_Info("z")
@@ -56,7 +57,7 @@ local function eventHandler(event)
 			["DRUID"] = "Wild Dreamrunner,Kaldorei Nightsaber,Pureheart Courser,Raven Lord",
 			["DEMONHUNTER"] = "Felsaber,Wild Dreamrunner,Lucid Nightmare,Grove Defiler,Illidari Felstalker,Incognitro, The Indecipherable Felcycle,Hateforged Blazecycle",
 			["EVOKER"] = "",
-			["PIRATE"] = "Ratstallion",
+			["PIRATE"] = "Ratstallion,Plunderlord's Midnight Crocolisk,Plunderlord's Golden Crocolisk",
 			["DARKRANGER"] = "Forsaken Warhorse,Warstitched Darkhound,Battle-Bound Warhound",
 		}
 
@@ -75,7 +76,7 @@ local function eventHandler(event)
 			["DRUID"] = ",Sky Golem,Ashenvale Chimaera,Leyfeather Hippogryph",
 			["DEMONHUNTER"] = ",Arcanist's Manasaber,Felfire Hawk,Corrupted Dreadwing,Azure Drake,Cloudwing Hippogryph,Leyfeather Hippogryph,Felsteel Annihilator",
 			["EVOKER"] = "",
-			["PIRATE"] = ",Siltwing Albatross,Gold-Toed Albatross,Quawks,Squawks,Royal Seafeather",
+			["PIRATE"] = ",Siltwing Albatross,Gold-Toed Albatross,Quawks,Squawks,Royal Seafeather,Hooktalon,Polly Roger",
 			["DARKRANGER"] = ",Vengeance",
 		}
 
@@ -269,7 +270,7 @@ local function eventHandler(event)
 		factionBike =  factionMounts[24]
 		factionHog = factionMounts[25]
 
-		-- Mount class spec parser
+		-- Mount class spec based mounts
 		if class == "SHAMAN" then
 			if playerSpec == 3 then
 				groundMount[classk] = "Snapback Scuttler"

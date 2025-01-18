@@ -102,9 +102,9 @@ function ZigiRunSwapper()
 			[3] = {"Drakks","Murkastrasza","Spyragos","Viridescent Duck","Mote of Nasz'uro", "Mallard Duckling"},
 		},
 		["PIRATE"] = {
-			[1] = {"Fathom","Sea Gull","Barnaby","Captain Nibs","Crackers","Greatwing Macaw","Pocket Cannon","Tideskipper","Cap'n Crackers"},
-			[2] = {"Fathom","Sea Gull","Barnaby","Captain Nibs","Crackers","Greatwing Macaw","Pocket Cannon","Tideskipper","Cap'n Crackers"},
-			[3] = {"Fathom","Sea Gull","Barnaby","Captain Nibs","Crackers","Greatwing Macaw","Pocket Cannon","Tideskipper","Cap'n Crackers"},
+			[1] = {"Fathom","Sea Gull","Barnaby","Captain Nibs","Crackers","Greatwing Macaw","Pocket Cannon","Tideskipper","Cap'n Crackers","Bubbles","Glamrok","Happy","Parley","Sparklesnap"},
+			[2] = {"Fathom","Sea Gull","Barnaby","Captain Nibs","Crackers","Greatwing Macaw","Pocket Cannon","Tideskipper","Cap'n Crackers","Bubbles","Glamrok","Happy","Parley","Sparklesnap"},
+			[3] = {"Fathom","Sea Gull","Barnaby","Captain Nibs","Crackers","Greatwing Macaw","Pocket Cannon","Tideskipper","Cap'n Crackers","Bubbles","Glamrok","Happy","Parley","Sparklesnap"},
 		},
 		["SENTINEL_HUNTER"] = {
 			[1] = {"Watcher of the Huntress","Darkshore Sentinel"},
