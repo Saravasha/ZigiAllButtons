@@ -126,6 +126,8 @@ local function eventHandler(event)
 			BattlefieldMapFrame.BorderFrame.CloseButton:Hide()
 		end
 
+		SetCVar("turnspeed", 240)
+
 		if class == "MAGE" then 
 			pwned = "Khadgar's Disenchanting Rod"
 		elseif class == "WARLOCK" then

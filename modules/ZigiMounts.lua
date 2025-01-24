@@ -65,7 +65,7 @@ local function eventHandler(event)
 		local flyingMount = {
 			["SHAMAN"] = ",Spectral Pterrorwing,Grand Wyvern,Kua'fon",
 			["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Arcanist's Manasaber,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm,Eve's Ghastly Rider",
-			["WARLOCK"] = ",Grove Defiler,Headless Horseman's Mount,Felsteel Annihilator,Antoran Gloomhound,Shackled Ur'zul,Eve's Ghastly Rider",
+			["WARLOCK"] = ",Grove Defiler,Headless Horseman's Mount,Felsteel Annihilator,Antoran Gloomhound,Ur'zul Fleshripper,Shackled Ur'zul,Eve's Ghastly Rider",
 			["MONK"] = "Astral Cloud Serpent",
 			["PALADIN"] = ",Highlord's Golden Charger,Lightforged Warframe,Invincible,Tyrael's Charger",
 			["HUNTER"] = ",Mimiron's Head,Clutch of Ji-Kun,Armored Skyscreamer,Dread Raven,Darkmoon Dirigible,Spirit of Eche'ro,Spectral Pterrorwing,Divine Kiss of Ohn'Ahra",
@@ -104,7 +104,7 @@ local function eventHandler(event)
 			flyingMount = { 
 				["SHAMAN"] = ",Spirit of Eche'ro,Grand Gryphon,Honeyback Harvester",
 				["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Arcanist's Manasaber,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm,Honeyback Harvester,Eve's Ghastly Rider",
-				["WARLOCK"] = ",Honeyback Harvester,Headless Horseman's Mount,Grove Defiler,Felsteel Annihilator,Shackled Ur'zul,Eve's Ghastly Rider",
+				["WARLOCK"] = ",Honeyback Harvester,Headless Horseman's Mount,Grove Defiler,Felsteel Annihilator,Ur'zul Fleshripper,Shackled Ur'zul,Eve's Ghastly Rider",
 				["MONK"] = "Astral Cloud Serpent",
 				["PALADIN"] = ",Highlord's Golden Charger,Lightforged Warframe,Invincible,Honeyback Harvester,Tyrael's Charger",
 				["HUNTER"] = ",Mimiron's Head,Clutch of Ji-Kun,Armored Skyscreamer,Dread Raven,Darkmoon Dirigible,Spirit of Eche'ro,Honeyback Harvester,Divine Kiss of Ohn'Ahra",
