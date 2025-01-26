@@ -86,18 +86,17 @@ local function eventHandler(event)
 		noPants = ZA.vars[49]
 		oOtas = ZA.vars[50]
 		bfaIsland = ZA.vars[51]
-		slBP = ZA.vars[52]
-		pennantClass = ZA.vars[53]
-		usableWeapons = ZA.vars[54]
-		usableWeaponEquipped = ZA.vars[55]
-		override = ZA.vars[56]
-		overrideModAlt = ZA.vars[57]
-		overrideModCtrl = ZA.vars[58]
-		mercenaryRacials = ZA.vars[59]
-		racials = ZA.vars[60]
-		dpsRacials = ZA.vars[61]
-		extraRacials = ZA.vars[62]
-		swapblaster = ZA.vars[63]
+		pennantClass = ZA.vars[52]
+		usableWeapons = ZA.vars[53]
+		usableWeaponEquipped = ZA.vars[54]
+		override = ZA.vars[55]
+		overrideModAlt = ZA.vars[56]
+		overrideModCtrl = ZA.vars[57]
+		mercenaryRacials = ZA.vars[58]
+		racials = ZA.vars[59]
+		dpsRacials = ZA.vars[60]
+		extraRacials = ZA.vars[61]
+		swapblaster = ZA.vars[62]
 
 		local slBP = ZG.Player_Info("slBP")
 		local class = ZG.Player_Info("class")
@@ -142,7 +141,9 @@ local function eventHandler(event)
 		if slBP and ZA.covToys[slBP] then
 			covToys = ZA.covToys[slBP]
 			covToys = covToys[random(#covToys)]
-			covToys = "\n/use "..covToys
+			if covToys ~= "" then
+				covToys = "\n/use "..covToys
+			end
 		end
 
 		-- if Instanced Content 
@@ -331,11 +332,11 @@ local function eventHandler(event)
 		end
 
 		-- print("slBP is: ",slBP)
-		if race ~= "BloodElf" and (level and eLevel) >= 25 then
+		if race ~= "BloodElf" and (level >= 25 and eLevel >= 25)  then
 			oOtas = "\n/use Orb of the Sin'dorei"
 		end
-		if (level and eLevel) < 20 then
-			oOtas = oOtas.."\n/use Toy Aarmor Set\n/use Toy Weapon Set"
+		if (level < 20 and eLevel < 20) then
+			oOtas = oOtas.."\n/use Toy Armor Set\n/use Toy Weapon Set"
 		else
 			oOtas = oOtas
 		end
@@ -867,20 +868,18 @@ local function eventHandler(event)
 				poS = ""
 				sigA = "Door of Shadows"
 			end
-			-- print(ZA.covTable[cov])
-			-- print(ZA.cov[slBP])
-			-- print(ZA.covTable[ZA.cov[slBP]])
-			-- print(ZA.covTable[ZA.cov[slBP]][class])
+			-- print("1. ZA.covTable[ZA.cov] = ",ZA.covTable[ZA.cov])
+			-- print("1. ZA.cov[slBP] = ",ZA.cov[slBP])
+			-- print("2. ZA.covTable[ZA.cov[slBP]] = ",ZA.covTable[ZA.cov[slBP]])
+			-- print("3. ZA.covTable[ZA.cov[slBP]][class] = ",ZA.covTable[ZA.cov[slBP]][class])
 			-- print("covA", covA)
-			if ZA.cov[slBP] ~= "" and ZA.covTable[ZA.cov[slBP]] ~= "" and ZA.covTable[ZA.cov[slBP]][class] ~= "" then
+			if ZA.covTable and ZA.cov and slBP and class then
 				covA = ZA.covTable[ZA.cov[slBP]][class]
-				-- print("covA = ",covA) 
 			end
+					-- print("covA = ",covA) 
+			-- if ZA.cov[slBP] ~= "" and ZA.covTable[ZA.cov[slBP]] ~= "" and ZA.covTable[ZA.cov[slBP]][class] ~= "" then
+			-- end
 			-- print("covA", covA)
-			-- hard exceptions
-			if class == "EVOKER" then 
-				covA = "Boon of the Covenants"
-			end
 		 
 		    -- Class Artifact Button, "§" Completed, note: Kanske kan hooka Heart Essence till fallback från Cov och Signature Ability? Sedan behöver vi hooka Ritual of Doom till Warlock Order Hall också.
 			-- Covenant and Signature Ability parser
@@ -1222,6 +1221,7 @@ local function eventHandler(event)
 				swapblaster = ""
 			end
 			
+
 			-- Main Class configuration
 			-- Shaman, Raxxy
 			if class == "SHAMAN" then
@@ -1271,7 +1271,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/use [mod:alt,@party4,help,nodead][@party2,help,nodead][@targettarget,help,nodead]Chain Heal"..override)
 				EditMacro("WSxGenQ",nil,nil,"/stopcasting [nomod:alt]\n/use "..(Get_Spell("Hex","[mod:alt,@focus,harm,nodead]",";") or "")..(Get_Spell("Tremor Totem","[mod:shift]",";") or "").."[help,nodead]Foot Ball;[nocombat,noexists]The Golden Banana;"..(Get_Spell("Wind Shear","[@mouseover,harm,nodead][]","") or "").."\n/use [nocombat,spec:3]Bubble Wand\n/cancelaura Bubble Wand")
 				EditMacro("WSxGenE",nil,nil,"#show [nocombat,noexists]Party Totem;"..(Get_Spell("Capacitor Totem","",";") or "").."Party Totem\n/use "..(Get_Spell("Capacitor Totem","[@cursor]","") or "").."\n/use Haunting Memento\n/use [nocombat,noexists]Party Totem")
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell("Capacitor Totem","[mod:alt,@player]",";") or "")..(Get_Spell({{"Ancestral Swiftness","",""},{"Nature's Swiftness","",""},}) or "")..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell("Capacitor Totem","[mod:alt,@player]",";") or "")..(Get_Spell({{"Ancestral Swiftness","",""},{"Nature's Swiftness","",""},}) or ""))
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/use [mod:alt,@player]Earthbind Totem;"..(Get_Spell("Healing Stream Totem","","") or "").."\n/use Arena Master's War Horn\n/use Totem of Spirits\n/use [nocombat]Void-Touched Souvenir Totem")
 				EditMacro("WSxGenR",nil,nil,"#show Earthbind Totem\n/stopspelltarget\n/use "..(Get_Spell("Totemic Projection","[mod:ctrl,@cursor]",";") or "").."[@mouseover,exists,nodead,mod:shift][@cursor,mod:shift]Earthbind Totem;"..(Get_Spell("Frost Shock","[@mouseover,harm,nodead][]",";") or "").."\n/targetenemy [noexists]\n/cleartarget [dead]")
 				EditMacro("WSxGenT",nil,nil,"/stopspelltarget\n/use "..(Get_Spell({{"Thunderstorm","[@mouseover,exists,nodead][]",""},{"Frost Shock","[@mouseover,harm,nodead][]",""},{"Earthgrab Totem","[@mouseover,exists,nodead][@cursor]",""},}) or "[noexists,nodead]Water Walking")..swapblaster.."\n/targetenemy [noexists]\n/cleartarget [dead]")
@@ -1320,7 +1320,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"#show Ice Block\n/use [mod:alt,@party4,help,nodead][@party2,help,nodead]Slow Fall\n/use [nocombat,noexists]Shado-Pan Geyser Gun\n/cancelaura [combat]Shado-Pan Geyser Gun\n/stopmacro [combat]\n/click ExtraActionButton1")
 				EditMacro("WSxGenQ",nil,nil,"#show\n/stopcasting [nomod]\n/use [mod:alt,@focus,harm,nodead]Polymorph;[mod:shift]Winning Hand;[@mouseover,harm,nodead][harm,nodead]Counterspell;Nightborne Guard's Vigilance\n/use [mod:shift]Ice Block;")
 				EditMacro("WSxGenE",nil,nil,"#show\n/use "..(Get_Spell({{"Mass Polymorph","[mod:alt]",";"},{"Blast Wave","[mod:alt]",";"},}) or "")..(Get_Spell("Frost Nova") or "").."\n/use Manastorm's Duplicator")
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Ice Floes","",""},{"Ice Nova","",""},}) or "").."\n/use [spec:2]Blazing Wings"..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Ice Floes","",""},{"Ice Nova","",""},}) or "").."\n/use [spec:2]Blazing Wings")
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/stopspelltarget\n/use "..(Get_Spell({{"Ring of Frost","[mod:alt,@player][@mouseover,exists,nodead][@cursor]",""},{"Ice Nova","",""},}) or ""))
 				EditMacro("WSxGenR",nil,nil,"#show "..(Get_Spell("Cone of Cold") or "").."\n/use "..(Get_Spell("Cone of Cold","[mod:shift]",";") or "")..(Get_Spell({{"Slow","",""},{"Frostbolt","",""},}) or "").."\n/targetenemy [noexists]")
 				EditMacro("WSxGenT",nil,nil,"/use "..(Get_Spell("Fire Blast","[@mouseover,harm,nodead][harm,nodead]",";") or "")..swapblaster.."\n/targetenemy [noexists]\n/use Titanium Seal of Dalaran\n/cleartarget [dead]\n/petattack [@mouseover,harm,nodead][]")
@@ -1391,7 +1391,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/use "..(Get_Spell({{"Agony","[@focus,harm,nodead]",""},{"Demonbolt","[@focus,harm,nodead]",""},}) or "").."\n/cleartarget [dead]\n/use Battle Standard of Coordination\n/stopmacro [combat]\n/use S.F.E. Interceptor")
 				EditMacro("WSxGenQ",nil,nil,"#show\n/stopcasting [nomod,nopet]\n/use [@focus,mod:alt,harm,nodead]Fear;[mod:shift]Demonic Circle;"..locPvPQ.."\n/use [nocombat,noexists]Vixx's Chest of Tricks\n/cancelaura Wyrmtongue Collector Disguise")
 				EditMacro("WSxGenE",nil,nil,"/stopspelltarget\n/use "..(Get_Spell("Shadowfury","[@mouseover,exists,nodead,nocombat,nomod][@cursor,nomod]",";") or "")..(Get_Spell({{"Soulburn","",""},{"Amplify Curse","",""},}) or "[@mouseover,harm,nodead][]Fear"))
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell("Shadowfury","[mod:alt,@player]",";") or "")..(Get_Spell("Fel Domination") or "")..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell("Shadowfury","[mod:alt,@player]",";") or "")..(Get_Spell("Fel Domination") or ""))
 				EditMacro("WSxSGen+E",nil,nil,"#show [nopet:Felhunter]Summon Felhunter;Spell Lock\n/use [mod:alt,@focus,harm,nodead,pet:Felhunter/Observer][@mouseover,harm,nodead,pet:Felhunter/Observer][pet:Felhunter/Observer]Spell Lock;Fel Domination\n/use [nopet:Felhunter/Observer]Summon Felhunter")
 				EditMacro("WSxGenR",nil,nil,"/use [mod:ctrl]Summon Sayaad;[mod:ctrl,pet]Lesser Invisibility;"..(Get_Spell("Shadowflame","[mod:shift]",";") or "")..(Get_Spell("Curse of Exhaustion","[@mouseover,harm,nodead,nomod:ctrl][nomod:ctrl]","") or "").."\n/targetenemy [noexists,nomod]\n/stopmacro [nomod:ctrl][nopet]\n/target pet\n/kiss\n/targetlasttarget [exists]")
 				EditMacro("WSxGenT",nil,nil,"/use [pet:Incubus/Succubus/Shivarra]Whiplash;[@mouseover,harm,nodead,pet:Felguard/Wrathguard][pet:Felguard/Wrathguard]!Pursuit;Command Demon\n/petattack [@mouseover,harm,nodead][]\n/targetenemy [noexists]\n/cleartarget [dead]")
@@ -1444,7 +1444,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/use "..(Get_Spell("Enveloping Mist","[mod:alt,@party4,help,nodead,nochanneling:Soothing Mist][@party2,nodead,nochanneling:Soothing Mist]Soothing Mist;[mod:alt,@party4,help,nodead][@party2,help,nodead]","") or "").."\n/use [nocombat,noexists]Pandaren Brewpack\n/cancelaura Pandaren Brewpack")
 				EditMacro("WSxGenQ",nil,nil,"#show\n/use "..(Get_Spell("Transcendence","[mod:shift]",";") or "")..(Get_Spell("Spear Hand Strike","[@mouseover,harm,nodead,nomod][harm,nodead,nomod]",";") or "")..(Get_Spell("Paralysis","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]","") or "").."\n/use [mod:shift]Celestial Defender's Medallion;The Golden Banana")
 				EditMacro("WSxGenE",nil,nil,"#show "..(Get_Spell({{"Flying Serpent Kick","",""},{"Clash","[@mouseover,harm,nodead][]",""},{"Soothing Mist","[@mouseover,help,nodead][]",""},{"Song of Chi-Ji","",""},{"Ring of Peace","",""},}) or "").."\n/use Prismatic Bauble\n/use [mod:alt]Leg Sweep;"..(Get_Spell({{"Flying Serpent Kick","",""},{"Soothing Mist","[@mouseover,help,nodead][]",""},{"Song of Chi-Ji","",""},{"Ring of Peace","",""},{"Clash","[@mouseover,harm,nodead][]",""},}) or "").."\n/targetenemy [noexists]")
-				EditMacro("WSxCGen+E",nil,nil,"#show Roll\n/use Expel Harm"..oOtas..covToys.."\n/use A Collection Of Me")
+				EditMacro("WSxCGen+E",nil,nil,"#show Roll\n/use Expel Harm\n/use A Collection Of Me")
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..(Get_Spell("Ring of Peace","[mod:alt,@player]",";") or "")..(Get_Spell({{"Song of Chi-Ji","",""},{"Clash","[@mouseover,harm,nodead][]",""},{"Summon Black Ox Statue","\n/target Black Ox\n/use [@cursor,nomod:alt]","\n/use [help,nodead]Provoke\n/targetlasttarget"},}) or "").."\n/targetenemy [noexists]\n/cleartarget [dead]")
 				EditMacro("WSxGenR",nil,nil,"#show\n/use "..(Get_Spell({{"Ring of Peace","[mod:shift,@cursor]",";"},{"Song of Chi-Ji","[mod:shift]",";"},}) or "")..(Get_Spell("Tiger's Lust","[mod:ctrl,@player][@mouseover,help,nodead][help,nodead]",";") or "")..(Get_Spell("Disable","[]",";") or "").."[@mouseover,harm,nodead][]Crackling Jade Lightning")
 				EditMacro("WSxGenT",nil,nil,"#show "..(Get_Spell({{"Revival","",""},{"Restoral","",""},{"Black Ox Brew","",""},{"Summon Jade Serpent Statue","",""},{"Summon Black Ox Statue","",""},{"Mystic Touch","",""},}) or "Crackling Jade Lightning").."\n/use [@mouseover,harm,nodead][harm,nodead]Crackling Jade Lightning"..swapblaster.."\n/targetenemy [noexists]\n/cleartarget [dead]")
@@ -1491,7 +1491,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/use [mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]Word of Glory")
 				EditMacro("WSxGenQ",nil,nil,"/use "..(Get_Spell("Repentance","[mod:alt,@focus,harm,nodead]",";") or "").."[mod:shift]Divine Shield;"..(Get_Spell({{"Rebuke","[@mouseover,harm,nodead][]",";"},{"Hammer of Justice","[@mouseover,harm,nodead][]",";"},}) or ""))
 				EditMacro("WSxGenE",nil,nil,"#show\n/use "..(Get_Spell({{"Divine Favor","[mod:alt]",";"},{"Hand of Divinity","[mod:alt]",";"},}) or "").."[@mouseover,help,nodead][]Word of Glory")
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/cast [@mouseover,help,nodead][]Lay on Hands\n/use [help,nodead]Apexis Focusing Shard\n/stopspelltarget"..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/cast [@mouseover,help,nodead][]Lay on Hands\n/use [help,nodead]Apexis Focusing Shard\n/stopspelltarget")
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Repentance","[@mouseover,harm,nodead][]",""},{"Blinding Light","",""},}) or "Hammer of Justice"))
 				EditMacro("WSxGenR",nil,nil,(Get_Spell("Aura Mastery","#show ","\n") or "").."/use "..(Get_Spell("Divine Steed","[mod:ctrl]",";") or "")..(Get_Spell("Blessing of Freedom","[@mouseover,help,nodead][help,nodead]",";") or "")..(Get_Spell("Avenger's Shield","[@mouseover,harm,nodead][]","") or "Judgment").."\n/use [mod:ctrl]Prismatic Bauble")
 				EditMacro("WSxGenT",nil,nil,"/stopspelltarget\n/use "..(Get_Spell({{"Holy Armaments","[mod:alt,@player][@mouseover,exists,nodead][@cursor]",""},{"Turn Evil","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";"},}) or "")..swapblaster.."\n/use Titanium Seal of Dalaran\n/use \n/targetenemy [noexists]\n/cleartarget [dead]\n/use [nocombat]Wayfarer's Bonfire")
@@ -1538,7 +1538,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/run local c,arr = C_Minimap,{12,11,10,9,8,6,5,4,7,1} for _,v in pairs(arr) do local name, _, active = c.GetTrackingInfo(v) if (name and active ~= true) then active = true c.SetTracking(v,true) return active end end\n/use Overtuned Corgi Goggles")
 				EditMacro("WSxGenQ",nil,nil,"/use [mod:alt,@player]Freezing Trap;[mod:shift]!Aspect of the Turtle;"..(Get_Spell({{"Muzzle","[@mouseover,harm,nodead][harm,nodead]",";"},{"Counter Shot","[@mouseover,harm,nodead][harm,nodead]",";"},{"Harpoon","[@mouseover,harm,nodead][harm,nodead]",";"}}) or "").."The Golden Banana\n/use Angler's Fishing Spear")
 				EditMacro("WSxGenE",nil,nil,"/targetenemy [noharm]\n/stopspelltarget\n/use [mod:alt,@mouseover,exists,nodead][mod:alt,@cursor]Flare;"..(Get_Spell({{"Bursting Shot","",";"},{"Scatter Shot","[@mouseover,harm,nodead][harm,nodead]",";"},{"Harpoon","[@mouseover,harm,nodead][harm,nodead]",";"},{"Intimidation","[@mouseover,harm,nodead][harm,nodead]",";"},{"Binding Shot","[@mouseover,exists,nodead][@cursor]",";"},{"Kill Command","[@mouseover,exists,nodead][@cursor]",";"},}) or "").."[nocombat]Party Totem\n/cleartarget [dead]\n/equipset [noequipped:Two-Hand,spec:3,nomod]Menkify!")
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Binding Shot","[mod:alt,@player]",";"},{"Scatter Shot","[mod:alt,@focus,harm,nodead]",";"},}) or "")..(Get_Spell("Misdirection","[@mouseover,help,nodead][help,nodead][@focus,help,nodead][pet,@pet]","") or "")..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Binding Shot","[mod:alt,@player]",";"},{"Scatter Shot","[mod:alt,@focus,harm,nodead]",";"},}) or "")..(Get_Spell("Misdirection","[@mouseover,help,nodead][help,nodead][@focus,help,nodead][pet,@pet]","") or ""))
 				EditMacro("WSxSGen+E",nil,nil,"/stopspelltarget\n/use "..(Get_Spell("Tar Trap","[mod:alt,@player]",";") or "")..(Get_Spell({{"Binding Shot","[@mouseover,exists,nodead][@cursor]",""},{"Scatter Shot","",""},}) or "[@player]Flare").."\n/use [nocombat,noexists]Goblin Fishing Bomb\n/use Bloodmane Charm")
 				EditMacro("WSxGenT",nil,nil,"#show Feign Death\n/use [@mouseover,harm,nodead][harm,nodead]Hunter's Mark;Hunter's Call"..swapblaster.."\n/targetenemy [noexists]\n/cleartarget [dead]\n/petattack [@mouseover,harm,nodead][harm,nodead]")
 				EditMacro("WSxSGen+T",nil,nil,"/stopspelltarget\n/use "..(Get_Spell({{"Intimidation","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]",""},{"High Explosive Trap","[mod:alt,@player][@mouseover,exists,nodead][@cursor]",""},{"Sentinel","[mod:alt,@player][@mouseover,exists,nodead][@cursor]",""},{"Fetch","",""},}) or "Hunter's Call"))
@@ -1582,7 +1582,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/use [mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]Tricks of the Trade")
 				EditMacro("WSxGenQ",nil,nil,"#show\n/use "..(Get_Spell("Blind","[mod:alt,@focus,harm,nodead]",";") or "")..(Get_Spell("Cloak of Shadows","[mod:shift]",";") or "").."[@mouseover,harm,nodead][harm,nodead]Kick;The Golden Banana\n/use [spec:2]Rime of the Time-Lost Mariner;Sira's Extra Cloak\n/use [mod:shift]Poison Extraction Totem")
 				EditMacro("WSxGenE",nil,nil,"/use "..(Get_Spell("Cheap Shot","[mod:alt,@focus,harm,nodead,nostance:0][nostance:0]",";") or "")..(Get_Spell("Shadow Dance","[stance:0,combat]",";") or "")..(Get_Spell("Vanish","[stance:0,combat]",";") or "").."\n/use !Stealth\n/use [nostealth,spec:2,nocombat]Iron Buccaneer's Hat")
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Thistle Tea","",""},{"Tricks of the Trade","[@focus,help,nodead][@mouseover,help,nodead][help,nodead][@party1,help,nodead]",""},}) or "").."\n/use Seafarer's Slidewhistle"..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Thistle Tea","",""},{"Tricks of the Trade","[@focus,help,nodead][@mouseover,help,nodead][help,nodead][@party1,help,nodead]",""},}) or "").."\n/use Seafarer's Slidewhistle")
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Garrote","[mod:alt,@focus,harm,nodead,nostance:0][nostance:0]",";"},{"Cheap Shot","[mod:alt,@focus,harm,nodead,nostance:0][nostance:0]",";"},}) or "")..(Get_Spell("Shadow Dance","[stance:0,combat]",";") or "")..(Get_Spell("Vanish","[stance:0,combat]","") or "").."\n/use !Stealth\n/use [nostealth]Hourglass of Eternity")
 				EditMacro("WSxGenR",nil,nil,"/stopspelltarget\n/use [@mouseover,exists,nodead,mod:ctrl][@cursor,mod:ctrl]Distract;"..(Get_Spell({{"Poisoned Knife","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";"},{"Pistol Shot","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";"},{"Shuriken Toss","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";"},}) or "")..(Get_Spell("Shadowstep","[@mouseover,help,nodead][help,nodead]",";") or "").."Horse Head Costume\n/targetenemy [noexists]")
 				EditMacro("WSxGenT",nil,nil,"/use "..(Get_Spell("Gouge","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]",";") or "")..swapblaster.."\n/stopattack\n/targetenemy [noexists]\n/cleartarget [dead]\n/stopspelltarget\n/use !Stealth")
@@ -1637,7 +1637,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/use [@focus,spec:3,harm,nodead]Devouring Plague;[mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]Power Word: Shield\n/use Battle Standard of Coordination\n/use [@party2]Apexis Focusing Shard")
 				EditMacro("WSxGenQ",nil,nil,"#show\n/use "..(Get_Spell({{"Mind Control","[mod:alt,@focus,harm,nodead]",";"},{"Dominate Mind","[mod:alt,@focus,harm,nodead]",";"},}) or "")..(Get_Spell("Void Shift","[@mouseover,help,nodead][help,nodead]",";") or "")..(Get_Spell({{"Silence","[@mouseover,harm,nodead][]",""},{"Mind Control","[@mouseover,harm,nodead][]",""},{"Dominate Mind","[@mouseover,harm,nodead][]",""},}) or "").."\n/use Forgotten Feather")
 				EditMacro("WSxGenE",nil,nil,"#show "..(Get_Spell({{"Psychic Scream","",""},{"Holy Nova","",""},}) or "").."\n/stopspelltarget\n/use "..(Get_Spell("Mass Dispel","[mod:alt,@mouseover,exists,nodead][mod:alt,@cursor]",";") or "").."[nomod,nocombat,noexists]Party Totem"..(Get_Spell({{"Psychic Scream","\n/use [nomod]",""},{"Holy Nova","\n/use [nomod]",""},}) or ""))
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use Desperate Prayer\n/use [@mouseover,help,nodead][help,nodead][@player]Power Word: Life\n/use A Collection Of Me"..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/use Desperate Prayer\n/use [@mouseover,help,nodead][help,nodead][@player]Power Word: Life\n/use A Collection Of Me")
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..(Get_Spell("Mass Dispel","[mod:alt,@player]",";") or "")..(Get_Spell("Psychic Scream","[@mouseover,harm,nodead][]","") or "").."\n/use Thistleleaf Branch\n/cancelaura Thistleleaf Disguise")
 				EditMacro("WSxGenR",nil,nil,"/use "..(Get_Spell("Void Tendrils","[mod:shift]",";") or "")..(Get_Spell({{"Angelic Feather","[mod:ctrl,@player][@cursor]",""},{"Power Word: Shield","[mod:ctrl,@player][@mouseover,help,nodead][]",""},}) or "").."\n/stopspelltarget")
 				EditMacro("WSxGenT",nil,nil,"#show "..(Get_Spell({{"Holy Word: Chastise","",""},{"Psychic Horror","",""},{"Power Word: Barrier","",""},{"Evangelism","",""},}) or "")..swapblaster.."\n/stopspelltarget"..(Get_Spell("Mind Soothe","\n/use [mod:alt,@player][@mouseover,exists,nodead][@cursor]","") or ""))				
@@ -1689,7 +1689,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/clearfocus [dead]\n/use Stolen Breath")
 				EditMacro("WSxGenQ",nil,nil,"/use "..(Get_Spell("Asphyxiate","[mod:alt,@focus,harm,nodead]",";") or "").."[mod:shift]Lichborne;"..(Get_Spell("Mind Freeze","[@mouseover,harm,nodead][]","") or ""))
 				EditMacro("WSxGenE",nil,nil,"#show\n/use [mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]Death Grip\n/startattack\n/cleartarget [dead]\n/targetenemy [noharm]")
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Horn of Winter","",""},{"Blood Tap","",""},}) or "")..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Horn of Winter","",""},{"Blood Tap","",""},}) or ""))
 				EditMacro("WSxSGen+E",nil,nil,"#show "..(Get_Spell({{"Blinding Sleet","",""},{"Rune Tap","",""},{"Blood Tap","",""},}) or "").."\n/use "..(Get_Spell("Gorefiend's Grasp","[mod:alt,@player]",";") or "")..(Get_Spell({{"Blinding Sleet","",""},{"Rune Tap","",""},{"Blood Tap","",""},}) or ""))
 				EditMacro("WSxGenR",nil,nil,"#show\n/use "..(Get_Spell("Gorefiend's Grasp","[@mouseover,exists,nodead,mod:shift][mod:shift]",";") or "")..(Get_Spell("Wraith Walk","[mod:ctrl]!",";") or "")..(Get_Spell("Chains of Ice","[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]","") or "").."\n/targetenemy [noexists]")
 				if playerSpec == 3 then override = "[nopet]Raise Dead;[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][pet]Leap"
@@ -1751,8 +1751,8 @@ local function eventHandler(event)
 					override = Get_Spell("Whirlwind","","") or ""
 				end		
 				EditMacro("WSxGen6",nil,nil,"#show\n/use "..(Get_Spell({{"Bladestorm","[mod:ctrl]",";"},{"Recklessness","[mod:ctrl]",";"},{"Avatar","[mod:ctrl]",";"},}) or "")..override.."\n/startattack\n/use Words of Akunda")
-				EditMacro("WSxSGen+6",nil,nil,"/use "..(Get_Spell({{"Ravager","[@player]",""},{"Bladestorm","",""},{"Rampage","",""},{"Sweeping Strikes","",""},{"Slam","",""},}) or "[spec:3]Shield Block").."\n/targetenemy [noexists]\n/startattack")
-				EditMacro("WSxGen8",nil,nil,"#show \n/use "..(Get_Spell({{"Recklessness","",""},{"Skullsplitter","",""},{"Cleave","",""},{"Sweeping Strikes","",""},{"Champion's Spear","[@player,mod][@cursor]",""},{"Challenging Shout","",""},{"Whirlwind","",""},}) or ""))
+				EditMacro("WSxSGen+6",nil,nil,"/use "..(Get_Spell({{"Ravager","[@player]",""},{"Thunderous Roar","",""},{"Bladestorm","",""},{"Rampage","",""},{"Sweeping Strikes","",""},{"Slam","",""},}) or "[spec:3]Shield Block").."\n/targetenemy [noexists]\n/startattack")
+				EditMacro("WSxGen8",nil,nil,"#show \n/use "..(Get_Spell({{"Recklessness","",""},{"Skullsplitter","",""},{"Sweeping Strikes","",""},{"Cleave","",""},{"Champion's Spear","[@player,mod][@cursor]",""},{"Challenging Shout","",""},{"Whirlwind","",""},}) or ""))
 				EditMacro("WSxGen9",nil,nil,"#show\n/use "..(Get_Spell({{"Champion's Spear","[@player,mod][@cursor]",""},{"Cleave","",""},{"Sweeping Strikes","",""},}) or "Slam"))
 				EditMacro("WSxCSGen+2",nil,nil,"")
 				EditMacro("WSxCSGen+3",nil,nil,"/use [@focus,harm,nodead]Rend;Vrykul Toy Boat\n/use [nocombat]Vrykul Toy Boat Kit")
@@ -1760,7 +1760,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"//use [mod:alt,@party4,help,nodead][@party2,help,nodead][@targettarget,help,nodead]Intervene")
 				EditMacro("WSxGenQ",nil,nil,"#show Pummel\n/use "..(Get_Spell("Storm Bolt","[mod:alt,@focus,harm,nodead]",";") or "")..(Get_Spell("Berserker Rage","[mod:shift]",";") or "").."[@mouseover,harm,nodead,nomod]Charge\n/use [@mouseover,harm,nodead,nomod][nomod]Pummel\n/use Mote of Light\n/use World Shrinker")
 				EditMacro("WSxGenE",nil,nil,"#show\n/use [@mouseover,harm,nodead][]Charge\n/use [noexists,nocombat]Arena Master's War Horn\n/startattack\n/cleartarget [dead][help]\n/targetenemy [noharm]\n/use Prismatic Bauble")
-				EditMacro("WSxCGen+E",nil,nil,"#show Battle Shout\n/use "..(Get_Spell("Last Stand","","") or "").."\n/use Outrider's Bridle Chain"..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show Battle Shout\n/use "..(Get_Spell("Last Stand","","") or "").."\n/use Outrider's Bridle Chain")
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Intimidating Shout","[@mouseover,harm,nodead][]",""},{"Demoralizing Shout","[@mouseover,harm,nodead][]",""},}) or "").."\n/startattack\n/targetenemy [noexists]\n/targetlasttarget")
 				EditMacro("WSxGenR",nil,nil,"#show\n/use "..(Get_Spell("Avatar","[mod:ctrl]",";") or "")..(Get_Spell("Piercing Howl","[mod:shift]",";") or "")..(Get_Spell("Intervene","[@mouseover,help,nodead,nomod][help,nodead,nomod]","") or "").."\n/use [mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]Hamstring\n/startattack")
 				EditMacro("WSxGenT",nil,nil,"#show "..(Get_Spell("Challenging Shout","","") or "").."\n/use [@mouseover,harm,nodead][]Heroic Throw"..swapblaster.."\n/targetenemy [noexists]\n/cleartarget [dead]\n/use Blight Boar Microphone")
@@ -1818,7 +1818,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/use [mod:alt,@party4,help,nodead,spec:4][@focus,spec:4,help,nodead][@party2,help,nodead,spec:4][@targettarget,help,nodead,spec:4]Lifebloom;[mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead][@targettarget,help,nodead]Rejuvenation")
 				EditMacro("WSxGenQ",nil,nil,"/use "..(Get_Spell("Cyclone","[mod:alt,@focus,harm,nodead]",";") or "")..(Get_Spell({{"Skull Bash","[@mouseover,harm,nodead,form:1/2][form:1/2]",";[noform:1/2]Cat Form"},{"Solar Beam","[@mouseover,harm,nodead][]",""},{"Ursol's Vortex","[@cursor]",""},}) or ""))
 				EditMacro("WSxGenE",nil,nil,"#show "..(Get_Spell({{"Incapacitating Roar","",""},{"Mighty Bash","",""},{"Ursol's Vortex","",""},{"Mass Entanglement","",""},{"Cyclone","",""},}) or "").."\n/use "..(Get_Spell("Frenzied Regeneration","[noform:1,mod:alt]Bear Form;[form:1,mod:alt]",";") or "")..(Get_Spell("Wild Charge","[help,nodead,noform][form:1/2]","") or "").."\n/use [combat,noform:1/2]Bear Form(Shapeshift);[noform:1]!Prowl\n/targetenemy [noexists]\n/cancelform [help,nodead]\n/use [nostealth]Prismatic Bauble")
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell("Solar Beam","[mod:alt,@focus,harm,nodead]",";") or "")..(Get_Spell({{"Nature's Swiftness","",""},{"Renewal","",""},{"Frenzied Regeneration","[noform:1]Bear Form;[form:1]",""},}) or "").."\n/use [nocombat]Mylune's Call"..oOtas..covToys)	
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell("Solar Beam","[mod:alt,@focus,harm,nodead]",";") or "")..(Get_Spell({{"Nature's Swiftness","",""},{"Renewal","",""},{"Frenzied Regeneration","[noform:1]Bear Form;[form:1]",""},}) or "").."\n/use [nocombat]Mylune's Call")	
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Ursol's Vortex","[mod:alt,@player]",";"},{"Solar Beam","[mod:alt,@focus,harm,nodead]",";"},}) or "")..(Get_Spell({{"Incapacitating Roar","",""},{"Mighty Bash","",""},{"Solar Beam","[@mouseover,harm,nodead][]",""},}) or "").."\n/use [nomod]!Prowl")
 				EditMacro("WSxGenR",nil,nil,(Get_Spell("Wild Charge","/cancelform [form,@mouseover,help,nodead,nomod]\n/use [@mouseover,help,nodead,nomod]","\n") or "").."/use "..(Get_Spell("Stampeding Roar","[mod:ctrl]",";") or "")..(Get_Spell("Typhoon","[nomod:shift]",";") or "")..(Get_Spell({{"Ursol's Vortex","[@cursor,mod:shift][nomod,@cursor]",""},{"Mass Entanglement","[mod:shift][nomod]",""},}) or "[@mouseover,harm,nodead][]Entangling Roots"))
 				EditMacro("WSxGenT",nil,nil,"#show "..(Get_Spell("Frenzied Regeneration") or "Entangling Roots").."\n/use [mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][harm,nodead]Entangling Roots"..swapblaster.."\n/targetenemy [noexists]\n/cleartarget [dead]")
@@ -1863,7 +1863,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/clearfocus")
 				EditMacro("WSxGenQ",nil,nil,"/use "..(Get_Spell("Imprison","[mod:alt,@focus,harm,nodead]",";") or "").."[@mouseover,harm,nodead][]Disrupt")
 				EditMacro("WSxGenE",nil,nil,"#show\n/stopspelltarget\n/use "..(Get_Spell("Sigil of Misery","[@mouseover,exists,nodead,nomod:alt][@cursor,nomod:alt]",";") or "")..(Get_Spell("Chaos Nova","[mod:alt][]","") or ""))
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell("Sigil of Misery","[mod:alt,@player]","") or "")..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell("Sigil of Misery","[mod:alt,@player]","") or ""))
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/use "..(Get_Spell({{"Sigil of Silence","[mod:alt,@player][@cursor]",""},{"Sigil of Misery","[mod:alt,@player][@cursor]",""},}) or ""))
 				EditMacro("WSxGenR",nil,nil,"#show\n/use "..(Get_Spell("Netherwalk","[mod:ctrl]!",";") or "")..(Get_Spell("Sigil of Chains","[mod:ctrl,@player][mod:shift,@cursor]",";") or "").."[mod:alt,@focus,harm,nodead][@mouseover,harm,nodead][]Throw Glaive\n/startattack")
 				EditMacro("WSxGenT",nil,nil,"#show\n/use !Spectral Sight"..swapblaster.."\n/targetenemy [noexists]\n/cleartarget [dead]")
@@ -1910,7 +1910,7 @@ local function eventHandler(event)
 				EditMacro("WSxCSGen+5",nil,nil,"/use "..(Get_Spell("Blistering Scales","[mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]","\n/use ") or "")..(Get_Spell("Echo","[mod:alt,@party4,help,nodead][@focus,help,nodead][@party2,help,nodead]","\n/use ") or "").."Battle Standard of Coordination\n/use [@party2]Apexis Focusing Shard")
 				EditMacro("WSxGenQ",nil,nil,"/use "..(Get_Spell("Sleep Walk","[mod:alt,@focus,harm,nodead]",";") or "")..(Get_Spell("Quell","[@mouseover,harm,nodead][]","") or ""))
 				EditMacro("WSxGenE",nil,nil,"#show\n/use Tail Swipe")
-				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell("Oppressing Roar","","") or "Hover")..oOtas..covToys)
+				EditMacro("WSxCGen+E",nil,nil,"#show\n/use "..(Get_Spell("Oppressing Roar","","") or "Hover"))
 				EditMacro("WSxSGen+E",nil,nil,"#show\n/use [@mouseover,help,nodead][help,nodead][@player]Emerald Blossom")
 				EditMacro("WSxGenR",nil,nil,"#show\n/stopspelltarget\n/use "..(Get_Spell({{"Time Spiral","[mod:ctrl]",";"},{"Spatial Paradox","[mod:ctrl]",";"},}) or "[mod:ctrl]Hover;")..(Get_Spell("Landslide","[@mouseover,exists,nodead,nomod][@cursor,nomod]",";") or "[nomod]Wing Buffet;").."[mod:shift]Wing Buffet\n/startattack")
 				EditMacro("WSxGenT",nil,nil,"#show\n/use "..(Get_Spell("Verdant Embrace","[@mouseover,help,nodead][]","") or "")..swapblaster.."\n/targetenemy [noexists]\n/cleartarget [dead]")
@@ -1935,6 +1935,9 @@ local function eventHandler(event)
 					EditMacro("WSxCAGen+N",nil,nil,"/run if not InCombatLockdown()then local N=UnitName(\"target\") EditMacro(\"WSxCGen+T\",nil,nil,\"\\#show Prescience\\n/use [@\"..N..\"]Prescience\\n/stopspelltarget\", nil)print(\"PSci 2 : \"..N)else print(\"Combat?\")end")
 				end 
 			end -- avslutar class
+			-- toys: injecting ootas..covToys into macroBody
+			local _,_,body = GetMacroInfo("WSxCGen+E")
+			EditMacro("WSxCGen+E",nil,nil,body..oOtas..covToys)
 		end	-- avslutar racials[race]			
 	end -- events
 end

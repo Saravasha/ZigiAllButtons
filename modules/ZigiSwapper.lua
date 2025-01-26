@@ -137,11 +137,11 @@ function ZigiRunSwapper()
 	if classk == "SHAMAN" then
 		SST = {
 			-- [1] = 255, --"Mistwalker",
-			[1] = 479, --"Farseer", 
+			[1] = 336, --"Farseer", 
 			[2] = 302, --"Lord of War",
 			[3] = 405, --"of the Deeps",
 		}
-		if not IsTitleKnown(479) then
+		if not IsTitleKnown(336) then
 			SST[1] = 221 --"the Stormbreaker"
 		end
 		if sex == 3 then

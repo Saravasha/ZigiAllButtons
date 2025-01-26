@@ -1,3 +1,4 @@
+-- ZG class file
 ZG = {}
 
 -- Static vars set into ZG parent table, invocable throughout the global scope
@@ -198,10 +199,16 @@ function ZG.Player_Info(method)
 		local level = UnitLevel("player")
 		local eLevel = UnitEffectiveLevel("player")
 		local slBP = C_Covenants.GetActiveCovenantID(ZG.covenantsEnum)
-		if (slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and ZG.slZones[z]) or (slBP == 0 and ZG.slZones[z]) then
-			slBP = 5
-		elseif slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and not ZG.slZones[z] then
-			slBP = 6
+		if slBP == 0 then
+			if (level > 50) or (eLevel > 50) then
+				if (level < 60) or (eLevel < 60) then
+					if ZG.slZones[z] then
+						slBP = 5
+					elseif not ZG.slZones[z] then
+						slBP = 6
+					end
+				end
+			end
 		end
 		ZG.slBP = slBP
 		method = slBP

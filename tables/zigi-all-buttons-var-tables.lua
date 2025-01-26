@@ -1,3 +1,5 @@
+-- ZA class file
+
 ZA = {}
 
 ZA.vars = {
@@ -52,22 +54,21 @@ ZA.vars = {
 	[49] = "",
 	[50] = "\n/use Orb of Deception",
 	[51] = "",
-	[52] = "",
-	[53] = "\n/use Honorable Pennant",
-	[54] = {"Iridal, the Earth's Master", "Dreambinder, Loom of the Great Cycle", "Djaruun, Pillar of the Elder Flame","Cruel Dreamcarver","Kharnalex, The First Light"},
+	[52] = "\n/use Honorable Pennant",
+	[53] = {"Iridal, the Earth's Master", "Dreambinder, Loom of the Great Cycle", "Djaruun, Pillar of the Elder Flame","Cruel Dreamcarver","Kharnalex, The First Light"},
+	[54] = "",
 	[55] = "",
 	[56] = "",
 	[57] = "",
-	[58] = "",
+	[58] = {},
 	[59] = {},
 	[60] = {},
 	[61] = {},
-	[62] = {},
-	[63] = "\n/use [help,nocombat]Swapblaster"
+	[62] = "\n/use [help,nocombat]Swapblaster"
 }
 
 ZA.cov = {
-	[0] = "",
+	[0] = "Uninitiated",
 	[1] = "Kyrian",
 	[2] = "Venthyr",
 	[3] = "Night Fae",
@@ -78,7 +79,21 @@ ZA.cov = {
 
 -- covTable[cov[slBP][class]]
 ZA.covTable = {
-	[""] = {},
+	["Uninitiated"] = {
+		["SHAMAN"] = "",
+		["MAGE"] = "",
+		["WARLOCK"] = "",
+		["MONK"] = "",
+		["PALADIN"] = "",
+		["HUNTER"] = "",
+		["ROGUE"] = "",
+		["PRIEST"] = "",
+		["DEATHKNIGHT"] = "",
+		["WARRIOR"] = "",
+		["DRUID"] = "",
+		["DEMONHUNTER"] = "",
+		["EVOKER"] = "",
+	},
 	["Kyrian"] = {
 		["SHAMAN"] = "Vesper Totem",
 		["MAGE"] = "Radiant Spark",
@@ -92,6 +107,7 @@ ZA.covTable = {
 		["WARRIOR"] = "Spear of Bastion",
 		["DRUID"] = "Kindred Spirits",
 		["DEMONHUNTER"] = "Elysian Decree",
+		["EVOKER"] = "Boon of the Covenants",
 	},
 	["Necrolord"] = {
 		["SHAMAN"] = "Primordial Wave",
@@ -106,6 +122,7 @@ ZA.covTable = {
 		["WARRIOR"] = "Conqueror's Banner",
 		["DRUID"] = "Adaptive Swarm(Necrolord)",
 		["DEMONHUNTER"] = "Fodder to the Flame",
+		["EVOKER"] = "Boon of the Covenants",
 	},
 	["Night Fae"] = {
 		["SHAMAN"] = "Fae Transfusion",
@@ -120,6 +137,7 @@ ZA.covTable = {
 		["WARRIOR"] = "Ancient Aftershock",
 		["DRUID"] = "Convoke the Spirits",
 		["DEMONHUNTER"] = "The Hunt",
+		["EVOKER"] = "Boon of the Covenants",
 	},
 	["Venthyr"] = {
 		["SHAMAN"] = "Chain Harvest",
@@ -134,6 +152,37 @@ ZA.covTable = {
 		["WARRIOR"] = "Condemn",
 		["DRUID"] = "Ravenous Frenzy",
 		["DEMONHUNTER"] = "Sinful Brand",
+		["EVOKER"] = "Boon of the Covenants",
+	},
+	["Mawsworn"] = {
+		["SHAMAN"] = "",
+		["MAGE"] = "",
+		["WARLOCK"] = "",
+		["MONK"] = "",
+		["PALADIN"] = "",
+		["HUNTER"] = "",
+		["ROGUE"] = "",
+		["PRIEST"] = "",
+		["DEATHKNIGHT"] = "",
+		["WARRIOR"] = "",
+		["DRUID"] = "",
+		["DEMONHUNTER"] = "",
+		["EVOKER"] = "",
+	},
+	["Enlightened"] = {
+		["SHAMAN"] = "",
+		["MAGE"] = "",
+		["WARLOCK"] = "",
+		["MONK"] = "",
+		["PALADIN"] = "",
+		["HUNTER"] = "",
+		["ROGUE"] = "",
+		["PRIEST"] = "",
+		["DEATHKNIGHT"] = "",
+		["WARRIOR"] = "",
+		["DRUID"] = "",
+		["DEMONHUNTER"] = "",
+		["EVOKER"] = "",
 	},
 }
 
