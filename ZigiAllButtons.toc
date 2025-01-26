@@ -4,8 +4,8 @@
 
 ## Author: Raxana, Queen ov all Noons
 
-globals\global-vars.lua
-tables\zigi-all-buttons-var-tables.lua
+globals\ZG.class.lua
+tables\ZA.class.lua
 
 modules\ZigiAllButtons\ConsumableBuilder.lua
 modules\ZigiAllButtons\ConsumableTrader.lua
