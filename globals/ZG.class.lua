@@ -105,6 +105,8 @@ ZG.twwZones = {
 	["Hallowfall"] = true,
 	["Azj-Kahet"] = true,
 	["Khaz Algar"] = true,
+	["The Wormlands"] = true, -- Azj-Kahet Subzone
+	["Undermine"] = true,
 }
 
 ZG.dfZones = {
@@ -304,30 +306,36 @@ end
 
 function ZG.World_Event()
 	C_Calendar.SetMonth(0)
-	local gHI = C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1) and C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, 1).name or ""
+	
+	local currentDay = C_DateAndTime.GetCurrentCalendarTime()
+	if not currentDay or not currentDay.monthDay then
+		print("ZG.World_Event: Error! - Invalid calendar time.")
+		return nil
+	end
+	
+	local day = currentDay.monthDay
+	local numEvents = C_Calendar.GetNumDayEvents(0, day)
+	if not numEvents or numEvents <= 0 then
+		return nil
+	end
 
-	local holidays = {
-		"Lunar Festival", 
-		"Love is in the Air", 
-		"Noblegarden", 
-		"Children's Week",
-		"Midsummer Fire Festival", 
-		"Brewfest", 
-		"Hallow's End", 
-		"Pilgrim's Bounty",
-		"Feast of Winter Veil",
+	local holidaysList = {
+		["Lunar Festival"] = true, 
+		["Love is in the Air"] = true, 
+		["Noblegarden"] = true, 
+		["Children's Week"] = true,
+		["Midsummer Fire Festival"] = true, 
+		["Brewfest"] = true, 
+		["Hallow's End"] = true, 
+		["Pilgrim's Bounty"] = true,
+		["Feast of Winter Veil"] = true,
 	}
-
-	for i=1,C_Calendar.GetNumDayEvents(0, C_DateAndTime.GetCurrentCalendarTime().monthDay) do
-		for h, holidays in pairs(holidays) do 
-			if holidays == C_Calendar.GetHolidayInfo(0, C_DateAndTime.GetCurrentCalendarTime().monthDay, i).name then
-				gHI = holidays
-			end
+	
+	for i = 1, numEvents do
+		local info = C_Calendar.GetHolidayInfo(0, day, i)
+		if info and info.name and holidaysList[info.name] then
+			return info.name
 		end
 	end
-	if gHI ~= nil then
-		return gHI
-	else
-		print("Info: Something went wrong with World_Event")
-	end
+	return nil
 end

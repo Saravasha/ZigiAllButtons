@@ -24,6 +24,7 @@ local function eventHandler(event)
 		local classk = ZG.Player_Info("classk")
 		local level = ZG.Player_Info("level")
 		local playerSpec = ZG.Player_Info("playerSpec")
+		local playerName = ZG.Player_Info("playerName")
 		local eLevel = ZG.Player_Info("eLevel")
 		local slBP = ZG.Player_Info("slBP")
 		local z = ZG.Player_Info("z")
@@ -50,7 +51,7 @@ local function eventHandler(event)
 			["MONK"] = "Wild Dreamrunner,Swift Zulian Tiger,Lil' Donkey,Little Red Riding Goat",
 			["PALADIN"] = "Prestigious Bronze Courser,Argent Charger,Pureheart Courser",
 			["HUNTER"] = "Taivan,Spawn of Horridon,Bruce,Llothien Prowler,Ironhoof Destroyer,Alabaster Hyena,Divine Kiss of Ohn'Ahra",
-			["ROGUE"] = "Blue Shado-Pan Riding Tiger,Broken Highland Mustang",
+			["ROGUE"] = "Taivan,Blue Shado-Pan Riding Tiger,Broken Highland Mustang",
 			["PRIEST"] = "Trained Meadowstomper, Glorious Felcrusher, Ivory Hawkstrider, Wild Dreamrunner, Pureheart Courser",
 			["DEATHKNIGHT"] = "Midnight,Bloodgorged Crawg,Pureheart Courser",
 			["WARRIOR"] = "Vicious War Turtle,Infernal Direwolf,Bloodfang Widow,Ironhoof Destroyer",
@@ -64,7 +65,7 @@ local function eventHandler(event)
 		-- Value must start with a ","
 		local flyingMount = {
 			["SHAMAN"] = ",Spectral Pterrorwing,Grand Wyvern,Kua'fon",
-			["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Arcanist's Manasaber,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm,Eve's Ghastly Rider",
+			["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm,Eve's Ghastly Rider",
 			["WARLOCK"] = ",Grove Defiler,Headless Horseman's Mount,Felsteel Annihilator,Antoran Gloomhound,Ur'zul Fleshripper,Shackled Ur'zul,Eve's Ghastly Rider",
 			["MONK"] = "Astral Cloud Serpent",
 			["PALADIN"] = ",Highlord's Golden Charger,Lightforged Warframe,Invincible,Tyrael's Charger",
@@ -103,7 +104,7 @@ local function eventHandler(event)
 			-- Value must start with a ","
 			flyingMount = { 
 				["SHAMAN"] = ",Spirit of Eche'ro,Grand Gryphon,Honeyback Harvester",
-				["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Arcanist's Manasaber,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm,Honeyback Harvester,Eve's Ghastly Rider",
+				["MAGE"] = ",Leywoven Flying Carpet,Ashes of Al'ar,Violet Spellwing,Soaring Spelltome,Glacial Tidestorm,Honeyback Harvester,Eve's Ghastly Rider",
 				["WARLOCK"] = ",Honeyback Harvester,Headless Horseman's Mount,Grove Defiler,Felsteel Annihilator,Ur'zul Fleshripper,Shackled Ur'zul,Eve's Ghastly Rider",
 				["MONK"] = "Astral Cloud Serpent",
 				["PALADIN"] = ",Highlord's Golden Charger,Lightforged Warframe,Invincible,Honeyback Harvester,Tyrael's Charger",
@@ -151,19 +152,19 @@ local function eventHandler(event)
 
 		-- racist ground mount
 		local racistMount = {
-			["BloodElf"] = "",
+			["BloodElf"] = "Silvermoon Sweeper,",
 			["Draenei"] = "",
 			["DarkIronDwarf"] = "Dark Iron Core Hound,",
 			["Dwarf"] = "Stormpike Battle Ram,",
 			["Gnome"] = "",
-			["Goblin"] = "",
+			["Goblin"] = "G.M.O.D.,",
 			["HighmountainTauren"] = "",
 			["Human"] = "",
 			["KulTiran"] = "Kul Tiran Charger,",
 			["LightforgedDraenei"] = "Lightforged Felcrusher,",
 			["MagharOrc"] = "Mag'har Direwolf,",
 			["Mechagnome"] = "Mechagon Mechanostrider,Mechacycle Model W,",
-			["Nightborne"] = "",
+			["Nightborne"] = "Arcanist's Manasaber,",
 			["NightElf"] = "Kaldorei Nightsaber,",
 			["Orc"] = "Frostwolf Snarler,",
 			["Pandaren"] = "",
@@ -294,7 +295,7 @@ local function eventHandler(event)
 				flyingMount[classk] = "Wen Lo, the River's Edge"
 				classMount[classk] = "Ban-Lu, Grandmaster's Companion"
 			end
-			local randomFlyingMount = { flyingMount[classk], "Jade, Bright Foreseer"}
+			local randomFlyingMount = { flyingMount[classk], "Jade, Bright Foreseer", "Copper-Maned Quilen","Lunar Launcher"}
 			flyingMount[classk] = randomFlyingMount[random(#randomFlyingMount)]
 		elseif class == "PALADIN" then
 			if race == "Draenei" or race == "LightforgedDraenei" then
@@ -328,18 +329,19 @@ local function eventHandler(event)
 			if playerSpec == 2 then 
 				classMount[classk] = "Shadowblade's Crimson Omen"
 				groundMount[classk] = "Siltwing Albatross,Ratstallion"
-				flyingMount[classk] = ",Shadowblade's Murderous Omen,Infinite Timereaver,Siltwing Albatross,The Dreadwake"
+				flyingMount[classk] = ",Infinite Timereaver,Siltwing Albatross,The Dreadwake"
 			elseif playerSpec == 3 then
 				classMount[classk] = "Shadowblade's Lethal Omen"	
 				groundMount[classk] = "Infinite Timereaver"
-				flyingMount[classk] = ",Ironbound Wraithcharger,Shadowblade's Murderous Omen"
+				flyingMount[classk] = ",Ironbound Wraithcharger"
 			end			
 		elseif class == "PRIEST" then		
-			if playerSpec == 3 then
+			if playerSpec == 2 then
+				flyingMount[classk] = ",X-45 Heartbreaker"
+				groundMount[classk] = "Bone-White Primal Raptor,Ivory Hawkstrider,Wild Dreamrunner,Pureheart Courser"
+			elseif playerSpec == 3 then
 				flyingMount[classk] = ",Dread Raven,Riddler's Mind-Worm,The Hivemind,Uncorrupted Voidwing,Ny'alotha Allseer"	
 				groundMount[classk] = "Lucid Nightmare,Ultramarine Qiraji Battle Tank,The Hivemind,Voidtalon of the Dark Star,Ny'alotha Allseer"
-			elseif playerSpec == 2 then
-				groundMount[classk] = "Bone-White Primal Raptor,Ivory Hawkstrider,Wild Dreamrunner,Pureheart Courser"
 			end
 		elseif class == "DEATHKNIGHT" then
 			if playerSpec == 2 then
@@ -361,18 +363,18 @@ local function eventHandler(event)
 			elseif playerSpec == 4 then
 				classMount[classk] = "Emerald Drake"
 			end
-		elseif class == "DEMONHUNTER" then
-			if playerSpec == 1 then 
+		-- elseif class == "DEMONHUNTER" then
+			-- if playerSpec == 1 then 
 				-- classMount[classk] = "Swift Zulian Tiger"
-			elseif playerSpec == 2 then
+			-- elseif playerSpec == 2 then
 				-- classMount[classk] = "Darkmoon Dancing Bear"
-			end
-		elseif class == "EVOKER" then
-			if playerSpec == 1 then 
+			-- end
+		-- elseif class == "EVOKER" then
+			-- if playerSpec == 1 then 
 				-- classMount[classk] = "Swift Zulian Tiger"
-			elseif playerSpec == 2 then
+			-- elseif playerSpec == 2 then
 				-- classMount[classk] = "Darkmoon Dancing Bear"
-			end
+			-- end
 		-- elseif class == "PIRATE" then
 			-- if playerSpec == 2 then 
 				-- classMount[classk] = "Swift Zulian Tiger"
@@ -395,7 +397,7 @@ local function eventHandler(event)
 
 		if (playerName == "Fannylands" and playerSpec == 3) then
 			classMount[classk] = "Grove Defiler"
-			flyingMount[classk] = ",Grove Defiler"
+			flyingMount[classk] = ""
 			pvpRaptorRam = ""
 			groundMount[classk] = "Grove Defiler"
 		end
@@ -412,7 +414,30 @@ local function eventHandler(event)
 		end
 
 		local mountSlash = "/userandom"
-		
+
+		-- Holiday mount block
+		if ZG.World_Event() then
+			if gHI == "Lunar Festival" then
+				flyingMount[classk] = "Lunar Launcher"
+			elseif gHI == "Love is in the Air" then
+				local loveMount = {"Fur-endship Fox", "Heartseeker Mana Ray", "X-45 Heartbreaker", "Love Witch's Sweeper"}
+				flyingMount[classk] = loveMount[random(#loveMount)]
+			elseif gHI == "Noblegarden" then
+				flyingMount[classk] = "Noble Flying Carpet"
+			elseif gHI == "Children's Week" then
+				groundMount[classk] = "Spring Harvesthog"
+			elseif gHI == "Brewfest" then
+				local brewMount = {"Great Brewfest Kodo", "Swift Brewfest Ram"}
+				groundMount[classk] = brewMount[random(#brewMount)]
+				flyingMount[classk] = "Hogrus, Swine of Good Fortune"
+			elseif gHI == "Hallow's End" then
+				flyingMount[classk] = "Eve's Ghastly Rider"
+			elseif gHI == "Feast of Winter Veil" then
+				groundMount[classk] = "Minion of Grumpus"
+			end
+		end
+
+		-- Zone
 		if level < 10 and PlayerGetTimerunningSeasonID() ~= 1 then
 			groundMount[classk] = "Summon Chauffeur"
 			classMount[classk] = ""
@@ -493,11 +518,38 @@ local function eventHandler(event)
 			factionHog = ""
 			racistMount[race] = ""
 			palaMounts[race] = ""
-		-- Holiday mount block
-		elseif gHI == "Love is in the Air" then
+		elseif z == "Undermine" or instanceName == "Liberation of Undermine" then
 			mountSlash = "/use "
 			classMount[classk] = ""
-			flyingMount[classk] = "Fur-endship Fox"
+			flyingMount[classk] = ""
+			groundMount[classk] = "G-99 Breakneck"
+			pvpSkellySaber = "" 
+			pvpRaptorRam = "" 
+			pvpKodoMechanostrider = ""
+			prestWolfSteed = ""
+			pvpWolfSteed = ""
+			factionBike = ""
+			factionHog = ""
+			racistMount[race] = ""
+			palaMounts[race] = ""
+		elseif z == "The Maw" then
+			mountSlash = "/use "
+			classMount[classk] = ""
+			flyingMount[classk] = ""
+			groundMount[classk] = "Colossal Ebonclaw Mawrat"
+			pvpSkellySaber = "" 
+			pvpRaptorRam = "" 
+			pvpKodoMechanostrider = ""
+			prestWolfSteed = ""
+			pvpWolfSteed = ""
+			factionBike = ""
+			factionHog = ""
+			racistMount[race] = ""
+			palaMounts[race] = ""
+		-- Nazjatar
+		elseif (z == "Nazjatar" or z == "Damprock Cavern") and C_QuestLog.IsQuestFlaggedCompleted(56766) then
+			local randomSeapony = "Inkscale Deepseeker, Fabious, Subdued Seahorse, Crimson Tidestallion"
+			flyingMount[classk] = randomSeapony
 			groundMount[classk] = ""
 			pvpSkellySaber = "" 
 			pvpRaptorRam = "" 
@@ -508,50 +560,7 @@ local function eventHandler(event)
 			factionHog = ""
 			racistMount[race] = ""
 			palaMounts[race] = ""
-		elseif gHI == "Noblegarden" then
-			mountSlash = "/use "
 			classMount[classk] = ""
-			flyingMount[classk] = "Noble Flying Carpet"
-			groundMount[classk] = ""
-			pvpSkellySaber = "" 
-			pvpRaptorRam = "" 
-			pvpKodoMechanostrider = ""
-			prestWolfSteed = ""
-			pvpWolfSteed = ""
-			factionBike = ""
-			factionHog = ""
-			racistMount[race] = ""
-			palaMounts[race] = ""
-		elseif gHI == "Brewfest" then
-			mountSlash = "/use "
-			local brewMount = {"Great Brewfest Kodo", "Swift Brewfest Ram"}
-			brewMount = brewMount[random(#brewMount)]
-			groundMount[classk] = brewMount
-			flyingMount[classk] = "Hogrus, Swine of Good Fortune"
-			classMount[classk] = ""
-			pvpSkellySaber = "" 
-			pvpRaptorRam = "" 
-			pvpKodoMechanostrider = ""
-			prestWolfSteed = ""
-			pvpWolfSteed = ""
-			factionBike = ""
-			factionHog = ""
-			racistMount[race] = ""
-			palaMounts[race] = ""
-		elseif gHI == "Hallow's End" then
-			mountSlash = "/use "
-			classMount[classk] = ""
-			flyingMount[classk] = "Eve's Ghastly Rider"
-			groundMount[classk] = ""
-			pvpSkellySaber = "" 
-			pvpRaptorRam = "" 
-			pvpKodoMechanostrider = ""
-			prestWolfSteed = ""
-			pvpWolfSteed = ""
-			factionBike = ""
-			factionHog = ""
-			racistMount[race] = ""
-			palaMounts[race] = ""
 		elseif instanceType == "pvp" or instanceType == "arena" then
 			-- pvpmounts if in bg or arena :)
 			factionMounts = {
@@ -596,39 +605,6 @@ local function eventHandler(event)
 			factionHog = ""
 			racistMount[race] = ""
 			palaMounts[race] = ""
-			if gHI == "Feast of Winter Veil" then
-				mountSlash = "/use "
-				groundMount[classk] = "Minion of Grumpus"
-			end
-		elseif z == "The Maw" then
-			mountSlash = "/use "
-			classMount[classk] = ""
-			flyingMount[classk] = ""
-			groundMount[classk] = "Colossal Ebonclaw Mawrat"
-			pvpSkellySaber = "" 
-			pvpRaptorRam = "" 
-			pvpKodoMechanostrider = ""
-			prestWolfSteed = ""
-			pvpWolfSteed = ""
-			factionBike = ""
-			factionHog = ""
-			racistMount[race] = ""
-			palaMounts[race] = ""
-		-- Nazjatar
-		elseif (z == "Nazjatar" or z == "Damprock Cavern") and C_QuestLog.IsQuestFlaggedCompleted(56766) then
-			local randomSeapony = "Inkscale Deepseeker, Fabious, Subdued Seahorse, Crimson Tidestallion"
-			flyingMount[classk] = randomSeapony
-			groundMount[classk] = ""
-			pvpSkellySaber = "" 
-			pvpRaptorRam = "" 
-			pvpKodoMechanostrider = ""
-			prestWolfSteed = ""
-			pvpWolfSteed = ""
-			factionBike = ""
-			factionHog = ""
-			racistMount[race] = ""
-			palaMounts[race] = ""
-			classMount[classk] = ""
 		elseif instanceName == "The Deaths of Chromie" then
 			-- We can use flying mounts
 			groundMount[classk] = ""
@@ -698,10 +674,6 @@ local function eventHandler(event)
 			-- factionBike = ""
 			-- racistMount[race] = ""
 			-- palaMounts[race] = ""
-			if gHI == "Feast of Winter Veil" then
-				-- mountSlash = "/use "
-				groundMount[classk] = "Minion of Grumpus"
-			end
 		-- print("Cannot fly in certain areas")
 		-- Dragon Isles
 		elseif instanceName == "The Nokhud Offensive" or ZG.dfZones[z] --[[or (level >= 60 or eLevel >= 60)--]] or PlayerGetTimerunningSeasonID() == 1 then 

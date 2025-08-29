@@ -378,6 +378,8 @@ local classSkillList = {
 	-- Hero Talent: Dark Ranger, BM/MM
 		[430703] = "Black Arrow",
 		--
+		[272682] = "Master's Call", -- Pet Abilities
+ 		[272679] = "Fortitude of the Bear", -- Pet Abilities
 		[53480] = "Roar of Sacrifice",
 		[272651] = "Command Pet",
 		[321297] = "Eyes of the Beast",
@@ -406,6 +408,7 @@ local classSkillList = {
 		[257044] = "Rapid Fire",
 		[53351] = "Kill Shot",
 		[19577] = "Intimidation",
+		[474421] = "Intimidation",
 		[203415] = "Fury of the Eagle",
 		[2643] = "Multi-Shot",
 		[19801] = "Tranquilizing Shot",
@@ -558,7 +561,7 @@ local classSkillList = {
 		[62618] = "Power Word: Barrier",
 		[108968] = "Void Shift",
 		[34861] = "Holy Word: Sanctify",
-		[246287] = "Evangelism",
+		[472433] = "Evangelism",
 		[47536] = "Rapture",
 		[129250] = "Power Word: Solace",
 		[64843] = "Divine Hymn",
@@ -708,6 +711,7 @@ local classSkillList = {
 		[386071] = "Disrupting Shout",
 	},
 	["DRUID"] = {
+		[474750] = "Symbiotic Relationship",
 		[8921] = "Moonfire",
 		[449193] = "Fluid Form", 
 		[18960] = "Teleport: Moonglade",
@@ -912,105 +916,60 @@ local classSkillList = {
 	},
 }
 
-local commandPetAbilities = {
-	["HUNTER"] = {
-		[272682] = "Master's Call",
-		[272679] = "Fortitude of the Bear",
-	}
-}
-
 -- bind to function, has two override subroutines for arrays and nested array types
 function Get_Spell(spellName, macroCond, semiCol)
 	-- Skriv om så att jag inte behöver sätta overrides innan anropen, lägg till stöd för parameter-overriding för arrays och strängar, vill kunna skicka in arrayer med spells.
-	if not InCombatLockdown() then
-		-- if string
-		if type(spellName) == "string" then 
-			for k,v in pairs(classSkillList[class]) do
-				if v == spellName then
-					if IsPlayerSpell(k) or IsSpellKnown(k) then
-						-- spellName = (select(1,GetSpellInfo(k)))
-						spellName = C_Spell.GetSpellInfo(k).name
-						if (macroCond == "" or macroCond == nil) and (semiCol == "" or semiCol == nil) then
-							return spellName
-						else
-							return (macroCond or "")..(spellName or "")..(semiCol or "")
-						end
-					end
-				end
-			end
-		elseif type(spellName) == "table" then
-		-- Method overrides
-			local tmpSpellObject = {}
-			local nestedTableFound = false
-			for i,v in pairs(spellName) do
-				if type(v) == "table" then
-					nestedTableFound = true
-				end
-			end
-			-- if nested table
-			if nestedTableFound == true then
-			-- call signature should look like (b({{spellName,macroCond,semiCol},{...},}) or "")
-				local tmpSpellObjectArray = {{}}
-				for i,tbl in ipairs(spellName) do
-					table.insert(tmpSpellObjectArray,i,tbl)
-					for i,str in ipairs(tbl) do
-						table.insert(tmpSpellObject,i,str)
-					end
-					spellName = tmpSpellObject[1]
-					macroCond = tmpSpellObject[2]
-					semiCol = tmpSpellObject[3]
-					for k,v in pairs(classSkillList[class]) do
-						if v == spellName then
-							if IsPlayerSpell(k) or IsSpellKnown(k) then
-								-- spellName = (select(1,GetSpellInfo(k)))
-								spellName = C_Spell.GetSpellInfo(k).name
-								-- print(spellName)
-								return macroCond..spellName..semiCol
-							end
-						end
-					end
-				end
-			else
-				-- call signature should look like (b({spellName,macroCond,semiCol}) or "")
-				-- observed to be never used by user, obsolete?
-				for i,str in pairs(spellName) do
-					table.insert(tmpSpellObject,i,str)
-				end
-				spellName = tmpSpellObject[1]
-				macroCond = tmpSpellObject[2]
-				semiCol = tmpSpellObject[3]
-				for k,v in pairs(classSkillList[class]) do
-					if v == spellName then
-						if IsPlayerSpell(k) or IsSpellKnown(k) then
-							-- spellName = (select(1,GetSpellInfo(k)))
-							spellName = C_Spell.GetSpellInfo(k).name
-							print("Object[spellName]", spellName)
-							print("Object[macroCond]", macroCond)
-							print("Object[semiCol]", semiCol)
-							return macroCond..spellName..semiCol
-						end
-					end
-				end
-			end
-		end
-	end
-end
+	if InCombatLockdown() then return nil end
 
-function Get_Pet_Spell(spellName, macroCond, semiCol)
-	if not InCombatLockdown() then 
-		for k,v in pairs(commandPetAbilities[class]) do
+	local skillList = classSkillList[class] 
+		-- if string
+	if type(spellName) == "string" then 
+		for k,v in pairs(skillList) do
 			if v == spellName then
-				if IsSpellKnownOrOverridesKnown(k) then
+				-- print("k = ",k)
+				if IsPlayerSpell(k) or IsSpellKnown(k) then
 					-- spellName = (select(1,GetSpellInfo(k)))
 					spellName = C_Spell.GetSpellInfo(k).name
 					if (macroCond == "" or macroCond == nil) and (semiCol == "" or semiCol == nil) then
-						return spellName or ""
+						return spellName
 					else
 						return (macroCond or "")..(spellName or "")..(semiCol or "")
 					end
 				end
 			end
 		end
-		return fallback or ""
+	elseif type(spellName) == "table" then
+	-- Method overrides
+		local tmpSpellObject = {}
+		local nestedTableFound = false
+		for i,v in pairs(spellName) do
+			if type(v) == "table" then
+				nestedTableFound = true
+			end
+		end
+		-- if nested table
+		if nestedTableFound == true then
+		-- call signature should look like (b({{spellName,macroCond,semiCol},{...},}) or "")
+			local tmpSpellObjectArray = {{}}
+			for i,tbl in ipairs(spellName) do
+				table.insert(tmpSpellObjectArray,i,tbl)
+				for i,str in ipairs(tbl) do
+					table.insert(tmpSpellObject,i,str)
+				end
+				spellName = tmpSpellObject[1]
+				macroCond = tmpSpellObject[2]
+				semiCol = tmpSpellObject[3]
+				for k,v in pairs(skillList) do
+					if v == spellName then
+						if IsPlayerSpell(k) or IsSpellKnown(k) then
+							-- spellName = (select(1,GetSpellInfo(k)))
+							spellName = C_Spell.GetSpellInfo(k).name
+							-- print(spellName)
+							return macroCond..spellName..semiCol
+						end
+					end
+				end
+			end
+		end
 	end
 end

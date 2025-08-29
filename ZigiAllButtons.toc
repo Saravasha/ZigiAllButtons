@@ -28,4 +28,3 @@ ZigiAllButtons.lua
 # globals\globals.lua
 
 ## SavedVariables: ZigiLevelNewCharDB
-

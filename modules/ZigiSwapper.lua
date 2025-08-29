@@ -332,7 +332,7 @@ function ZigiRunSwapper()
 		end
 	elseif gHI == "Love is in the Air" then
 		SST[playerSpec] = 103 --"the Love Fool"
-		pets = {"Lovebird Hatchling","Peddlefeet","Toxic Wasteling","Heartseeker Moth"}
+		pets = {"Lovebird Hatchling","Peddlefeet","Toxic Wasteling","Heartseeker Moth","Living Rose"}
 	elseif gHI == "Noblegarden" then
 		SST[playerSpec] = 122 --"the Noble"
 		pets = {"Noblegarden Bunny","Mystical Spring Bouquet","Spring Rabbit","Lovely Duckling"}

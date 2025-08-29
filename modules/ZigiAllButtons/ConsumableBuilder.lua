@@ -228,6 +228,7 @@ function consumableBuilder(consumable,macroCond,semiCol)
 		    "Conjured Mana Strudel",
 		    "Conjured Mana Cake",
 		    "Conjured Mana Fritter",
+		    "Cinder Nectar",
 		}
 		local hasWaterInBags = ""
 		for i, hasWaters in pairs(hasWaters) do

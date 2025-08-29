@@ -1,3 +1,14 @@
+function setHsBuilder()
+	if ZG.Item_Count("Healthstone") >= 1  then
+		EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",class, slBP, z, eLevel, playerSpec, race, playerName) or "") or "").."Healthstone\n/stopmacro [mod]"..((hsBuilder("hsToy","","",ZG.class, ZG.slBP, ZG.z, ZG.eLevel, ZG.playerSpec, ZG.race, ZG.playerName) or "") or "").."\n/run HSAction()")
+	elseif ZG.Item_Count("Demonic Healthstone") >= 1  then
+		EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",ZG.class, ZG.slBP, ZG.z, ZG.eLevel, ZG.playerSpec, ZG.race, ZG.playerName) or "") or "").."Demonic Healthstone\n/stopmacro [mod]"..((hsBuilder("hsToy","","",ZG.class, ZG.slBP, ZG.z, ZG.eLevel, ZG.playerSpec, ZG.race, ZG.playerName) or "") or "").."\n/run HSAction()")
+	else
+		EditMacro("WShow",nil,nil,"/use "..consumableBuilder("water","[mod:alt,nocombat]",";")..consumableBuilder("manapot","[mod:alt]",";")..((hsBuilder("HS","[mod:ctrl]",";",ZG.class, ZG.slBP, ZG.z, ZG.eLevel, ZG.playerSpec, ZG.race, ZG.playerName) or "") or "").."\n/stopmacro [mod]"..((hsBuilder("hsToy","","",ZG.class, ZG.slBP, ZG.z, ZG.eLevel, ZG.playerSpec, ZG.race, ZG.playerName) or "") or "").."\n/use Healthstone\n/use Demonic Healthstone\n/run HSAction()", 1, 1)
+	end
+end
+
+
 function hsBuilder(type, macroCond, semiCol, class, slBP, z, eLevel, playerSpec, race, playerName)
 											
 	local classk = ZG.Player_Info("classk")
@@ -93,6 +104,11 @@ function hsBuilder(type, macroCond, semiCol, class, slBP, z, eLevel, playerSpec,
 				HS[class] = "Stormpike Insignia"
 			end
 		end
+
+		if GetCurrentTitle() == 372 then
+			HS[class] = "P.O.S.T. Master's Express Hearthstone"
+		end
+
 		type = HS[class]
 		return (macroCond or "") .. (type or "") .. (semiCol or "")
 	end
