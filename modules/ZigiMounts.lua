@@ -26,8 +26,8 @@ local function eventHandler(event)
 		local playerSpec = ZG.Player_Info("playerSpec")
 		local playerName = ZG.Player_Info("playerName")
 		local eLevel = ZG.Player_Info("eLevel")
-		local slBP = ZG.Player_Info("slBP")
 		local z = ZG.Player_Info("z")
+		local slBP = ZG.Player_Info("slBP")
 		local instanceName = ZG.Instance_Info("instanceName")
 		local instanceType = ZG.Instance_Info("instanceType")
 		local instanceID = ZG.Instance_Info("instanceID")
@@ -402,11 +402,13 @@ local function eventHandler(event)
 			groundMount[classk] = "Grove Defiler"
 		end
 
-
-    	covGroundMounts = covGroundMounts[slBP]
-    	covGroundMounts = covGroundMounts[random(#covGroundMounts)]
-    	covFlyingMounts = covFlyingMounts[slBP]
-    	covFlyingMounts = covFlyingMounts[random(#covFlyingMounts)]
+		if slBP ~= 0 then
+	    	covGroundMounts = covGroundMounts[slBP]
+	    	covGroundMounts = covGroundMounts[random(#covGroundMounts)]
+	    	covFlyingMounts = covFlyingMounts[slBP]
+	    	covFlyingMounts = covFlyingMounts[random(#covFlyingMounts)]
+			ZigiDebug("ZigiMounts - covGroundMounts = ", covGroundMounts[slBP])
+	    end
 
 		if (class ~= "MONK" and slBP ~= 0) then
 			groundMount[classk] = groundMount[classk]..","..covGroundMounts
@@ -423,14 +425,20 @@ local function eventHandler(event)
 				local loveMount = {"Fur-endship Fox", "Heartseeker Mana Ray", "X-45 Heartbreaker", "Love Witch's Sweeper"}
 				flyingMount[classk] = loveMount[random(#loveMount)]
 			elseif gHI == "Noblegarden" then
+				mountSlash = "/use"
+				classMount[classk] = ""
 				flyingMount[classk] = "Noble Flying Carpet"
 			elseif gHI == "Children's Week" then
 				groundMount[classk] = "Spring Harvesthog"
 			elseif gHI == "Brewfest" then
+				mountSlash = "/use"
 				local brewMount = {"Great Brewfest Kodo", "Swift Brewfest Ram"}
 				groundMount[classk] = brewMount[random(#brewMount)]
-				flyingMount[classk] = "Hogrus, Swine of Good Fortune"
+				classMount[classk] = ""
+				flyingMount[classk] = "Brewfest Bomber"
 			elseif gHI == "Hallow's End" then
+				mountSlash = "/use"
+				classMount[classk] = ""
 				flyingMount[classk] = "Eve's Ghastly Rider"
 			elseif gHI == "Feast of Winter Veil" then
 				groundMount[classk] = "Minion of Grumpus"
@@ -438,7 +446,7 @@ local function eventHandler(event)
 		end
 
 		-- Zone
-		if level < 10 and PlayerGetTimerunningSeasonID() ~= 1 then
+		if level < 10 and PlayerGetTimerunningSeasonID() == nil then
 			groundMount[classk] = "Summon Chauffeur"
 			classMount[classk] = ""
 			flyingMount[classk] = ""
@@ -676,7 +684,7 @@ local function eventHandler(event)
 			-- palaMounts[race] = ""
 		-- print("Cannot fly in certain areas")
 		-- Dragon Isles
-		elseif instanceName == "The Nokhud Offensive" or ZG.dfZones[z] --[[or (level >= 60 or eLevel >= 60)--]] or PlayerGetTimerunningSeasonID() == 1 then 
+		elseif instanceName == "The Nokhud Offensive" or ZG.dfZones[z] --[[or (level >= 60 or eLevel >= 60)--]] or PlayerGetTimerunningSeasonID() ~= nil then 
 			-- local dfFlyingMounts = {"Highland Drake", "Renewed Proto-Drake", "Grotto Netherwing Drake",} 						
 			-- flyingMount[classk] = dfFlyingMounts[random(#dfFlyingMounts)]			
 			-- if class == "SHAMAN" then
@@ -743,7 +751,7 @@ local function eventHandler(event)
 			palaMounts[race] = ""
 			-- flyingMount[classk] = ""
 			-- classMount[classk] = ""
-		print("Journeyman or Apprentice - Outdoors and can fly")
+			ZigiDebug("ZigiMounts - Journeyman or Apprentice - Outdoors and can fly")
 		-- Check if the character has riding skill
 		else 
 			classMount[classk] = ""

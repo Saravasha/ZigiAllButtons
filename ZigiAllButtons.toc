@@ -14,6 +14,7 @@ modules\ZigiAllButtons\HSAction.lua
 modules\ZigiAllButtons\HSBuilder.lua
 modules\ZigiAllButtons\ItemBuilder.lua
 modules\ZigiAllButtons\PandaRemixSpecial.lua
+modules\ZigiAllButtons\LegionRemixSpecial.lua
 modules\ZigiAllButtons\SkillBuilder.lua
 
 modules\ZigiHunter.lua
@@ -27,4 +28,4 @@ ZigiAllButtons.lua
 # To load files in other folders, use this convention
 # globals\globals.lua
 
-## SavedVariables: ZigiLevelNewCharDB
+## SavedVariables: ZigiLevelNewCharDB, ZigiDebugState

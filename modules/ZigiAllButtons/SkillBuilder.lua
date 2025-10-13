@@ -582,6 +582,7 @@ local classSkillList = {
 		-- Hero Talent: Deathbringer
 		[439843] = "Reaper's Mark",
 		--
+		[383269] = "Legion of Souls",
 		[61999] = "Raise Ally",
 		[127344] = "Corpse Exploder",
 		[49039] = "Lichborne",
@@ -676,7 +677,9 @@ local classSkillList = {
 		[6544] = "Heroic Leap",
 		[6343] = "Thunder Clap",
 		[396719] = "Thunder Clap",
+		[386071] = "Disrupting Shout",
 		[18499] = "Berserker Rage",
+		[384100] = "Berserker Shout",
 		[871] = "Shield Wall",
 		[845] = "Cleave",
 		[7384] = "Overpower",
@@ -707,8 +710,6 @@ local classSkillList = {
 		[1161] = "Challenging Shout",
 		[260643] = "Skullsplitter",
 		[384110] = "Wrecking Throw",
-		[384100] = "Berserker Shout",
-		[386071] = "Disrupting Shout",
 	},
 	["DRUID"] = {
 		[474750] = "Symbiotic Relationship",
@@ -916,6 +917,13 @@ local classSkillList = {
 	},
 }
 
+local commandPetAbilities = {
+	["HUNTER"] = {
+		[272682] = "Master's Call",
+		[272679] = "Fortitude of the Bear",
+	}
+}
+
 -- bind to function, has two override subroutines for arrays and nested array types
 function Get_Spell(spellName, macroCond, semiCol)
 	-- Skriv om så att jag inte behöver sätta overrides innan anropen, lägg till stöd för parameter-overriding för arrays och strängar, vill kunna skicka in arrayer med spells.
@@ -961,7 +969,7 @@ function Get_Spell(spellName, macroCond, semiCol)
 				semiCol = tmpSpellObject[3]
 				for k,v in pairs(skillList) do
 					if v == spellName then
-						if IsPlayerSpell(k) or IsSpellKnown(k) then
+						if IsPlayerSpell(k) or IsSpellKnown(k) or IsSpellKnownOrOverridesKnown(k) then
 							-- spellName = (select(1,GetSpellInfo(k)))
 							spellName = C_Spell.GetSpellInfo(k).name
 							-- print(spellName)
@@ -971,5 +979,24 @@ function Get_Spell(spellName, macroCond, semiCol)
 				end
 			end
 		end
+	end
+end
+
+function Get_Pet_Spell(spellName, macroCond, semiCol)
+	if not InCombatLockdown() then 
+		for k,v in pairs(commandPetAbilities[class]) do
+			if v == spellName then
+				if IsSpellKnownOrOverridesKnown(k) then
+					-- spellName = (select(1,GetSpellInfo(k)))
+					spellName = C_Spell.GetSpellInfo(k).name
+					if (macroCond == "" or macroCond == nil) and (semiCol == "" or semiCol == nil) then
+						return spellName or ""
+					else
+						return (macroCond or "")..(spellName or "")..(semiCol or "")
+					end
+				end
+			end
+		end
+		return fallback or ""
 	end
 end

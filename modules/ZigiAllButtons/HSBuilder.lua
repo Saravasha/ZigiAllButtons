@@ -109,6 +109,10 @@ function hsBuilder(type, macroCond, semiCol, class, slBP, z, eLevel, playerSpec,
 			HS[class] = "P.O.S.T. Master's Express Hearthstone"
 		end
 
+		if PlayerGetTimerunningSeasonID() == 2 and ZG.Item_Count("Timerunner's Hearthstone") == 1 then
+			HS[class] = "Timerunner's Hearthstone"
+		end
+
 		type = HS[class]
 		return (macroCond or "") .. (type or "") .. (semiCol or "")
 	end

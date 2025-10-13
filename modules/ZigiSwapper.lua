@@ -1,7 +1,6 @@
 -- Huvudfunktion, Togglar pets, sätter player titel
 function ZigiRunSwapper()
 
-	local slBP = ZG.Player_Info("slBP")
 	local class = ZG.Player_Info("class")
 	local classk = ZG.Player_Info("classk")
 	local race = ZG.Player_Info("race")
@@ -11,6 +10,7 @@ function ZigiRunSwapper()
 	local playerSpec = ZG.Player_Info("playerSpec")
 	local playerName = ZG.Player_Info("playerName")
 	local z = ZG.Player_Info("z")
+	local slBP = ZG.Player_Info("slBP")
 	local sex = ZG.Player_Info("sex")
 	local difficultyID = ZG.Instance_Info("difficultyID")
 	local instanceType = ZG.Instance_Info("instanceType")
@@ -149,9 +149,7 @@ function ZigiRunSwapper()
 		end
 	elseif classk == "MAGE" then
 		SST = {
-			-- [1] = 348, --"Headmistress",
 			[1] = 61, --"Archmage", 
-			-- [2] = 45, --"Flame Keeper",
 			[2] = 503, --"The Smoldering",
 			[3] = 681, --"Winter's Envoy",
 		}
@@ -275,12 +273,17 @@ function ZigiRunSwapper()
 		}					
 	end
 
-	-- local slBP = ZG.slBP()
-   	if (slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and ZG.slZones[z]) or (slBP == 0 and ZG.slZones[z]) then
+	ZigiDebug("ZigiSwapper - SST[playerSpec] = ",SST[playerSpec])
+
+   	-- if (slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and ZG.slZones[z]) or (slBP == 0 and ZG.slZones[z]) then
+   	if slBP == 5 then
 		SST[playerSpec] = 462 --"Maw Walker"
-	elseif slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and not ZG.slZones[z] then
+	-- elseif slBP == 0 and ((level > 50 or eLevel > 50) and (level < 60 or eLevel < 60)) and not ZG.slZones[z] then
+	elseif slBP == 6 then
 		SST[playerSpec] = 463 --"Veilstrider"
 	end
+
+	ZigiDebug("ZigiSwapper - slBP = ", slBP)
 
 	if C_EquipmentSet.GetEquipmentSetID("Casual") == nil then
 		MakeEqSet("Casual")
@@ -289,6 +292,7 @@ function ZigiRunSwapper()
 	if covPets[slBP] then
 		covPets = covPets[slBP]
 		covPets = covPets[random(#covPets)]
+		-- print("Debug - covPets =",covPets)
 	end
 
 	if (class == "SHAMAN" and race == "Troll") then
@@ -402,7 +406,7 @@ function ZigiRunSwapper()
 	end
 
 	--Timerunning
-	if PlayerGetTimerunningSeasonID() == 1 then
+	if PlayerGetTimerunningSeasonID() ~= nil then
 		if IsTitleKnown(306) then
 			SST[playerSpec] = 306 -- Legend of Pandaria title
 		elseif IsTitleKnown(361) then
@@ -532,7 +536,7 @@ function ZigiSetSwapper()
 	elseif gHI == "Midsummer Fire Festival" then
 		swapToy = "\n/use Fire Festival Batons"
 	elseif gHI == "Brewfest" then
-		swapToy = "\n/use Brew Barrel"
+		swapToy = "\n/use Brewer's Balloon\n/use Brew Barrel"
 	elseif gHI == "Hallow's End" then
 		swapToy = "\n/use Little Wickerman"
 	elseif gHI == "Pilgrim's Bounty" then
@@ -541,27 +545,23 @@ function ZigiSetSwapper()
 		swapToy = "\n/use Wild Holly"
 	end
 
-	if gHI == "Feast of Winter Veil" then 
-		if ZG.Player_Aura("Festive Pepe") == nil then
-			pepeState = "\n/use Festive Trans-Dimensional Bird Whistle"
-		end
-	elseif (class == "WARLOCK" or class == "DEMONHUNTER") then
-		if ZG.Player_Aura("Pepe") == nil then 
-			pepeState = "\n/use A Tiny Set of Warglaives"
-		end
-	elseif ZG.Player_Aura("Pepe") == nil then
+	if (gHI == "Feast of Winter Veil") and not ZG.Player_Aura("Festive Pepe") then 
+		pepeState = "\n/use Festive Trans-Dimensional Bird Whistle"
+	elseif (class == "WARLOCK" or class == "DEMONHUNTER") and not ZG.Player_Aura("Pepe") then
+		pepeState = "\n/use A Tiny Set of Warglaives"
+	elseif not ZG.Player_Aura("Pepe") then
 		pepeState = "\n/use Trans-Dimensional Bird Whistle"
 	else
 		pepeState = ""
 	end
 
+	ZigiDebug("ZigiSwapper - pepeState = ",pepeState)
+
 	-- Timewalking
-	if (difficultyID == 24 or difficultyID == 33) or PlayerGetTimerunningSeasonID() == 1 then
-		if not ZG.Player_Aura("Accelerated Time") then
-			swapToy = "\n/use Investi-gator's Pocketwatch"
-		else
-			swapToy = ""
-		end
+	if ((difficultyID == 24 or difficultyID == 33) or PlayerGetTimerunningSeasonID() ~= nil) and not ZG.Player_Aura("Accelerated Time") then
+		swapToy = "\n/use Investi-gator's Pocketwatch"
+	elseif ZG.Player_Aura("Accelerated Time") then
+		swapToy = ""
 	end
 
 	-- War mode / Pvp / Arena
@@ -570,6 +570,14 @@ function ZigiSetSwapper()
 		if faction == "Alliance" then
 			swapToy = "\n/use Alliance War Banner\n/use Rallying War Banner"
 		end			
+	end
+
+	if IsResting() then
+		if ZG.Player_Info("race") == "Goblin" then 
+			swapToy = "\n/use Desk-in-a-Box"
+		else
+			swapToy = "\n/use Arathi Book Collection"
+		end
 	end
 	
 	local toyCollection = swapToy..hasBell..pepeState
