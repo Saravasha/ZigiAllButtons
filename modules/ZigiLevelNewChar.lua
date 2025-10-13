@@ -71,46 +71,47 @@ function ZigiLearnDragonriding()
     if InCombatLockdown() then
         print("You are in combat - try again after leaving combat")
     else
-        GenericTraitUI_LoadUI()
-        GenericTraitFrame:SetSystemID(1)
-        if not GenericTraitFrame:IsShown() then ToggleFrame(GenericTraitFrame) end
+        -- GenericTraitUI_LoadUI()
+        -- GenericTraitFrame:SetSystemID(1)
+        -- if not GenericTraitFrame:IsShown() then ToggleFrame(GenericTraitFrame) end
 
-        local gatherer = false
-        for i = 1, 2 do
-            local index = select(i, GetProfessions()) or 0
-            if index and index > 0 then
-                local skillLine = select(7, GetProfessionInfo(index))
-                if skillLine == 182 or skillLine == 186 then -- Herbalism or Mining
-                    gatherer = true
-                end
-            end
-        end
+        -- local gatherer = false
+        -- for i = 1, 2 do
+        --     local index = select(i, GetProfessions()) or 0
+        --     if index and index > 0 then
+        --         local skillLine = select(7, GetProfessionInfo(index))
+        --         if skillLine == 182 or skillLine == 186 then -- Herbalism or Mining
+        --             gatherer = true
+        --         end
+        --     end
+        -- end
 
-        if C_AddOns.IsAddOnLoaded("Blizzard_GenericTraitUI") and GenericTraitFrame:IsShown() then
-            local c = C_Traits.GetConfigIDBySystemID(1)
+        -- if C_AddOns.IsAddOnLoaded("Blizzard_GenericTraitUI") and GenericTraitFrame:IsShown() then
+        --     local c = C_Traits.GetConfigIDBySystemID(1)
 
-            for x = 1, 10 do
-                for i, n in ipairs(C_Traits.GetTreeNodes(672)) do
-                    local f = C_Traits.GetNodeInfo(c, n)
-                    if #f.entryIDs < 2 then -- Single trait
-                        C_Traits.PurchaseRank(c, n)
-                    else -- Choice node
-                        --print(f.ID)
+        --     for x = 1, 10 do
+        --         for i, n in ipairs(C_Traits.GetTreeNodes(672)) do
+        --             local f = C_Traits.GetNodeInfo(c, n)
+        --             if #f.entryIDs < 2 then -- Single trait
+        --                 C_Traits.PurchaseRank(c, n)
+        --             else -- Choice node
+        --                 --print(f.ID)
 
-                        if gatherer and f.ID == 64062 then -- Dragonrider's Cultivation/Dragonrider's Hunt
-                            C_Traits.SetSelection(c, n, f.entryIDs[1]) -- We have Herbalism or Mining, purchase Dragonrider's Cultivation
-                        else -- Any other choice node
-                            C_Traits.SetSelection(c, n, f.entryIDs[2]) -- Otherwise always purchase the second choice
-                        end
-                    end
-                end
-            end
-            -- Save changes
-            C_Traits.CommitConfig(c)
-            ToggleFrame(GenericTraitFrame)
-        else
-            print("Could not open Dragonriding UI")
-        end
+        --                 if gatherer and f.ID == 64062 then -- Dragonrider's Cultivation/Dragonrider's Hunt
+        --                     C_Traits.SetSelection(c, n, f.entryIDs[1]) -- We have Herbalism or Mining, purchase Dragonrider's Cultivation
+        --                 else -- Any other choice node
+        --                     C_Traits.SetSelection(c, n, f.entryIDs[2]) -- Otherwise always purchase the second choice
+        --                 end
+        --             end
+        --         end
+        --     end
+        --     -- Save changes
+        --     C_Traits.CommitConfig(c)
+        --     ToggleFrame(GenericTraitFrame)
+        --     DragonridingPanelSkillsButtonMixin:OnClick()
+        -- else
+        --     print("Could not open Dragonriding UI")
+        -- end
     end
 end
 
@@ -154,12 +155,36 @@ local function ZigiLoad()
 	end
 end
 
+local function ZigiDebugToggle()
+	-- Toggle Debug
+	if ZigiDebugState == true then
+		ZigiDebugState = false
+		print("Debugger offline!")
+	elseif ZigiDebugState == false then
+		ZigiDebugState = true
+		print("Debugger online!")
+	else 
+		ZigiDebugState = false
+		print("ZigiDebugState not found, defaulting to and persisting to false")			
+	end
+end
+
+function ZigiDebug(msg)
+	if ZigiDebugState then
+		local debuggedMsg = "ZigiDebug: - "..msg
+		DEFAULT_CHAT_FRAME:AddMessage(tostring(debuggedMsg),1.0,1.0,0.0)	
+	end
+end
+
+
+
 local function ZigiAutoLoader()
 	if ZigiLevelNewCharDB then
 		for slot, macroName in pairs(ZigiLevelNewCharDB) do
 			if GetActionText(slot) == macroName or macroName == "---" then
 			else
-				DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar - ZigiAutoLoader - Updating: "..macroName.." @ "..slot,0.5,1.0,0.0)
+				
+				ZigiDebug("ZigiLevelNewChar - ZigiAutoLoader - Updating: "..macroName.." @ "..slot)
 				-- print(slot, macroName)
 				PickupAction(slot)
 				ClearCursor()
@@ -173,7 +198,7 @@ local function ZigiAutoLoader()
 			end
 		end
 	else
-		DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar - ZigiAutoLoader: There are no saved variables",0.5,1.0,0.0)
+		ZigiDebug("ZigiLevelNewChar - ZigiAutoLoader: There are no saved variables")
 	end
 end
 
@@ -203,6 +228,7 @@ local function ZigiEq()
 end
 
 function SlashCmdList.ZIGILEVELNEWCHAR(msg, ...)
+	-- print("msg =", msg, "type(msg) =", type(msg))
 	if not InCombatLockdown() then
 		if msg == "eq" then
 			ZigiEq()
@@ -210,10 +236,12 @@ function SlashCmdList.ZIGILEVELNEWCHAR(msg, ...)
 			ZigiSave()
 		elseif msg == "load" then
 			ZigiLoad()
-		elseif msg == "autoLoader" then
+		elseif msg == "autoloader" then
 			ZigiAutoLoader()
 		elseif msg == "dragonzigi" then
 			ZigiLearnDragonriding()
+		elseif msg == "debug" then
+			ZigiDebugToggle()
 		elseif msg == "new" then
 			EditModeManagerFrame:SelectLayout(3)
 			DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: Edit Mode Profile Applied",0.5,1.0,0.0)
@@ -221,7 +249,7 @@ function SlashCmdList.ZIGILEVELNEWCHAR(msg, ...)
 			DEFAULT_CHAT_FRAME:AddMessage("ZigiLevelNewChar: autoLootDefault set to 1",0.5,1.0,0.0)
 			ZigiLoad()
 			ZigiEq()
-			ZigiLearnDragonriding()
+			-- ZigiLearnDragonriding()
 			-- Configure Battlefield Map
 			if not BattlefieldMapFrame then
 				BattlefieldMap_LoadUI()

@@ -86,7 +86,7 @@ ZG.groundAreas = {
 	["Caverns of Contemplation"] = true, -- Korthia
 	["Torghast"] = true,
 	["Font of Fealty"] = true, -- Chains of Domination Campaign Scenario
-	["Tazavesh, the Veiled Market"] = true,
+	-- ["Tazavesh, the Veiled Market"] = true, -- Tazavesh is now a outdoor zone in K'aresh
 }
 
 -- Garrisons Map IDs
@@ -107,6 +107,8 @@ ZG.twwZones = {
 	["Khaz Algar"] = true,
 	["The Wormlands"] = true, -- Azj-Kahet Subzone
 	["Undermine"] = true,
+	["Tazavesh, the Veiled Market"] = true,
+	["K'aresh"] = true,
 }
 
 ZG.dfZones = {
@@ -204,14 +206,22 @@ function ZG.Player_Info(method)
 		if slBP == 0 then
 			if (level > 50) or (eLevel > 50) then
 				if (level < 60) or (eLevel < 60) then
+					ZigiDebug("ZG.class - ZG.slZones[z] = ",ZG.slZones[z])
 					if ZG.slZones[z] then
 						slBP = 5
-					elseif not ZG.slZones[z] then
+					else
 						slBP = 6
 					end
+				else
+					slBP = 0
 				end
+			else
+				slBP = 0
 			end
 		end
+
+		ZigiDebug("ZG.class - slBP = ", slBP)
+		
 		ZG.slBP = slBP
 		method = slBP
 	elseif method == "classk" then
@@ -236,7 +246,7 @@ function ZG.Player_Info(method)
 	end
 
 	if method == "invalid" then
-		print("ZG.Player_Info: You didn't supply a valid method, try again")
+		ZigiDebug("ZG.Player_Info: You didn't supply a valid method, try again")
 	else
 		return method
 	end
@@ -247,7 +257,7 @@ function ZG.Player_Aura(aura)
 		local state = C_UnitAuras.GetAuraDataBySpellName("player", aura)
 		return state
 	else
-		print("ZG.Player_Aura: aura supplied was nil")
+		ZigiDebug("ZG.Player_Aura: aura supplied was nil")
 	end	
 end
 
@@ -256,7 +266,7 @@ function ZG.Item_Count(item)
 		local number = C_Item.GetItemCount(item)
 		return number
 	else
-		print("ZG.Item_Count: item supplied was nil")
+		ZigiDebug("ZG.Item_Count: item supplied was nil")
 	end
 end
 
@@ -297,7 +307,7 @@ function ZG.Instance_Info(payload)
 	end
 	-- print(payload)
 	if payload == "invalid" then
-		print("ZG.Instance_Info: You didn't supply a valid payload, try again")
+		ZigiDebug("ZG.Instance_Info: You didn't supply a valid payload, try again")
 	else
 		return payload
 	end
@@ -309,7 +319,7 @@ function ZG.World_Event()
 	
 	local currentDay = C_DateAndTime.GetCurrentCalendarTime()
 	if not currentDay or not currentDay.monthDay then
-		print("ZG.World_Event: Error! - Invalid calendar time.")
+		ZigiDebug("ZG.World_Event: Error! - Invalid calendar time.")
 		return nil
 	end
 	
@@ -334,6 +344,7 @@ function ZG.World_Event()
 	for i = 1, numEvents do
 		local info = C_Calendar.GetHolidayInfo(0, day, i)
 		if info and info.name and holidaysList[info.name] then
+			ZigiDebug("ZG.World_Event: info.name - ",info.name)
 			return info.name
 		end
 	end
